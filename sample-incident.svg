@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <defs>
+    <linearGradient id="bgAlertGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#450a0a"/>
+      <stop offset="100%" stop-color="#1c1917"/>
+    </linearGradient>
+    <filter id="alertShadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#ef4444" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- Background Card -->
+  <rect x="20" y="20" width="560" height="360" rx="16" fill="url(#bgAlertGrad)" stroke="#ef4444" stroke-width="2" filter="url(#alertShadow)"/>
+
+  <!-- Warning Icon -->
+  <circle cx="65" cy="80" r="24" fill="#ef4444" fill-opacity="0.2"/>
+  <text x="65" y="88" fill="#ef4444" font-family="'Inter', sans-serif" font-size="24" font-weight="900" text-anchor="middle">!</text>
+
+  <!-- Header -->
+  <text x="105" y="72" fill="#ef4444" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="800" letter-spacing="2">CRITICAL INCIDENT ALERT</text>
+  <text x="105" y="98" fill="#f8fafc" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="800">システム障害報告: 本番DB接続タイムアウト</text>
+  <line x1="50" y1="125" x2="550" y2="125" stroke="#7f1d1d" stroke-width="1.5"/>
+
+  <!-- Status Badge -->
+  <rect x="460" y="55" width="85" height="30" rx="6" fill="#dc2626"/>
+  <text x="502" y="75" fill="#ffffff" font-family="'Inter', sans-serif" font-size="12" font-weight="800" text-anchor="middle">P0-緊急</text>
+
+  <!-- Details -->
+  <text x="50" y="160" fill="#fca5a5" font-family="'Inter', sans-serif" font-size="13">発生検知: 2026-09-21 07:15:22 JST / 監視ツール: Datadog APM</text>
+  <text x="50" y="185" fill="#fca5a5" font-family="'Inter', sans-serif" font-size="13">影響範囲: 全ユーザーの決済トランザクション処理が完全に停止中</text>
+  <text x="50" y="210" fill="#fca5a5" font-family="'Inter', sans-serif" font-size="13">ステータス: エラー率 98.4% (HTTP 500 / 504 Gateway Timeout)</text>
+
+  <!-- Error Log Box -->
+  <rect x="50" y="230" width="500" height="75" rx="8" fill="#0c0a09" stroke="#991b1b" stroke-width="1"/>
+  <text x="70" y="255" fill="#f87171" font-family="'Courier New', monospace" font-size="12">[FATAL] ConnectionPoolExhausted: Unable to acquire connection from pool</text>
+  <text x="70" y="273" fill="#f87171" font-family="'Courier New', monospace" font-size="12">[ERROR] Transaction rollback failed: Deadlock detected on payments_v2 table</text>
+  <text x="70" y="291" fill="#cbd5e1" font-family="'Inter', sans-serif" font-size="12">至急オンコール対応要請: インフラ担当およびリードエンジニアを招集</text>
+
+  <!-- Action Advice -->
+  <text x="50" y="345" fill="#ef4444" font-family="'Inter', sans-serif" font-size="15" font-weight="700">対応区分: 最優先障害対応 / 緊急保守・フェイルオーバー実行</text>
+</svg>

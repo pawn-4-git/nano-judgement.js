@@ -55,6 +55,7 @@ JavaScript が読み込まれた時点でテキストが既に入っていれば
 <select id="prioritySelect">
   <option value="p1" data-description="即時対応が必要な重大問題">緊急 (P1)</option>
   <option value="p2" data-description="通常業務時間内の対応でよい問題">通常 (P2)</option>
+  <option value="other" data-description="一般的な問い合わせやその他相談">その他</option>
 </select>
 
 <textarea 
@@ -88,19 +89,91 @@ console.log("判断理由:", result.summaryReason);
 console.log("キャッシュヒット:", result.fromCache);
 ```
 
+### ファイルそのもの（画像/音声/テキスト）を Gemini Nano に直接渡して判定
+`judge()` の第2引数（Context）には、テキスト文字列だけでなく `File` や `Blob`、`HTMLImageElement` を**そのまま直接渡す**ことができます。
+
+* **画像・音声ファイル（PNG, JPEG, WebP, SVG, MP3, WAV 等）**:
+  Chrome のマルチモーダル Prompt API（`chrome://flags/#prompt-api-for-gemini-nano-multimodal-input`）が有効な環境では、**画像や音声の `File` / `Blob` そのものを Gemini Nano に直接入力**して推論します。非対応環境やフラグ未設定時は、自動でオンデバイス OCR（`window.TextDetector`）/ SVG 解析 / メタデータにフォールバックして処理されます。
+* **テキスト系ファイル（`.txt`, `.json`, `.csv`, `.md`, `.log` 等）**:
+  ファイルの中身を自動で丸ごと読み取り、Gemini Nano のコンテキストへ直接投入します。
+
+```javascript
+// 1. 画像ファイル（File オブジェクト）そのものを直接渡す
+const fileInput = document.querySelector('#receiptInput');
+const result = await judgement.judge(choices, fileInput.files[0]);
+
+console.log("仕訳判定 (値のみ):", result.topChoice.name);
+console.log("マルチモーダル直接判定:", result.isDirectMultimodal); // true (Gemini Nano 直接渡し成功時)
+
+// 2. テキストファイル（.log, .json, .csv 等）そのものを直接渡す
+const logFileInput = document.querySelector('#logFileInput');
+const logResult = await judgement.judge('#prioritySelect', logFileInput.files[0]);
+
+// 3. 根拠（判断理由）も必要な場合は includeReason: true を渡します
+const detailedResult = await judgement.judge(choices, fileInput.files[0], {
+  includeReason: true,
+});
+console.log("判断理由 (根拠):", detailedResult.summaryReason);
+```
+
+### 音声入力（マイク音声認識: Web Speech API）の実装方法
+Chrome 標準の **Web Speech API**（`webkitSpeechRecognition`）と連携し、マイクからの発話音声をリアルタイムにオンデバイス文字起こしして直接AI判定を実行します。
+
+```javascript
+// 1. judgeFromSpeech: 音声認識からAI判定・セレクトボックス連動まで一括実行
+const speechResult = await judgement.judgeFromSpeech('#supportPriority', {
+  speechLang: 'ja-JP',      // 音声認識言語（デフォルト: 'ja-JP'）
+  speechTimeoutMs: 10000,   // 発話待機タイムアウト（ミリ秒）
+  includeReason: false,     // デフォルト: false（値のみ高速返却）
+});
+
+console.log("話した内容 (テキスト):", speechResult.speechTranscript);
+console.log("判定結果:", speechResult.topChoice.name);
+
+// 2. 音声認識テキストのみを単体で取得したい場合
+const transcript = await judgement.recognizeSpeech({ lang: 'ja-JP' });
+console.log("認識テキスト:", transcript);
+```
+
+> **根拠（判断理由）の表示制御について**:
+> * **デフォルト（パラメータ省略時）**: 速度優先のため**根拠は生成・表示せず、値（最有力候補・確信度スコア）のみを高速に返却**します。
+> * **根拠を求める場合**: `{ includeReason: true }`（JavaScript）または `data-judge-reason="true"`（HTML属性）を指定すると、入力されたテキストを **Language Detector API** で言語判定し、その言語へ **Translator API** で自動翻訳して返却します。
+
 ---
 
 ## HTML属性オプション一覧
 
 | 属性 | 説明 | 例 |
 |---|---|---|
-| `data-nano-judgement` | 自動判定対象の入力要素であることを示すフラグ | `<textarea data-nano-judgement>` |
+| `data-nano-judgement` | 自動判定対象の入力要素（`<textarea>`, `<input>`, `<img>`, `<input type="file">`）であることを示すフラグ | `<textarea data-nano-judgement>` |
+| `data-nano-judgement-speech` | クリック時にマイク音声認識を起動して自動判定を行うボタン属性 | `<button data-nano-judgement-speech>` |
 | `data-judge-select` | 連動する `<select>` 要素のセレクタ。選択肢を自動抽出し、判定結果に合わせて `<select>` を自動選択（Auto-select） | `data-judge-select="#mySelect"` |
 | `data-judge-auto-select` | セレクトボックス連動時、最有力候補を自動選択するか（デフォルト: `true`） | `data-judge-auto-select="false"` |
 | `data-judge-target` | HTML側スクリプトが描画先コンテナを特定するための要素セレクタ（ライブラリは画面描画を行わずイベントを発火するため、HTML側で自由に描画可能） | `data-judge-target="#result-1"` |
-| `data-judge-reason` | `true` の場合、判定理由を出力し Chrome の **Translator API** で入力言語に自動翻訳（省略時は `false` で理由を省き確率のみ超高速出力） | `data-judge-reason="true"` |
-| `data-judge-lang` | 理由翻訳先の言語コード（省略時はコンテキストから自動検出: 例 `'ja'`） | `data-judge-lang="ja"` |
+| `data-judge-reason` | `true` の場合、判定理由（根拠）を出力。入力テキストを **Language Detector API** で言語判定し、**Translator API** で自動翻訳して返却（省略時は `false` で理由を省き確率のみ超高速出力） | `data-judge-reason="true"` |
+| `data-judge-lang` | 理由翻訳先を手動指定する場合の言語コード（省略時は **Language Detector API** により自動検出） | `data-judge-lang="ja"` |
+| `data-judge-speech-lang` | 音声認識の言語コード（省略時は `'ja-JP'`） | `data-judge-speech-lang="ja-JP"` |
 | `data-judge-choices` | 要素専用の選択肢リスト（JSON文字列、または選択肢JSON/`<select>`を含む要素セレクタ） | `data-judge-choices='[{"id":"A","name":"..."}]'` または `data-judge-choices="#mySelect"` |
+
+### JS初期化オプション (Stale-While-Revalidate & キャッシュ類推)
+```javascript
+const judgement = new NanoJudgement({
+  // 前方一致キャッシュによる即時応答後、タイピング停止時に裏側で正確な本判定を非同期実行（デフォルト: true）
+  revalidateOnPrefixMatch: true,
+  // 裏判定のタイピング停止検知ミリ秒（デフォルト: 800ms）
+  revalidateDebounceMs: 800,
+  // 有意な変化（最有力候補・順序・スコア20%以上変動）があった時のみ画面更新（デフォルト: true）
+  revalidateOnlyOnChange: true,
+  // スコア変動検知の閾値（デフォルト: 0.20 = 20%）
+  revalidateScoreThreshold: 0.20
+});
+```
+
+> **前方一致類推＆一時回答（Stale-While-Revalidate）の流れ**:
+> 1. **通常の前方一致**: 過去の判定キャッシュと前方一致する場合、即座に類推キャッシュとして0msで即時応答。
+> 2. **末尾1〜3文字縮小による探索（8文字以上）**: 一致するものがなく入力文字列が8文字以上の場合、末尾を1〜3文字減らして前方一致キャッシュを探索し、見つかった場合は**一時回答**として即時表示。
+> 3. **タイピング停止検知（デバウンス 800ms）**: ユーザーがタイピングを停止したタイミングで裏側で最新の全文に対する本判定を実行。
+> 4. **差分更新**: 最有力候補（`topChoice.id`）の変化、選択肢の順序の変化、またはいずれかのスコアが20%以上変動した場合のみ画面やセレクトボックスを自動更新し、チラつきなく高精度な結果を反映。
 
 ---
 
@@ -125,6 +198,7 @@ console.log("キャッシュヒット:", result.fromCache);
 2. アドレスバーに `chrome://flags` を入力して開く
 3. 以下のフラグを設定：
    - `#prompt-api-for-gemini-nano` → **Enabled**
+   - `#prompt-api-for-gemini-nano-multimodal-input` → **Enabled**（画像・音声ファイルを直接渡すマルチモーダル機能）
    - `#optimization-guide-on-device-model` → **Enabled BypassPerfRequirement**
 4. Chrome を再起動
 5. `chrome://components` を開き、**Optimization Guide On Device Model** の「アップデートを確認」をクリックしてモデルがダウンロードされていることを確認（バージョン番号が表示されていれば完了）

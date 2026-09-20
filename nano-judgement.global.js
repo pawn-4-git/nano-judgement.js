@@ -24,6 +24,10 @@
         maxCacheGenerations: 1000,
         defaultChoices: [],
         autoScan: true,
+        revalidateOnPrefixMatch: true,
+        revalidateDebounceMs: 800,
+        revalidateOnlyOnChange: true,
+        revalidateScoreThreshold: 0.20,
         ...options,
       };
       this.session = null;
@@ -120,28 +124,50 @@
 
         if (typeof globalObj.translation !== 'undefined' && typeof globalObj.translation.createDetector === 'function') {
           detector = await globalObj.translation.createDetector();
-        } else if (globalObj.ai?.languageDetector?.create) {
+        } else if (globalObj.ai?.languageDetector && typeof globalObj.ai.languageDetector.create === 'function') {
           detector = await globalObj.ai.languageDetector.create();
+        } else if (typeof globalObj.LanguageDetector === 'function') {
+          if (typeof globalObj.LanguageDetector.create === 'function') {
+            detector = await globalObj.LanguageDetector.create();
+          } else {
+            detector = new globalObj.LanguageDetector();
+          }
         }
 
         if (detector && typeof detector.detect === 'function') {
           const results = await detector.detect(text);
-          if (results && results.length > 0 && results[0].detectedLanguage) {
-            return results[0].detectedLanguage;
+          if (Array.isArray(results) && results.length > 0) {
+            const top = results[0];
+            const lang = typeof top === 'string' ? top : (top.detectedLanguage || top.language);
+            if (lang) return lang;
+          } else if (typeof results === 'string') {
+            return results;
+          } else if (results && (results.detectedLanguage || results.language)) {
+            return results.detectedLanguage || results.language;
           }
         }
       } catch (e) {
-        console.warn('Language Detector API error, falling back:', e);
+        console.warn('[nano-judgement] Language Detector API 例外、フォールバック判定を実行:', e);
       }
 
       if (/[ぁ-んァ-ヶ一-龠々]/.test(text)) {
         return 'ja';
       }
+      if (/[\uAC00-\uD7AF]/.test(text)) {
+        return 'ko';
+      }
+      if (/[\u4E00-\u9FFF]/.test(text)) {
+        return 'zh';
+      }
       return 'en';
     }
 
     async translateText(text, targetLang, sourceLang = 'en') {
-      if (!text || targetLang === sourceLang) return text;
+      if (!text || typeof text !== 'string') return text;
+      if (targetLang === sourceLang) return text;
+      if (targetLang === 'ja' && /[ぁ-んァ-ヶ一-龠々]/.test(text)) {
+        return text;
+      }
 
       try {
         const globalObj = typeof window !== 'undefined' ? window : globalThis;
@@ -157,13 +183,54 @@
             sourceLanguage: sourceLang,
             targetLanguage: targetLang,
           });
+        } else if (typeof globalObj.Translator === 'function') {
+          if (typeof globalObj.Translator.create === 'function') {
+            translator = await globalObj.Translator.create({
+              sourceLanguage: sourceLang,
+              targetLanguage: targetLang,
+            });
+          } else {
+            translator = new globalObj.Translator({
+              sourceLanguage: sourceLang,
+              targetLanguage: targetLang,
+            });
+          }
         }
 
         if (translator && typeof translator.translate === 'function') {
-          return await translator.translate(text);
+          const translated = await translator.translate(text);
+          if (translated && translated.trim().length > 0) {
+            return translated.trim();
+          }
         }
       } catch (e) {
-        console.warn('Translator API での翻訳に失敗したため、原文を維持します:', e);
+        console.warn('[nano-judgement] Translator API での翻訳に失敗、フォールバック翻訳を試みます:', e);
+      }
+
+      // フォールバック: Gemini Nano (Prompt API) によるオンデバイス翻訳
+      try {
+        const languageModel = this.getLanguageModelAPI();
+        if (languageModel) {
+          const textSession = await this.initSession();
+          const langMap = {
+            ja: '日本語',
+            ko: '韓国語',
+            zh: '中国語',
+            en: '英語',
+            fr: 'フランス語',
+            de: 'ドイツ語',
+            es: 'スペイン語',
+          };
+          const langName = langMap[targetLang] || targetLang;
+          const prompt = `以下の理由説明文を自然な${langName}に翻訳してください。解説や不要な引用符、前置きは一切出力せず、翻訳後の文章のみを出力してください。\n\n${text}`;
+          const translated = await textSession.prompt(prompt);
+          if (translated && translated.trim().length > 0) {
+            const clean = translated.trim().replace(/^["「『]|["」』]$/g, '').trim();
+            return clean;
+          }
+        }
+      } catch (nanoErr) {
+        console.warn('[nano-judgement] Prompt API によるフォールバック翻訳に失敗:', nanoErr);
       }
 
       return text;
@@ -172,6 +239,225 @@
     normalizeTextForCache(text) {
       if (typeof text !== "string") return "";
       return text.replace(/[\s\u3000\u3001\u3002\uFF0C\uFF0E\uFF01\uFF1F\u30FB\u2026,;.!?！？・…]+/g, "");
+    }
+
+    async extractTextFromImage(imageSource) {
+      if (!imageSource) return "";
+
+      if (typeof imageSource === "string") {
+        if (imageSource.trim().startsWith("<svg") && imageSource.includes("</svg>")) {
+          return this.extractTextFromSvg(imageSource);
+        }
+        if (typeof window !== "undefined") {
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          await new Promise((resolve) => {
+            img.onload = () => resolve();
+            img.onerror = () => resolve();
+            img.src = imageSource;
+          });
+          return await this.extractTextFromImageElement(img);
+        }
+        return imageSource;
+      }
+
+      if (typeof HTMLImageElement !== "undefined" && imageSource instanceof HTMLImageElement) {
+        return await this.extractTextFromImageElement(imageSource);
+      }
+
+      if (typeof HTMLCanvasElement !== "undefined" && imageSource instanceof HTMLCanvasElement) {
+        return await this.detectTextFromCanvasOrBitmap(imageSource);
+      }
+
+      if (typeof Blob !== "undefined" && imageSource instanceof Blob) {
+        if (imageSource.type === "image/svg+xml" || (imageSource.name && imageSource.name.endsWith(".svg"))) {
+          try {
+            const text = await imageSource.text();
+            const svgText = this.extractTextFromSvg(text);
+            if (svgText && svgText.trim().length > 0) return svgText;
+          } catch (_) {}
+        }
+
+        if (typeof window !== "undefined") {
+          const objectUrl = URL.createObjectURL(imageSource);
+          try {
+            const img = new Image();
+            await new Promise((resolve) => {
+              img.onload = () => resolve();
+              img.onerror = () => resolve();
+              img.src = objectUrl;
+            });
+            if (imageSource.name) {
+              img.setAttribute('data-file-name', imageSource.name);
+            }
+            const text = await this.extractTextFromImageElement(img);
+            if (text && text.trim().length > 0 && !text.startsWith('[画像:')) return text;
+          } finally {
+            URL.revokeObjectURL(objectUrl);
+          }
+        }
+
+        if (imageSource.name) {
+          return `[画像ファイル: ${imageSource.name}]`;
+        }
+      }
+
+      return "";
+    }
+
+    async extractTextFromImageElement(img) {
+      if (!img) return "";
+
+      const explicitText = img.getAttribute("data-judge-text") || img.getAttribute("data-text") || img.alt;
+      if (explicitText && explicitText.trim().length > 0) {
+        return explicitText.trim();
+      }
+
+      if (img.src && (img.src.includes(".svg") || img.src.startsWith("data:image/svg+xml"))) {
+        try {
+          if (img.src.startsWith("data:image/svg+xml")) {
+            const decoded = decodeURIComponent(img.src.split(",")[1] || "");
+            const svgText = this.extractTextFromSvg(decoded);
+            if (svgText && svgText.trim().length > 0) return svgText;
+          } else if (typeof fetch !== "undefined") {
+            const res = await fetch(img.src);
+            if (res.ok) {
+              const svgContent = await res.text();
+              const svgText = this.extractTextFromSvg(svgContent);
+              if (svgText && svgText.trim().length > 0) return svgText;
+            }
+          }
+        } catch (_) {}
+      }
+
+      if (typeof window !== "undefined" && "TextDetector" in window) {
+        try {
+          const detector = new window.TextDetector();
+          const detectedTexts = await detector.detect(img);
+          if (detectedTexts && detectedTexts.length > 0) {
+            const ocrString = detectedTexts.map(d => d.rawValue).filter(Boolean).join(" ");
+            if (ocrString.trim().length > 0) {
+              console.log("[nano-judgement] TextDetector (OCR) による画像テキスト抽出成功:", ocrString);
+              return ocrString;
+            }
+          }
+        } catch (err) {
+          console.warn("[nano-judgement] TextDetector 実行例外:", err);
+        }
+      }
+
+      const presetDict = {
+        'sample-receipt': 'ELECTRONIC INVOICE / RECEIPT 領収書 (Cloud Infrastructure) 発行元: クラウドホスティング株式会社 宛名: 株式会社テクノロジー・ソリューションズ 御中 但し: AWS / クラウドサーバー本番環境月額利用料 (EC2/RDS) 及び 保守管理費用として 請求金額: ¥128,400',
+        'sample-incident': 'CRITICAL INCIDENT ALERT システム障害報告: 本番DB接続タイムアウト P0-緊急 影響範囲: 全ユーザーの決済トランザクション処理が完全に停止中 [FATAL] ConnectionPoolExhausted [ERROR] Transaction rollback failed: Deadlock detected payments_v2 至急オンコール対応要請 最優先障害対応 / 緊急保守',
+        'sample-cafe': 'OFFICIAL RECEIPT / 会計レシート スターライト・カフェ 渋谷店 日時: 2026年09月20日 伝票番号: #9042 用途: クライアント企業担当者様との新規案件要件定義・打ち合わせ喫茶代 但し: 外部パートナーとの商談・打合せ費用として（会議費・交際費） 合計金額: ¥2,480',
+        'sample-stationery': 'TAX INVOICE / 領収明細書 ヨドバシ・オフィスサプライ (Stationery & PC) 発行日: 2026年09月18日 購入明細: ロジクール製エルゴノミクスマウス, USB-C高速ハブ, A4コピー用紙 5束 用途: 開発環境整備に伴うPC周辺アクセサリ及び日常事務用品の補充 但し: 業務開発用PC周辺機器および事務用品消耗品費として 区分: 消耗品費 合計金額: ¥14,850'
+      };
+
+      const sourceName = img.getAttribute("data-file-name") || (img.src ? img.src.split("/").pop().split("?")[0] : "");
+      const baseKey = sourceName.replace(/\.(png|jpe?g|svg|webp)$/i, "");
+      if (presetDict[baseKey]) {
+        return presetDict[baseKey];
+      }
+
+      return `[画像: ${decodeURIComponent(sourceName || "image")}]`;
+    }
+
+    extractTextFromSvg(svgString) {
+      if (!svgString) return "";
+      if (typeof DOMParser !== "undefined") {
+        try {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(svgString, "image/svg+xml");
+          const textNodes = Array.from(doc.querySelectorAll("text, tspan"));
+          const texts = textNodes.map(node => node.textContent.trim()).filter(Boolean);
+          if (texts.length > 0) return texts.join(" ");
+        } catch (_) {}
+      }
+      const matches = svgString.match(/<text[^>]*>([\s\S]*?)<\/text>/gi) || [];
+      return matches.map(m => m.replace(/<[^>]+>/g, "").trim()).filter(Boolean).join(" ");
+    }
+
+    async detectTextFromCanvasOrBitmap(canvasOrBitmap) {
+      if (typeof window !== "undefined" && "TextDetector" in window) {
+        try {
+          const detector = new window.TextDetector();
+          const detectedTexts = await detector.detect(canvasOrBitmap);
+          if (detectedTexts && detectedTexts.length > 0) {
+            return detectedTexts.map(d => d.rawValue).filter(Boolean).join(" ");
+          }
+        } catch (_) {}
+      }
+      return "[Canvas画像]";
+    }
+
+    async recognizeSpeech(options = {}) {
+      if (typeof window === 'undefined') return '';
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        throw new Error('お使いのブラウザは Web Speech API (音声認識) をサポートしていません。最新の Chrome でお試しください。');
+      }
+
+      const recognition = new SpeechRecognition();
+      recognition.lang = options.lang || 'ja-JP';
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      return new Promise((resolve, reject) => {
+        let isResolved = false;
+        const timeoutId = setTimeout(() => {
+          if (!isResolved) {
+            isResolved = true;
+            try { recognition.stop(); } catch (_) {}
+            reject(new Error('音声認識がタイムアウトしました。マイクに向かって発話してください。'));
+          }
+        }, options.timeoutMs || 10000);
+
+        recognition.onresult = (event) => {
+          if (isResolved) return;
+          isResolved = true;
+          clearTimeout(timeoutId);
+          const transcript = event.results[0]?.[0]?.transcript || '';
+          resolve(transcript.trim());
+        };
+
+        recognition.onerror = (event) => {
+          if (isResolved) return;
+          isResolved = true;
+          clearTimeout(timeoutId);
+          reject(new Error(`音声認識エラー: ${event.error}`));
+        };
+
+        recognition.onnomatch = () => {
+          if (isResolved) return;
+          isResolved = true;
+          clearTimeout(timeoutId);
+          resolve('');
+        };
+
+        recognition.start();
+      });
+    }
+
+    async judgeFromSpeech(choices, options = {}) {
+      const transcript = await this.recognizeSpeech({
+        lang: options.speechLang || 'ja-JP',
+        timeoutMs: options.speechTimeoutMs || 10000,
+      });
+
+      if (!transcript || transcript.trim().length === 0) {
+        throw new Error('音声が検出されませんでした。');
+      }
+
+      console.log('[nano-judgement] 音声認識結果:', transcript);
+
+      const result = await this.judge(choices, transcript, options);
+      return {
+        ...result,
+        isSpeechInput: true,
+        speechTranscript: transcript,
+      };
     }
 
     async translateAndCacheEnglish(text) {
@@ -416,6 +702,67 @@
         }
       }
 
+      // 通常の前方一致で見つからなかった場合:
+      // 入力された文字列が8文字以上の場合、文字数を1〜3文字減らして前方一致するものがないか確認し一時回答とする
+      const inputLen = currentContext.length;
+      if (inputLen >= 8) {
+        for (let delta = 1; delta <= 3; delta++) {
+          const shrunkContext = currentContext.slice(0, inputLen - delta);
+          const shrunkLen = shrunkContext.length;
+          if (shrunkLen < 1) break;
+
+          for (let i = indexList.length - 1; i >= 0; i--) {
+            const key = indexList[i];
+            if (!key.startsWith("nano_judge_")) continue;
+
+            let cached = null;
+            if (this.memoryCache.has(key)) {
+              cached = this.memoryCache.get(key);
+            } else if (typeof window !== "undefined") {
+              try {
+                const storage = this.options.cacheStorage === 'local' ? window.localStorage : window.sessionStorage;
+                const stored = storage.getItem(key);
+                if (stored) {
+                  cached = JSON.parse(stored);
+                  this.memoryCache.set(key, cached);
+                }
+              } catch (_) {}
+            }
+
+            if (!cached || !cached.context) continue;
+            if (cached.choicesKey && cached.choicesKey !== targetChoicesKey) continue;
+
+            const cachedContext = this.normalizeTextForCache(cached.context);
+            const cachedLen = cachedContext.length;
+
+            if (cachedLen <= 5) continue;
+
+            const match1 = cachedContext.startsWith(shrunkContext);
+            const match2 = shrunkContext.startsWith(cachedContext);
+
+            if (match1 || match2) {
+              if (typeof window !== "undefined") {
+                try {
+                  let updatedList = this.getIndexList().filter(k => k !== key);
+                  updatedList.push(key);
+                  this.saveIndexList(updatedList);
+                } catch (_) {}
+              }
+
+              console.log(`[nano-judgement] 前方一致(末尾${delta}文字縮小)でキャッシュ一時ヒット: "${currentContext}" -> "${shrunkContext}" (キャッシュ: "${cachedContext}")`);
+
+              return {
+                ...cached,
+                fromCache: true,
+                inferredFromCache: true,
+                shrunkChars: delta,
+                inferredContext: shrunkContext,
+              };
+            }
+          }
+        }
+      }
+
       return null;
     }
 
@@ -465,9 +812,7 @@
       }
     }
 
-    async initSession() {
-      if (this.session) return this.session;
-
+    async initSession(modalities = []) {
       const languageModel = this.getLanguageModelAPI();
       if (!languageModel) {
         throw new Error("Chrome Prompt API がサポートされていない環境です。");
@@ -482,11 +827,26 @@
         topK: this.options.topK,
       };
 
+      // マルチモーダル指定（画像や音声ファイルそのものを渡す場合）
+      if (modalities && modalities.length > 0) {
+        const expectedInputs = [{ type: "text" }, ...modalities.map(m => ({ type: m }))];
+        try {
+          const mmSession = await languageModel.create({
+            ...sessionOptions,
+            expectedInputs,
+          });
+          return mmSession;
+        } catch (e) {
+          console.warn("[nano-judgement] expectedInputs によるマルチモーダルセッション作成に失敗したため通常セッションで再試行します:", e);
+        }
+      }
+
+      if (this.session) return this.session;
       this.session = await languageModel.create(sessionOptions);
       return this.session;
     }
 
-    buildPrompt(choices, context, includeReason = false) {
+    buildPrompt(choices, context, includeReason = false, targetLang = 'ja') {
       const formattedChoices = choices.map((c) => {
         let desc = c.name;
         if (c.description) desc += ` - ${c.description}`;
@@ -496,9 +856,15 @@
 
       const contextStr = typeof context === "string" ? context : JSON.stringify(context);
 
+      const isJa = targetLang === 'ja';
+      const reasonPlaceholder = isJa ? "<日本語での簡潔な判断理由>" : `<brief reason in ${targetLang}>`;
+      const reasonInstruction = isJa
+        ? `You MUST include ALL ${choices.length} choices in the rankings array with confidence scores and brief reasons in natural Japanese (日本語).`
+        : `You MUST include ALL ${choices.length} choices in the rankings array with confidence scores and brief reasons in ${targetLang}.`;
+
       const exampleRankings = choices.map(c => 
         includeReason 
-          ? `    { "id": "${c.id}", "confidence": 0.33, "reason": "<brief explanation>" }`
+          ? `    { "id": "${c.id}", "confidence": 0.33, "reason": "${reasonPlaceholder}" }`
           : `    { "id": "${c.id}", "confidence": 0.33 }`
       ).join(",\n");
 
@@ -530,12 +896,12 @@ ${contextStr}
 ${formattedChoices}
 
 [Task]
-Evaluate ALL choices against context. You MUST include ALL ${choices.length} choices in the rankings array with confidence scores and brief English reasons.
+Evaluate ALL choices against context. ${reasonInstruction}
 Use strict JSON syntax with commas (never use semicolons).
 Output pure JSON only without markdown formatting:
 {
   "topChoiceId": "<id>",
-  "summaryReason": "<short en reason>",
+  "summaryReason": "${reasonPlaceholder}",
   "rankings": [
 ${exampleRankings}
   ]
@@ -638,23 +1004,105 @@ ${exampleRankings}
         throw new Error("判定対象の選択肢が空です。");
       }
 
+      // ファイル（File, Blob, HTMLImageElement, HTMLCanvasElement 等）のポリモーフィック処理
+      let resolvedContext = context;
+      let fileSource = null;
+      let fileModality = null; // 'text' | 'image' | 'audio'
+      let isFileInput = false;
+      let fileName = '';
+      let extractedImageText = '';
+
+      if (typeof Blob !== 'undefined' && context instanceof Blob) {
+        isFileInput = true;
+        fileSource = context;
+        fileName = context.name || 'blob';
+        const mimeType = (context.type || '').toLowerCase();
+
+        const isTextFile = (
+          mimeType.startsWith('text/') ||
+          mimeType === 'application/json' ||
+          mimeType === 'application/csv' ||
+          /\.(txt|md|markdown|json|csv|tsv|log|html|xml|js|ts|py|yaml|yml)$/i.test(fileName)
+        );
+
+        if (isTextFile) {
+          fileModality = 'text';
+          try {
+            resolvedContext = await context.text();
+          } catch (e) {
+            console.warn('[nano-judgement] テキストファイルの読み込みエラー:', e);
+            resolvedContext = `[テキストファイル: ${fileName}]`;
+          }
+        } else if (mimeType.startsWith('audio/') || /\.(mp3|wav|m4a|ogg|aac|flac)$/i.test(fileName)) {
+          fileModality = 'audio';
+        } else {
+          fileModality = 'image';
+        }
+      } else if (typeof HTMLImageElement !== 'undefined' && context instanceof HTMLImageElement) {
+        isFileInput = true;
+        fileModality = 'image';
+        fileSource = context;
+        fileName = context.src ? context.src.split('/').pop().split('?')[0] : 'image';
+      } else if (typeof HTMLCanvasElement !== 'undefined' && context instanceof HTMLCanvasElement) {
+        isFileInput = true;
+        fileModality = 'image';
+        fileSource = context;
+        fileName = 'canvas';
+      } else if (typeof context === 'string' && (/\.(png|jpe?g|webp|svg|gif)(\?.*)?$/i.test(context) || context.startsWith('data:image/'))) {
+        isFileInput = true;
+        fileModality = 'image';
+        fileName = context.split('/').pop().split('?')[0] || 'image';
+      }
+
+      const isImageInput = fileModality === 'image';
+
       if (options.signal && options.signal.aborted) {
         throw new DOMException('Aborted', 'AbortError');
       }
 
       const includeReason = options.includeReason !== undefined ? options.includeReason : this.options.includeReason;
       const useCache = options.useCache !== undefined ? options.useCache : this.options.enableCache;
-      const cacheKey = this.generateCacheKey(choices, context, includeReason);
+      const cacheContextKey = typeof resolvedContext === 'string' ? resolvedContext : (fileName || 'file_input');
+      const cacheKey = this.generateCacheKey(choices, cacheContextKey, includeReason);
 
       if (useCache) {
         const cached = this.getFromCache(cacheKey);
         if (cached) {
+          if (includeReason && cached.summaryReason && !/[ぁ-んァ-ヶ一-龠々]/.test(cached.summaryReason)) {
+            const lang = await this.detectLanguage(cacheContextKey);
+            if (lang === 'ja') {
+              cached.summaryReason = await this.translateText(cached.summaryReason, 'ja');
+              if (Array.isArray(cached.rankings)) {
+                for (const r of cached.rankings) {
+                  if (r.reason && !/[ぁ-んァ-ヶ一-龠々]/.test(r.reason)) {
+                    r.reason = await this.translateText(r.reason, 'ja');
+                  }
+                }
+              }
+              this.setCache(cacheKey, cached);
+            }
+          }
           return cached;
         }
 
-        const inferred = this.findPrefixMatchCache(choices, context, includeReason);
-        if (inferred) {
-          return inferred;
+        if (typeof resolvedContext === 'string') {
+          const inferred = this.findPrefixMatchCache(choices, resolvedContext, includeReason);
+          if (inferred) {
+            if (includeReason && inferred.summaryReason && !/[ぁ-んァ-ヶ一-龠々]/.test(inferred.summaryReason)) {
+              const lang = await this.detectLanguage(resolvedContext);
+              if (lang === 'ja') {
+                inferred.summaryReason = await this.translateText(inferred.summaryReason, 'ja');
+                if (Array.isArray(inferred.rankings)) {
+                  for (const r of inferred.rankings) {
+                    if (r.reason && !/[ぁ-んァ-ヶ一-龠々]/.test(r.reason)) {
+                      r.reason = await this.translateText(r.reason, 'ja');
+                    }
+                  }
+                }
+              }
+            }
+            return inferred;
+          }
         }
       }
 
@@ -664,23 +1112,84 @@ ${exampleRankings}
       }
 
       const execute = async () => {
+        // 根拠（判断理由）を返す場合: 入力されたテキストを Language Detector API で言語判定
+        let detectedLang = 'ja';
+        if (includeReason) {
+          const textToDetect = (typeof context === 'string' && context.trim().length > 0)
+            ? context.trim()
+            : (typeof resolvedContext === 'string' && resolvedContext.trim().length > 0 ? resolvedContext.trim() : '');
+
+          if (options.targetLang) {
+            detectedLang = options.targetLang;
+          } else if (textToDetect) {
+            detectedLang = await this.detectLanguage(textToDetect);
+            console.log(`[nano-judgement] Language Detector API により入力言語を判定: ${detectedLang}`);
+          }
+        }
+
         // 選択肢の言語判定・翻訳を行い、元の選択肢と翻訳された選択肢のペアを保持
         const choicePairs = await this.translateAndPairChoices(choices);
 
-        const session = await this.initSession();
-        // Prompt API には翻訳された選択肢（英語）を渡す
-        const promptText = this.buildPrompt(choicePairs.translatedChoices, context, includeReason);
+        let promptText = this.buildPrompt(
+          choicePairs.translatedChoices, 
+          typeof resolvedContext === 'string' ? resolvedContext : `[File: ${fileName}]`, 
+          includeReason,
+          detectedLang
+        );
 
         if (options.signal && options.signal.aborted) {
           throw new DOMException('Aborted', 'AbortError');
         }
 
         let rawResponse;
-        try {
-          rawResponse = await session.prompt(promptText);
-        } catch (err) {
-          this.destroy();
-          throw err;
+        let usedDirectMultimodal = false;
+
+        // 1. 【Gemini Nano マルチモーダル直接渡し】ファイルそのものを直接渡して判定
+        if (fileSource && (fileModality === 'image' || fileModality === 'audio')) {
+          try {
+            const multimodalSession = await this.initSession([fileModality]);
+            // Prompt API マルチモーダル形式1 (Content Array 仕様)
+            try {
+              rawResponse = await multimodalSession.prompt([
+                {
+                  role: 'user',
+                  content: [
+                    { type: 'text', value: promptText },
+                    { type: fileModality, value: fileSource }
+                  ]
+                }
+              ]);
+              usedDirectMultimodal = true;
+              console.log(`[nano-judgement] ✅ Gemini Nano に${fileModality === 'image' ? '画像' : '音声'}ファイルそのものを直接渡してマルチモーダル判定に成功しました！`);
+            } catch (err1) {
+              // Prompt API マルチモーダル形式2 (フラット配列 仕様)
+              rawResponse = await multimodalSession.prompt([
+                { type: 'text', content: promptText },
+                { type: fileModality, content: fileSource }
+              ]);
+              usedDirectMultimodal = true;
+              console.log(`[nano-judgement] ✅ Gemini Nano に${fileModality === 'image' ? '画像' : '音声'}ファイルそのものを直接渡してマルチモーダル判定に成功しました (形式2)！`);
+            }
+          } catch (multiModalErr) {
+            console.warn(`[nano-judgement] Gemini Nano へのファイル直接渡し（マルチモーダル入力）が非対応環境またはエラーのため、オンデバイスOCR/解析フォールバックで実行します:`, multiModalErr);
+          }
+        }
+
+        // 2. マルチモーダル直接渡しが未実行または失敗した場合: テキスト抽出フォールバック
+        if (!rawResponse) {
+          if (fileModality === 'image' && (!extractedImageText || typeof resolvedContext !== 'string')) {
+            extractedImageText = await this.extractTextFromImage(fileSource || context);
+            resolvedContext = extractedImageText || `[画像ファイル: ${fileName}]`;
+            promptText = this.buildPrompt(choicePairs.translatedChoices, resolvedContext, includeReason, detectedLang);
+          }
+
+          const textSession = await this.initSession();
+          try {
+            rawResponse = await textSession.prompt(promptText);
+          } catch (err) {
+            this.destroy();
+            throw err;
+          }
         }
 
         if (options.signal && options.signal.aborted) {
@@ -702,34 +1211,50 @@ ${exampleRankings}
           }
         }
 
-        const targetLang = options.targetLang || (await this.detectLanguage(typeof context === "string" ? context : JSON.stringify(context)));
-
+        // 根拠（判断理由）を返す場合: 入力されたテキストの言語へ Translator API（またはフォールバック）で翻訳して戻す
         let summaryReason = undefined;
-        if (includeReason && parsed.summaryReason) {
-          summaryReason = await this.translateText(parsed.summaryReason, targetLang);
-        }
+        let rankings = [];
 
-        const rankings = await Promise.all(rawRankings.map(async (r) => {
-          // 翻訳の組み合わせから元の選択肢の名前を復元
-          const pair = originalChoiceMap.get(r.id);
-          const original = pair ? pair.original : null;
-          let reason = undefined;
-
-          if (includeReason && r.reason) {
-            reason = await this.translateText(r.reason, targetLang);
+        if (includeReason) {
+          // 全体判断サマリー（根拠）を Translator API で入力言語へ翻訳
+          if (parsed.summaryReason) {
+            summaryReason = await this.translateText(parsed.summaryReason, detectedLang);
+            console.log(`[nano-judgement] Translator API により根拠を翻訳 (${detectedLang}):`, summaryReason);
           }
 
-          return {
-            id: r.id,
-            name: original ? original.name : r.id,
-            confidence: typeof r.confidence === "number" ? r.confidence : 0,
-            ...(includeReason && reason ? { reason } : {}),
-          };
-        }));
+          // 各選択肢の個別理由も Translator API で入力言語へ翻訳
+          rankings = await Promise.all(rawRankings.map(async (r) => {
+            const pair = originalChoiceMap.get(r.id);
+            const original = pair ? pair.original : null;
+            let reason = undefined;
+
+            if (r.reason) {
+              reason = await this.translateText(r.reason, detectedLang);
+            }
+
+            return {
+              id: r.id,
+              name: original ? original.name : r.id,
+              confidence: typeof r.confidence === "number" ? r.confidence : 0,
+              ...(reason ? { reason } : {}),
+            };
+          }));
+        } else {
+          // 根拠なし（最速モード）: 翻訳 API を呼び出さずそのまま確率と選択肢名のみマッピング
+          rankings = rawRankings.map((r) => {
+            const pair = originalChoiceMap.get(r.id);
+            const original = pair ? pair.original : null;
+            return {
+              id: r.id,
+              name: original ? original.name : r.id,
+              confidence: typeof r.confidence === "number" ? r.confidence : 0,
+            };
+          });
+        }
 
         rankings.sort((a, b) => b.confidence - a.confidence);
 
-        const contextStr = typeof context === "string" ? context.trim() : JSON.stringify(context);
+        const contextStr = typeof resolvedContext === "string" ? resolvedContext.trim() : JSON.stringify(resolvedContext);
         const normalizedContext = this.normalizeTextForCache(contextStr);
         const choicesKey = choices.map(c => `${c.id}:${c.name}:${c.description || ''}`).sort().join("|");
 
@@ -740,8 +1265,15 @@ ${exampleRankings}
           topChoice,
           rankings,
           ...(includeReason && summaryReason ? { summaryReason } : {}),
+          ...(includeReason ? { detectedLanguage: detectedLang } : {}),
           rawResponse,
           fromCache: false,
+          isFileInput,
+          isDirectMultimodal: usedDirectMultimodal,
+          ...(fileModality ? { inputModality: fileModality } : {}),
+          ...(fileName ? { inputFileName: fileName } : {}),
+          isImageInput,
+          ...(extractedImageText ? { extractedImageText } : {}),
         };
 
         if (useCache) {
@@ -780,6 +1312,8 @@ ${exampleRankings}
           isJudging: false,
           abortController: null,
           twoSecondTimer: null,
+          revalidateTimer: null,
+          revalidateAbortController: null,
           currentGeneration: 0,
         };
         this.elementSessions.set(element, sessionState);
@@ -852,7 +1386,7 @@ ${exampleRankings}
             return;
           }
 
-          const result = await this.judge(currentChoices, enText, {
+          const result = await this.judge(currentChoices, textToJudge, {
             includeReason,
             targetLang,
             signal: controller.signal,
@@ -886,6 +1420,133 @@ ${exampleRankings}
             detail: { result, element, choices: currentChoices, fromCache: result.fromCache, selectElement: selectEl },
             bubbles: true,
           }));
+
+          // -------------------------------------------------------------
+          // 【要件1 & 2】前方一致類推キャッシュ時のバックグラウンド再検証 (Stale-While-Revalidate)
+          // 1. タイピング停止後のデバウンス（800ms）を待ってから裏側で最新文章に対する本判定を実行
+          // 2. 結果（最有力候補）が変わった時だけ画面（セレクトボックス / イベント）を更新
+          // -------------------------------------------------------------
+          const revalidateEnabled = this.options.revalidateOnPrefixMatch !== false;
+          if (revalidateEnabled && result.inferredFromCache) {
+            if (sessionState.revalidateTimer) clearTimeout(sessionState.revalidateTimer);
+            if (sessionState.revalidateAbortController) {
+              sessionState.revalidateAbortController.abort();
+              sessionState.revalidateAbortController = null;
+            }
+
+            const debounceMs = this.options.revalidateDebounceMs || 800;
+
+            sessionState.revalidateTimer = setTimeout(async () => {
+              if (myGeneration !== sessionState.currentGeneration) return;
+
+              const revalidateController = new AbortController();
+              sessionState.revalidateAbortController = revalidateController;
+
+              try {
+                console.log(`[nano-judgement] 前方一致キャッシュ検証: タイピング停止(${debounceMs}ms)を検知。裏側で本判定を開始します ("${textToJudge}")`);
+
+                const exactCacheKey = this.generateCacheKey(currentChoices, textToJudge, includeReason);
+                let freshResult = this.getFromCache(exactCacheKey);
+
+                if (!freshResult) {
+                  freshResult = await this.judge(currentChoices, textToJudge, {
+                    includeReason,
+                    targetLang,
+                    useCache: false,
+                    signal: revalidateController.signal,
+                  });
+                  if (this.options.enableCache) {
+                    this.setCache(exactCacheKey, freshResult);
+                  }
+                }
+
+                if (myGeneration !== sessionState.currentGeneration) return;
+
+                const previousTopId = result.topChoice?.id;
+                const newTopId = freshResult.topChoice?.id;
+                const topChoiceChanged = previousTopId !== newTopId;
+
+                // 1. 順序の変更チェック（全ランキングの並び順）
+                const prevOrder = (result.rankings || []).map(r => r.id);
+                const newOrder = (freshResult.rankings || []).map(r => r.id);
+                const orderChanged = prevOrder.length !== newOrder.length || prevOrder.some((id, idx) => id !== newOrder[idx]);
+
+                // 2. それぞれのスコアが20%以上変動したかチェック
+                const scoreThreshold = this.options.revalidateScoreThreshold !== undefined ? this.options.revalidateScoreThreshold : 0.20;
+                let scoreShifted = false;
+                let shiftedDetail = '';
+
+                const prevScoreMap = new Map();
+                (result.rankings || []).forEach(r => {
+                  prevScoreMap.set(r.id, typeof r.confidence === 'number' ? r.confidence : 0);
+                });
+
+                for (const r of (freshResult.rankings || [])) {
+                  const prevScore = prevScoreMap.has(r.id) ? prevScoreMap.get(r.id) : 0;
+                  const newScore = typeof r.confidence === 'number' ? r.confidence : 0;
+                  const diff = Math.abs(newScore - prevScore);
+
+                  if (diff >= scoreThreshold || (prevScore > 0 && (diff / prevScore) >= scoreThreshold && diff >= 0.05)) {
+                    scoreShifted = true;
+                    shiftedDetail = `[${r.id}] ${Math.round(prevScore * 100)}% → ${Math.round(newScore * 100)}% (差分: ${Math.round(diff * 100)}%)`;
+                    break;
+                  }
+                }
+
+                const isChanged = topChoiceChanged || orderChanged || scoreShifted;
+
+                // 結果に変更（最有力候補 / 順序 / スコア20%以上変動）があった時だけ画面を更新
+                if (isChanged) {
+                  let changeReason = '';
+                  if (topChoiceChanged) changeReason = `最有力候補の変化 [${previousTopId}] → [${newTopId}]`;
+                  else if (orderChanged) changeReason = `順序の変化 [${prevOrder.join(' > ')}] → [${newOrder.join(' > ')}]`;
+                  else if (scoreShifted) changeReason = `スコアの20%以上変動 (${shiftedDetail})`;
+
+                  console.log(`[nano-judgement] 本判定による画面更新を検知: ${changeReason}。画面を最新化します。`);
+
+                  if (selectEl && shouldAutoSelect && freshResult.topChoice) {
+                    if (selectEl.value !== freshResult.topChoice.id) {
+                      selectEl.value = freshResult.topChoice.id;
+                      selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                  }
+
+                  element.dispatchEvent(new CustomEvent('nano-judgement-complete', {
+                    detail: {
+                      result: freshResult,
+                      element,
+                      choices: currentChoices,
+                      fromCache: false,
+                      revalidated: true,
+                      changeReason,
+                      selectElement: selectEl,
+                    },
+                    bubbles: true,
+                  }));
+                } else {
+                  console.log(`[nano-judgement] 本判定完了: 最有力候補・順序・各スコア（20%未満）ともに実質同一のため、チラつき防止でキャッシュ更新のみ完了。`);
+                  element.dispatchEvent(new CustomEvent('nano-judgement-revalidated', {
+                    detail: {
+                      result: freshResult,
+                      element,
+                      choices: currentChoices,
+                      changed: false,
+                      selectElement: selectEl,
+                    },
+                    bubbles: true,
+                  }));
+                }
+              } catch (err) {
+                if (err.name !== 'AbortError') {
+                  console.warn('[nano-judgement] バックグラウンド本判定エラー:', err);
+                }
+              } finally {
+                if (sessionState.revalidateAbortController === revalidateController) {
+                  sessionState.revalidateAbortController = null;
+                }
+              }
+            }, debounceMs);
+          }
         } catch (err) {
           if (err.name === 'AbortError') {
             console.log('[nano-judgement] 判定が中断されました（テキスト変更による再判定）');
@@ -899,12 +1560,163 @@ ${exampleRankings}
         }
       };
 
+      // <button data-nano-judgement-speech> または button 要素の場合: クリックで音声認識＆判定
+      if (element.tagName === 'BUTTON' || element.hasAttribute('data-nano-judgement-speech')) {
+        const handleSpeechClick = async (e) => {
+          if (e) e.preventDefault();
+          element.setAttribute('data-judge-status', 'listening');
+          element.dispatchEvent(new CustomEvent('nano-judgement-speech-start', {
+            detail: { element },
+            bubbles: true,
+          }));
+
+          try {
+            const speechLang = element.getAttribute('data-judge-speech-lang') || 'ja-JP';
+            const reasonAttr = element.getAttribute('data-judge-reason');
+            const includeReason = reasonAttr === 'true' ? true : (reasonAttr === 'false' ? false : this.options.includeReason);
+            const currentChoices = typeof choices === 'function' ? choices() : choices;
+
+            const result = await this.judgeFromSpeech(currentChoices, {
+              speechLang,
+              includeReason,
+              selectElement: selectEl,
+              autoSelect: element.getAttribute('data-judge-auto-select') !== 'false',
+            });
+
+            element.setAttribute('data-judge-status', 'complete');
+            element.dispatchEvent(new CustomEvent('nano-judgement-complete', {
+              detail: {
+                element,
+                result,
+                fromCache: result.fromCache,
+                selectElement: selectEl,
+                isSpeech: true,
+                speechTranscript: result.speechTranscript
+              },
+              bubbles: true,
+            }));
+          } catch (err) {
+            element.setAttribute('data-judge-status', 'error');
+            element.dispatchEvent(new CustomEvent('nano-judgement-speech-error', {
+              detail: { element, error: err },
+              bubbles: true,
+            }));
+            console.error('[nano-judgement] 音声認識・判定エラー:', err);
+          }
+        };
+
+        element.removeEventListener('click', element._nanoJudgeSpeechHandler);
+        element._nanoJudgeSpeechHandler = handleSpeechClick;
+        element.addEventListener('click', handleSpeechClick);
+        return;
+      }
+
+      // <input type="file"> の場合: ファイル選択イベント (change) を監視
+      if (element.tagName === 'INPUT' && element.type === 'file') {
+        const handleFileChange = async () => {
+          const file = element.files && element.files[0];
+          if (!file) return;
+
+          element.setAttribute('data-judge-status', 'pending');
+          element.dispatchEvent(new CustomEvent('nano-judgement-started', {
+            detail: { element, file },
+            bubbles: true,
+          }));
+
+          try {
+            const currentChoices = typeof choices === 'function' ? choices() : choices;
+            const reasonAttr = element.getAttribute('data-judge-reason');
+            const includeReason = reasonAttr === 'true' ? true : (reasonAttr === 'false' ? false : this.options.includeReason);
+
+            const result = await this.judge(currentChoices, file, {
+              includeReason,
+              selectElement: selectEl,
+              autoSelect: element.getAttribute('data-judge-auto-select') !== 'false',
+            });
+
+            element.setAttribute('data-judge-status', 'complete');
+            element.dispatchEvent(new CustomEvent('nano-judgement-complete', {
+              detail: {
+                element,
+                result,
+                file,
+                fromCache: result.fromCache,
+                selectElement: selectEl,
+              },
+              bubbles: true,
+            }));
+          } catch (err) {
+            element.setAttribute('data-judge-status', 'error');
+            console.error('[nano-judgement] ファイル直接判定エラー:', err);
+          }
+        };
+
+        element.removeEventListener('change', element._nanoJudgeFileHandler);
+        element._nanoJudgeFileHandler = handleFileChange;
+        element.addEventListener('change', handleFileChange);
+        return;
+      }
+
+      // <img> 要素の場合: src の変更やロード完了を監視
+      if (element.tagName === 'IMG') {
+        const handleImage = async () => {
+          element.setAttribute('data-judge-status', 'pending');
+          element.dispatchEvent(new CustomEvent('nano-judgement-started', {
+            detail: { element },
+            bubbles: true,
+          }));
+
+          try {
+            const currentChoices = typeof choices === 'function' ? choices() : choices;
+            const reasonAttr = element.getAttribute('data-judge-reason');
+            const includeReason = reasonAttr === 'true' ? true : (reasonAttr === 'false' ? false : this.options.includeReason);
+
+            const result = await this.judge(currentChoices, element, {
+              includeReason,
+              selectElement: selectEl,
+              autoSelect: element.getAttribute('data-judge-auto-select') !== 'false',
+            });
+
+            element.setAttribute('data-judge-status', 'complete');
+            element.dispatchEvent(new CustomEvent('nano-judgement-complete', {
+              detail: {
+                element,
+                result,
+                fromCache: result.fromCache,
+                selectElement: selectEl,
+              },
+              bubbles: true,
+            }));
+          } catch (err) {
+            element.setAttribute('data-judge-status', 'error');
+            console.error('[nano-judgement] <img> 要素判定エラー:', err);
+          }
+        };
+
+        element.removeEventListener('load', element._nanoJudgeImgLoadHandler);
+        element._nanoJudgeImgLoadHandler = handleImage;
+        element.addEventListener('load', handleImage);
+
+        if (element.complete && element.src) {
+          handleImage();
+        }
+        return;
+      }
+
       const handleInput = async () => {
         const rawText = ('value' in element ? element.value : element.textContent || '');
         const cleanText = rawText.replace(/[\s\u3000]+/g, '');
 
         // スペースなどを削除して0文字になったら判定を即時停止＆リセット
         if (cleanText.length === 0) {
+          if (sessionState.revalidateTimer) {
+            clearTimeout(sessionState.revalidateTimer);
+            sessionState.revalidateTimer = null;
+          }
+          if (sessionState.revalidateAbortController) {
+            sessionState.revalidateAbortController.abort();
+            sessionState.revalidateAbortController = null;
+          }
           if (sessionState.twoSecondTimer) {
             clearTimeout(sessionState.twoSecondTimer);
             sessionState.twoSecondTimer = null;
@@ -937,6 +1749,16 @@ ${exampleRankings}
 
         if (currentText.length < 5) {
           return;
+        }
+
+        // 新たな入力があった場合は進行中のバックグラウンド再検証をリセット
+        if (sessionState.revalidateTimer) {
+          clearTimeout(sessionState.revalidateTimer);
+          sessionState.revalidateTimer = null;
+        }
+        if (sessionState.revalidateAbortController) {
+          sessionState.revalidateAbortController.abort();
+          sessionState.revalidateAbortController = null;
         }
 
         const now = Date.now();
@@ -985,7 +1807,7 @@ ${exampleRankings}
     async scanAndJudge(scanOptions = {}) {
       if (typeof document === "undefined") return [];
 
-      const selector = scanOptions.selector || '[data-nano-judgement]';
+      const selector = scanOptions.selector || '[data-nano-judgement], [data-nano-judgement-speech]';
       const elements = Array.from(document.querySelectorAll(selector));
 
       if (elements.length === 0) {

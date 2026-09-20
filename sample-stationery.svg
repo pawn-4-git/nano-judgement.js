@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <defs>
+    <linearGradient id="bgSuppliesGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14532d"/>
+      <stop offset="100%" stop-color="#052e16"/>
+    </linearGradient>
+    <filter id="suppliesShadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#22c55e" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- Background Card -->
+  <rect x="20" y="20" width="560" height="360" rx="16" fill="url(#bgSuppliesGrad)" stroke="#22c55e" stroke-width="2" filter="url(#suppliesShadow)"/>
+
+  <!-- Supplies Icon -->
+  <circle cx="510" cy="85" r="40" fill="#22c55e" fill-opacity="0.1"/>
+  <text x="510" y="98" fill="#22c55e" font-family="'Inter', sans-serif" font-size="36" text-anchor="middle">📦</text>
+
+  <!-- Header -->
+  <text x="50" y="70" fill="#22c55e" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="700" letter-spacing="2">TAX INVOICE / 領収明細書</text>
+  <text x="50" y="105" fill="#f8fafc" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="24" font-weight="800">ヨドバシ・オフィスサプライ (Stationery &amp; PC)</text>
+  <line x1="50" y1="125" x2="550" y2="125" stroke="#166534" stroke-width="1.5"/>
+
+  <!-- Details -->
+  <text x="50" y="160" fill="#86efac" font-family="'Inter', sans-serif" font-size="13">発行日: 2026年09月18日 / 領収証番号: #ST-88901</text>
+  <text x="50" y="185" fill="#86efac" font-family="'Inter', sans-serif" font-size="13">購入明細: ロジクール製エルゴノミクスマウス, USB-C高速ハブ, A4コピー用紙 5束</text>
+  <text x="50" y="210" fill="#86efac" font-family="'Inter', sans-serif" font-size="13">用途: 開発環境整備に伴うPC周辺アクセサリ及び日常事務用品の補充</text>
+
+  <!-- Items Box -->
+  <rect x="50" y="230" width="500" height="60" rx="8" fill="#052e16" stroke="#15803d" stroke-width="1"/>
+  <text x="70" y="255" fill="#f0fdf4" font-family="'Inter', sans-serif" font-size="14" font-weight="600">但し: 業務開発用PC周辺機器および事務用品消耗品費として</text>
+  <text x="70" y="275" fill="#86efac" font-family="'Inter', sans-serif" font-size="12">区分: 消耗品費 / 経費精算申請書 添付用</text>
+
+  <!-- Total Amount -->
+  <text x="50" y="335" fill="#86efac" font-family="'Inter', sans-serif" font-size="14">合計金額 (税込):</text>
+  <text x="180" y="340" fill="#4ade80" font-family="'Inter', sans-serif" font-size="30" font-weight="900">¥14,850-</text>
+
+  <!-- Stamp -->
+  <rect x="460" y="295" width="80" height="55" rx="6" fill="#15803d" fill-opacity="0.2" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="500" y="328" fill="#4ade80" font-family="'Inter', sans-serif" font-size="13" font-weight="700" text-anchor="middle">済</text>
+</svg>

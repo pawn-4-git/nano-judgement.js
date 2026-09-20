@@ -784,16 +784,89 @@
             <option value="P2" data-description="主要機能が一部制限され、広範囲のユーザーに影響がある障害">P2 - 高（当日中対応）</option>
             <option value="P3" data-description="軽微な表示崩れや回避策が存在する通常レベルの不具合">P3 - 中（通常対応）</option>
             <option value="P4" data-description="機能追加の要望や操作方法に関する質問">P4 - 低（次回リリース検討）</option>
+            <option value="OTHER" data-description="上記のいずれの優先度基準にも該当しない、または一般的な問い合わせ・その他">その他（未分類・その他）</option>
           </select>
         </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem; flex-wrap:wrap; gap:0.4rem;">
+          <span style="font-size:0.8rem; color:var(--text-muted);">テキスト入力、またはマイクから発話して判定:</span>
+          <button type="button" id="btnSpeechSupport" class="btn btn-secondary" style="font-size:0.75rem; padding:0.25rem 0.65rem; display:inline-flex; align-items:center; gap:0.35rem;" data-nano-judgement-speech data-judge-select="#supportPriority" data-judge-target="#auto-result-3" title="マイクをクリックして話すと、発話内容から自動判定されます">
+            <span id="speechBtnIcon">🎙️</span> <span id="speechBtnLabel">音声で話して判定 (Web Speech API)</span>
+          </button>
+        </div>
         <textarea 
+          id="supportContextTextarea"
           data-nano-judgement 
           data-judge-select="#supportPriority"
           data-judge-target="#auto-result-3"
           rows="2"
-          placeholder="問い合わせ内容を入力してください..."
+          placeholder="問い合わせ内容を入力、または上のマイクボタンで話してください..."
         >本番データベースへの接続が突如遮断され、決済処理が全てエラーになっています。顧客からの問い合わせが殺到しています。</textarea>
         <div id="auto-result-3" class="result-target-area">
+          <div style="font-size:0.85rem; color:var(--text-muted); font-style:italic;">判定中、または結果がここに表示されます...</div>
+        </div>
+      </div>
+
+      <!-- 枠4 (ファイルそのもの・画像データからの自動判定 ＆ セレクトボックス連動) -->
+      <div class="auto-slot" id="case4-image-slot">
+        <div class="auto-slot-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem;">
+          <span class="auto-slot-title">案件 4: ファイルそのもの（画像・テキスト）直接判定 <span class="badge" style="background:rgba(168,85,247,0.15); color:#c084fc; font-size:0.7rem;">🤖 Gemini Nano マルチモーダル直接入力</span></span>
+          <div style="display:flex; align-items:center; gap:0.6rem;">
+            <span style="font-size:0.75rem; color:var(--text-muted);">属性: <code>data-judge-select="#expenseCategory"</code></span>
+            <button type="button" class="btn-clear-cache" style="background:rgba(239,68,68,0.12); color:#f87171; border:1px solid rgba(239,68,68,0.3); font-size:0.72rem; padding:0.22rem 0.55rem; border-radius:6px; cursor:pointer; font-weight:600; transition:all 0.2s;" title="全体のキャッシュを削除">🗑️ キャッシュ削除</button>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.8rem; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap;">
+          <label for="expenseCategory" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0;">連動セレクトボックス (仕訳・対応区分):</label>
+          <select id="expenseCategory" style="padding: 0.45rem 0.8rem; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border); color: var(--text-main); border-radius: 8px; font-family: inherit; font-size: 0.9rem; flex: 1; min-width: 260px;">
+            <option value="" disabled>区分を選択してください</option>
+            <option value="INFRA" data-description="クラウドサーバー、ホスティング、データベース等のインフラ月額費用">インフラ・サーバー開発費</option>
+            <option value="INCIDENT" data-description="システム障害、データベース不具合、緊急パッチ対応等の重大トラブル">緊急障害対応・システム保守</option>
+            <option value="MEETING" data-description="取引先・外部パートナーとの商談、打合せ、喫茶・飲食代">会議費・交際費 (打合せ喫茶代)</option>
+            <option value="SUPPLIES" data-description="PC周辺機器、文具、書籍等のオフィス消耗品購入費">消耗品費・事務用品</option>
+            <option value="OTHER" data-description="上記のいずれのカテゴリーにも当てはまらないその他の経費・支出・内容">その他（その他の経費・未分類）</option>
+          </select>
+        </div>
+
+        <!-- サンプル画像プリセット ＆ ユーザー画像変更ボタン -->
+        <div style="display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap; margin-bottom:0.8rem;">
+          <span style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">サンプル画像プリセット:</span>
+          <button type="button" class="btn-preset btn-image-preset active" data-src="sample-receipt.png" data-name="クラウドサーバー領収書 (PNG)">🧾 クラウド領収書 <span style="font-size:0.65rem; opacity:0.8;">[PNG]</span></button>
+          <button type="button" class="btn-preset btn-image-preset" data-src="sample-stationery.png" data-name="事務用品・PC周辺消耗品レシート (PNG)">📦 事務用品レシート <span style="font-size:0.65rem; opacity:0.8;">[PNG]</span></button>
+          <button type="button" class="btn-preset btn-image-preset" data-src="sample-incident.jpg" data-name="システム障害アラートスクショ (JPEG)">🚨 障害アラート <span style="font-size:0.65rem; opacity:0.8;">[JPEG]</span></button>
+          <button type="button" class="btn-preset btn-image-preset" data-src="sample-cafe.jpg" data-name="カフェ打合せ会計レシート (JPEG)">☕ カフェ打合せ <span style="font-size:0.65rem; opacity:0.8;">[JPEG]</span></button>
+          <button type="button" class="btn-preset btn-image-preset" data-src="sample-receipt.svg" data-name="クラウドサーバー領収書 (SVG)">📄 サーバー領収書 <span style="font-size:0.65rem; opacity:0.8;">[SVG]</span></button>
+          
+          <label class="btn btn-secondary" style="font-size:0.75rem; padding:0.35rem 0.75rem; cursor:pointer; margin-bottom:0; display:inline-flex; align-items:center; gap:0.3rem;">
+            📁 自分のファイルを選択 / 直接判定 (画像 PNG/JPG/SVG、または .txt/.json/.csv)
+            <input type="file" id="imageUploadInput" accept="image/*,text/*,.json,.csv,.txt,.md" style="display:none;">
+          </label>
+        </div>
+
+        <!-- 根拠（理由）取得オプション: デフォルトOFF（値のみ返却） -->
+        <div style="display:flex; align-items:center; margin-bottom:0.8rem; background:rgba(0,0,0,0.2); padding:0.4rem 0.8rem; border-radius:6px; border:1px solid var(--card-border);">
+          <label style="display:inline-flex; align-items:center; gap:0.5rem; font-size:0.82rem; color:var(--text-main); cursor:pointer; margin-bottom:0;">
+            <input type="checkbox" id="includeReasonImageCheckbox" style="accent-color:var(--primary); cursor:pointer;">
+            <span>💬 根拠（判断理由）も合わせて取得・表示する <span style="font-size:0.72rem; color:var(--text-muted);">（デフォルト: OFF / 根拠なし・値のみ高速返却）</span></span>
+          </label>
+        </div>
+
+        <!-- 画像プレビュー ＆ 抽出テキスト表示 -->
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:1rem; margin-bottom:0.8rem;">
+          <div style="border:1px dashed var(--card-border); border-radius:8px; padding:0.8rem; background:rgba(0,0,0,0.25); text-align:center;">
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.4rem; font-weight:600;">画像プレビュー（クリックまたはファイル選択で変更可能）</div>
+            <img id="samplePreviewImg" src="sample-receipt.png" alt="判定対象サンプル画像" style="max-width:100%; height:auto; max-height:190px; border-radius:6px; box-shadow:0 4px 12px rgba(0,0,0,0.3); object-fit:contain; cursor:pointer;" title="クリックしてファイル選択">
+          </div>
+          <div style="border:1px solid var(--card-border); border-radius:8px; padding:0.8rem; background:rgba(0,0,0,0.25); display:flex; flex-direction:column;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+              <span style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">画像から抽出されたテキスト (Context):</span>
+              <span id="ocrStatusBadge" class="badge" style="background:rgba(56,189,248,0.15); color:var(--primary); font-size:0.68rem;">テキスト抽出済み</span>
+            </div>
+            <div id="imageExtractedTextDisplay" style="font-size:0.8rem; color:#cbd5e1; line-height:1.45; overflow-y:auto; max-height:150px; background:rgba(0,0,0,0.3); padding:0.6rem; border-radius:6px; flex:1; white-space:pre-wrap;">抽出テキストをロード中...</div>
+          </div>
+        </div>
+
+        <div id="auto-result-4" class="result-target-area">
           <div style="font-size:0.85rem; color:var(--text-muted); font-style:italic;">判定中、または結果がここに表示されます...</div>
         </div>
       </div>
@@ -829,7 +902,7 @@
       <div class="actions-row">
         <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.9rem; margin-bottom:0; color:var(--text-main);">
           <input type="checkbox" id="includeReasonCheckbox" style="width:16px; height:16px; accent-color:var(--primary);">
-          <span>判定理由を出力する（Translator API で日本語化）</span>
+          <span>判定理由を出力する（Language Detector API で入力言語を判定 ＆ Translator API で自動翻訳）</span>
         </label>
         <div style="display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap;">
           <span id="preJudgeBadge" class="badge" style="display: none; font-size: 0.75rem; background: rgba(56,189,248,0.12); color: var(--primary); border: 1px solid rgba(56,189,248,0.3); padding: 0.35rem 0.6rem; border-radius: 6px;"></span>
@@ -870,6 +943,7 @@
         <button class="guide-tab-btn active" data-tab="tab-html" role="tab">🎯 HTML属性で実装 (推奨)</button>
         <button class="guide-tab-btn" data-tab="tab-output-dom" role="tab">🎨 出力データと画面反映の仕組み</button>
         <button class="guide-tab-btn" data-tab="tab-js" role="tab">💻 JavaScript APIで実装</button>
+        <button class="guide-tab-btn" data-tab="tab-image-ocr" role="tab">📷 画像 ＆ 🎙️ 音声入力の実装</button>
         <button class="guide-tab-btn" data-tab="tab-events" role="tab">🔔 イベント連携</button>
         <button class="guide-tab-btn" data-tab="tab-cache-reset" role="tab">⚡ キャッシュ＆即時停止仕様</button>
       </div>
@@ -1017,6 +1091,7 @@
   <span class="code-tag">&lt;select</span> <span class="code-attr">id</span>=<span class="code-string">"mySelect"</span><span class="code-tag">&gt;</span>
     <span class="code-tag">&lt;option</span> <span class="code-attr">value</span>=<span class="code-string">"A"</span> <span class="code-attr">data-description</span>=<span class="code-string">"高品質だが納期1ヶ月以上"</span><span class="code-tag">&gt;</span><span class="code-val">フルスクラッチ開発</span><span class="code-tag">&lt;/option&gt;</span>
     <span class="code-tag">&lt;option</span> <span class="code-attr">value</span>=<span class="code-string">"B"</span> <span class="code-attr">data-description</span>=<span class="code-string">"即日利用可能でコスト最小"</span><span class="code-tag">&gt;</span><span class="code-val">ノーコード/SaaS利用</span><span class="code-tag">&lt;/option&gt;</span>
+    <span class="code-tag">&lt;option</span> <span class="code-attr">value</span>=<span class="code-string">"OTHER"</span> <span class="code-attr">data-description</span>=<span class="code-string">"上記いずれにも該当しないその他"</span><span class="code-tag">&gt;</span><span class="code-val">その他</span><span class="code-tag">&lt;/option&gt;</span>
   <span class="code-tag">&lt;/select&gt;</span>
 
   <span class="code-tag">&lt;br&gt;&lt;br&gt;</span>
@@ -1073,7 +1148,7 @@
   enableCache: <span class="code-keyword">true</span>,          <span class="code-comment">// キャッシュを有効化 (デフォルト: true)</span>
   cacheStorage: <span class="code-string">'session'</span>,    <span class="code-comment">// 'session' (sessionStorage) または 'local' (localStorage)</span>
   maxCacheGenerations: 1000,  <span class="code-comment">// 最大1000世代のLRU保存 (古い順に自動破棄)</span>
-  includeReason: <span class="code-keyword">false</span>,       <span class="code-comment">// true にすると理由も出力 (Translator APIで翻訳)</span>
+  includeReason: <span class="code-keyword">false</span>,       <span class="code-comment">// true にすると理由も出力 (Language Detector API で判定 & Translator API で翻訳)</span>
   autoScan: <span class="code-keyword">false</span>,            <span class="code-comment">// JS側で手動制御する場合は false に設定可能</span>
 });</code></pre>
         </div>
@@ -1097,8 +1172,7 @@
 
 <span class="code-comment">// 判定実行 (Promise)</span>
 <span class="code-keyword">const</span> result = <span class="code-keyword">await</span> judgement.judge(choices, context, {
-  includeReason: <span class="code-keyword">true</span>,        <span class="code-comment">// 理由を出力</span>
-  targetLang: <span class="code-string">'ja'</span>            <span class="code-comment">// 理由の翻訳先言語</span>
+  includeReason: <span class="code-keyword">true</span>,        <span class="code-comment">// 理由を出力（Language Detector API で入力言語を判定し Translator API で自動翻訳）</span>
 });
 
 console.log(<span class="code-string">"最有力候補:"</span>, result.topChoice.name);  <span class="code-comment">// "SaaS/ノーコード"</span>
@@ -1146,6 +1220,166 @@ submitBtn.addEventListener(<span class="code-string">'click'</span>, <span class
   <span class="code-comment">// 先行判定中なら、二重実行せずその完了を待って即座に返却！</span>
   <span class="code-keyword">const</span> result = <span class="code-keyword">await</span> judgement.judge(choices, textarea.value);
   showResult(result);
+});</code></pre>
+        </div>
+      </div>
+
+      <!-- タブ: 画像 ＆ 音声入力の実装 -->
+      <div id="tab-image-ocr" class="guide-tab-pane" role="tabpanel">
+        <!-- 1. ファイルそのものを直接渡す実装方法 -->
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-badge">1</span>
+            <span class="step-title">🤖 📷 ファイルそのもの（画像/音声/テキスト）を直接渡して判定する実装方法</span>
+          </div>
+          <p class="step-desc">
+            <code>judgement.judge()</code> の第2引数（Context）には、テキスト文字列だけでなく <code>File</code> や <code>Blob</code>、<code>HTMLImageElement</code> オブジェクトを<strong>そのまま直接渡せます</strong>。<br>
+            Chrome のマルチモーダル Prompt API（<code>expectedInputs: [{ type: "image" }]</code> / <code>chrome://flags/#prompt-api-for-gemini-nano-multimodal-input</code>）が有効な環境では、<strong>画像・音声の Blob / File そのものを Gemini Nano に直接入力</strong>して推論が行われます。テキストファイル（<code>.txt</code>, <code>.json</code>, <code>.csv</code>）の場合は内容が自動ロードされ、マルチモーダル非対応環境では自動でオンデバイス OCR / SVG 解析フォールバックが機能します。
+          </p>
+          <pre class="code-box"><code><span class="code-keyword">import</span> { NanoJudgement } <span class="code-keyword">from</span> <span class="code-string">'./nano-judgement.js'</span>;
+<span class="code-keyword">const</span> judgement = <span class="code-keyword">new</span> NanoJudgement();
+
+<span class="code-comment">// A. 画像ファイル（File オブジェクト）そのものを直接渡す</span>
+<span class="code-keyword">const</span> fileInput = document.querySelector(<span class="code-string">'#myFileInput'</span>);
+<span class="code-keyword">const</span> imageFile = fileInput.files[0]; <span class="code-comment">// 例: 領収書.png, 障害画面.jpg</span>
+
+<span class="code-comment">// Gemini Nano のマルチモーダルセッションにファイルそのものが直接渡されます！</span>
+<span class="code-keyword">const</span> result = <span class="code-keyword">await</span> judgement.judge(choices, imageFile);
+
+console.log(<span class="code-string">"判定結果:"</span>, result.topChoice.name);
+console.log(<span class="code-string">"マルチモーダル直接判定:"</span>, result.isDirectMultimodal); <span class="code-comment">// true（マルチモーダル実行時）</span>
+
+<span class="code-comment">// B. テキストファイル（.txt, .json, .csv）そのものを直接渡す</span>
+<span class="code-keyword">const</span> textFile = logFileInput.files[0]; <span class="code-comment">// 例: server_error.log, invoice.json</span>
+<span class="code-keyword">const</span> logResult = <span class="code-keyword">await</span> judgement.judge(<span class="code-string">'#priority'</span>, textFile);
+
+<span class="code-comment">// C. 画像要素（HTMLImageElement）または Canvas を直接渡す</span>
+<span class="code-keyword">const</span> imgEl = document.querySelector(<span class="code-string">'#previewImg'</span>);
+<span class="code-keyword">const</span> imgResult = <span class="code-keyword">await</span> judgement.judge(<span class="code-string">'#category'</span>, imgEl);</code></pre>
+        </div>
+
+        <!-- 2. 音声入力の実装方法 -->
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-badge">2</span>
+            <span class="step-title">🎙️ 音声入力（マイク音声認識: Web Speech API）の実装方法</span>
+          </div>
+          <p class="step-desc">
+            Chrome に標準搭載された <strong>Web Speech API</strong>（<code>webkitSpeechRecognition</code>）とシームレスに連携。マイクから話した音声をオンデバイスで即座に文字起こしし、そのまま Prompt API の判定パイプラインへ流し込んでセレクトボックス自動選択やAI判定を行えます。
+          </p>
+          <pre class="code-box"><code><span class="code-comment">// マイクボタンのクリックからワンストップで音声認識＆AI判定を実行</span>
+document.querySelector(<span class="code-string">'#micBtn'</span>).addEventListener(<span class="code-string">'click'</span>, <span class="code-keyword">async</span> () => {
+  <span class="code-keyword">try</span> {
+    <span class="code-comment">// judgeFromSpeech: 音声認識からAI判定・セレクトボックス連動まで一括実行</span>
+    <span class="code-keyword">const</span> result = <span class="code-keyword">await</span> judgement.judgeFromSpeech(<span class="code-string">'#supportPriority'</span>, {
+      speechLang: <span class="code-string">'ja-JP'</span>,     <span class="code-comment">// 音声認識言語（デフォルト: 'ja-JP'）</span>
+      speechTimeoutMs: 10000,  <span class="code-comment">// 発話待機タイムアウト（ミリ秒）</span>
+    });
+
+    console.log(<span class="code-string">"話した内容 (テキスト):"</span>, result.speechTranscript);
+    console.log(<span class="code-string">"AI判定結果:"</span>, result.topChoice.name);
+    console.log(<span class="code-string">"確信度スコア:"</span>, result.topChoice.confidence);
+  } <span class="code-keyword">catch</span> (err) {
+    console.error(<span class="code-string">"音声認識または判定エラー:"</span>, err);
+  }
+});
+
+<span class="code-comment">// ※ 音声認識テキストのみを取得したい場合</span>
+<span class="code-keyword">const</span> transcript = <span class="code-keyword">await</span> judgement.recognizeSpeech({ lang: <span class="code-string">'ja-JP'</span> });
+console.log(<span class="code-string">"認識テキスト:"</span>, transcript);</code></pre>
+        </div>
+
+        <!-- 3. HTML宣言的マークアップでの実装方法 -->
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-badge">3</span>
+            <span class="step-title">🪄 HTML宣言的マークアップ（ファイル・画像・マイクボタン連動）</span>
+          </div>
+          <p class="step-desc">
+            JavaScript コードを1行も書かずに、HTML属性を付与するだけでファイル選択・画像要素・音声マイクボタンをセレクトボックスと自動連動させることができます。
+          </p>
+          <pre class="code-box"><code><span class="code-comment">&lt;!-- 1. 画像ファイル選択で即座にAI仕訳＆セレクトボックス自動選択 --&gt;</span>
+&lt;<span class="code-keyword">input</span> <span class="code-string">type</span>=<span class="code-string">"file"</span> <span class="code-string">accept</span>=<span class="code-string">"image/*"</span>
+       <span class="code-string">data-nano-judgement</span>
+       <span class="code-string">data-judge-select</span>=<span class="code-string">"#expenseCategory"</span>
+       <span class="code-string">data-judge-target</span>=<span class="code-string">"#result-card"</span>&gt;
+
+<span class="code-comment">&lt;!-- 2. 音声マイクボタン: クリックでマイク起動 ＆ 話した内容で即座に自動判定 --&gt;</span>
+&lt;<span class="code-keyword">button</span> <span class="code-string">type</span>=<span class="code-string">"button"</span>
+        <span class="code-string">data-nano-judgement-speech</span>
+        <span class="code-string">data-judge-select</span>=<span class="code-string">"#supportPriority"</span>
+        <span class="code-string">data-judge-target</span>=<span class="code-string">"#auto-result-3"</span>&gt;
+  🎙️ 音声で話して判定
+&lt;/<span class="code-keyword">button</span>&gt;
+
+<span class="code-comment">&lt;!-- 3. 領収書画像（クリックや差し替えで自動判定） --&gt;</span>
+&lt;<span class="code-keyword">img</span> <span class="code-string">src</span>=<span class="code-string">"sample-receipt.png"</span>
+     <span class="code-string">data-nano-judgement</span>
+     <span class="code-string">data-judge-select</span>=<span class="code-string">"#expenseCategory"</span>
+     <span class="code-string">data-judge-target</span>=<span class="code-string">"#result-card"</span>&gt;</code></pre>
+        </div>
+
+        <!-- 4. 根拠（判断理由）の表示制御パラメータ -->
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-badge">4</span>
+            <span class="step-title">🎯 根拠（判断理由）の表示制御パラメータ（デフォルト: 値のみ高速返却）</span>
+          </div>
+          <p class="step-desc">
+            画像や音声からの判定でも、デフォルト（パラメータ省略時）は速度優先のため<strong>根拠は生成・表示せず、値（最有力候補・確信度スコア）のみを高速に返却</strong>します。根拠を確認したい場合のみ、パラメータを明示的に指定します。
+          </p>
+          <pre class="code-box"><code><span class="code-comment">// 【デフォルト】速度優先: 値のみ高速返却（根拠なし・理由翻訳スキップ）</span>
+<span class="code-keyword">const</span> fastResult = <span class="code-keyword">await</span> judgement.judge(choices, fileOrSpeech);
+console.log(fastResult.topChoice.name);  <span class="code-comment">// "インフラ・サーバー開発費"（値のみ）</span>
+console.log(fastResult.summaryReason);   <span class="code-comment">// undefined（生成スキップ）</span>
+
+<span class="code-comment">// 【根拠を求める場合】includeReason: true を渡す（Language Detector API で入力言語を判定 ＆ Translator API で自動翻訳）</span>
+<span class="code-keyword">const</span> detailedResult = <span class="code-keyword">await</span> judgement.judge(choices, fileOrSpeech, {
+  <span class="code-keyword">includeReason</span>: <span class="code-keyword">true</span>,
+});
+console.log(detailedResult.topChoice.name);  <span class="code-comment">// "インフラ・サーバー開発費"</span>
+console.log(detailedResult.summaryReason);   <span class="code-comment">// "領収書にAWSクラウド利用料が記載されているため"（根拠）</span>
+
+<span class="code-comment">// HTML属性で根拠を求める場合は data-judge-reason="true" を付与</span>
+&lt;<span class="code-keyword">button</span> <span class="code-string">data-nano-judgement-speech</span> 
+        <span class="code-string">data-judge-select</span>=<span class="code-string">"#supportPriority"</span>
+        <span class="code-string">data-judge-reason</span>=<span class="code-string">"true"</span>&gt;
+  🎙️ 理由付きで音声判定
+&lt;/<span class="code-keyword">button</span>&gt;</code></pre>
+        </div>
+
+        <!-- 5. ライフサイクルイベント連携 -->
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-badge">5</span>
+            <span class="step-title">🔔 画像・音声ライフサイクルイベントによるUIフィードバック</span>
+          </div>
+          <p class="step-desc">
+            マイク録音中や画像解析中、判定完了時にカスタムイベントが発火するため、アニメーションやトースト表示などのUIフィードバックを簡単に実装できます。
+          </p>
+          <pre class="code-box"><code><span class="code-keyword">const</span> speechBtn = document.querySelector(<span class="code-string">'[data-nano-judgement-speech]'</span>);
+
+<span class="code-comment">// 音声認識が開始された（マイク待機中）</span>
+speechBtn.addEventListener(<span class="code-string">'nano-judgement-speech-start'</span>, () => {
+  speechBtn.classList.add(<span class="code-string">'recording-pulse'</span>);
+  speechBtn.textContent = <span class="code-string">'🎙️ お話しください...'</span>;
+});
+
+<span class="code-comment">// 判定完了時</span>
+speechBtn.addEventListener(<span class="code-string">'nano-judgement-complete'</span>, (e) => {
+  speechBtn.classList.remove(<span class="code-string">'recording-pulse'</span>);
+  speechBtn.textContent = <span class="code-string">'🎙️ 音声で話して判定'</span>;
+  <span class="code-keyword">const</span> { result, isSpeech, speechTranscript } = e.detail;
+  <span class="code-keyword">if</span> (isSpeech) {
+    console.log(<span class="code-string">'発話内容:'</span>, speechTranscript);
+  }
+});
+
+<span class="code-comment">// 音声認識エラー時（マイク不許可やタイムアウト等）</span>
+speechBtn.addEventListener(<span class="code-string">'nano-judgement-speech-error'</span>, (e) => {
+  speechBtn.classList.remove(<span class="code-string">'recording-pulse'</span>);
+  speechBtn.textContent = <span class="code-string">'🎙️ 音声で話して判定'</span>;
+  alert(<span class="code-string">'音声認識エラー: '</span> + e.detail.error.message);
 });</code></pre>
         </div>
       </div>
@@ -1208,6 +1442,12 @@ textarea.addEventListener(<span class="code-string">'nano-judgement-cancelled'</
             </li>
             <li><strong style="color: var(--text-main);">5. 2秒ルール＆25%変化チェック:</strong><br>
               文字入力後2秒以内の編集は別キーで都度安全にキャッシュ。2秒経過後は、元の文章から 25% 以上変更された場合のみ進行中の判定を中断して最新テキストで再実行します。
+            </li>
+            <li><strong style="color: var(--text-main);">6. 前方一致後のバックグラウンド再検証 (Stale-While-Revalidate):</strong><br>
+              前方一致で即座に応答（0ms）した後、タイピング停止（デバウンス800ms）を検知すると裏側で最新文章に対する本判定を自動実行してキャッシュを最新化。最有力候補の変化・ランキング順序の変化・いずれかのスコアが20%以上変動した場合のみ画面を自動更新し、チラつきを防ぎつつ高い判定精度を維持します。
+            </li>
+            <li><strong style="color: var(--text-main);">7. 8文字以上入力時の1〜3文字縮小による前方一致＆一時回答:</strong><br>
+              入力文字列が8文字以上で通常の前方一致に一致するキャッシュがなかった場合、末尾を1文字、2文字、3文字減らして前方一致キャッシュを探索。見つかった場合は一時回答として即時表示（0ms）した上で、ユーザーのタイピング停止を待って裏側で最新の全文に対する本判定を実行・反映します。
             </li>
           </ul>
         </div>
@@ -1484,7 +1724,7 @@ document.addEventListener(<span class="code-string">'nano-judgement-cancelled'</
               <td><code>includeReason</code></td>
               <td><code>boolean</code></td>
               <td><code>false</code></td>
-              <td>デフォルトで判定理由を生成・翻訳するかどうか。</td>
+              <td>判定理由（根拠）を生成・翻訳して返すか。<code>true</code> の場合、入力テキストを <strong>Language Detector API</strong> で言語判定し、<strong>Translator API</strong> で自動翻訳して戻します（省略時・<code>false</code> は最速で値のみ返却）。</td>
             </tr>
           </tbody>
         </table>
@@ -1538,7 +1778,7 @@ document.addEventListener(<span class="code-string">'nano-judgement-cancelled'</
   </div>
 
   <!-- nano-judgement.global.js を読み込み -->
-  <script src="./nano-judgement.global.js"></script>
+  <script src="./nano-judgement.global.js?v=2.2"></script>
 
   <script>
     // エラーハンドラ
@@ -1933,8 +2173,14 @@ document.addEventListener(<span class="code-string">'nano-judgement-cancelled'</
     // 結果カード描画ヘルパー
     function renderResultCard(container, result) {
       let cachedBadge = '<span class="badge" style="font-size:0.75rem; background:rgba(56,189,248,0.2); color:#38bdf8; padding:0.2rem 0.5rem; border-radius:4px;">新規判定</span>';
-      if (result.fromCache) {
-        if (result.inferredFromCache) {
+      if (result.isDirectMultimodal) {
+        cachedBadge = '<span class="badge" style="font-size:0.75rem; background:rgba(168,85,247,0.25); color:#c084fc; padding:0.2rem 0.5rem; border-radius:4px;">🤖 マルチモーダル直接判定</span>';
+      } else if (result.revalidated) {
+        cachedBadge = '<span class="badge" style="font-size:0.75rem; background:rgba(245,158,11,0.2); color:#fbbf24; padding:0.2rem 0.5rem; border-radius:4px;">⚡ 本判定により更新</span>';
+      } else if (result.fromCache) {
+        if (result.shrunkChars) {
+          cachedBadge = `<span class="badge" style="font-size:0.75rem; background:rgba(217,70,239,0.2); color:#e879f9; padding:0.2rem 0.5rem; border-radius:4px;">⚡ 一時回答 (前方一致 -${result.shrunkChars}文字)</span>`;
+        } else if (result.inferredFromCache) {
           cachedBadge = '<span class="badge" style="font-size:0.75rem; background:rgba(192,132,252,0.2); color:#c084fc; padding:0.2rem 0.5rem; border-radius:4px;">⚡ 前方一致類推キャッシュ</span>';
         } else {
           cachedBadge = '<span class="badge badge-ok" style="font-size:0.75rem; background:rgba(74,222,128,0.2); color:#4ade80; padding:0.2rem 0.5rem; border-radius:4px;">⚡ キャッシュから即時復元</span>';
@@ -1965,6 +2211,30 @@ document.addEventListener(<span class="code-string">'nano-judgement-cancelled'</
         ? `<div style="font-size:0.88rem; color:#cbd5e1; margin-bottom:0.8rem; line-height:1.5;">${result.summaryReason}</div>` 
         : '';
 
+      const multimodalInfoHtml = result.isDirectMultimodal
+        ? `<div style="font-size:0.75rem; color:#c084fc; background:rgba(168,85,247,0.1); border:1px solid rgba(168,85,247,0.3); border-radius:6px; padding:0.4rem 0.6rem; margin-bottom:0.6rem;">
+            🤖 <strong>Gemini Nano マルチモーダル直接判定:</strong> ファイルそのもの（${result.inputFileName || 'バイナリデータ'}）を直接 Prompt API に渡して判定しました
+           </div>`
+        : '';
+
+      const fileInfoHtml = (result.isFileInput && !result.isDirectMultimodal && result.inputFileName)
+        ? `<div style="font-size:0.75rem; color:#38bdf8; background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.25); border-radius:6px; padding:0.4rem 0.6rem; margin-bottom:0.6rem;">
+            📁 <strong>ファイル直接入力:</strong> ${result.inputFileName} のテキスト内容を直接読み込んで判定しました
+           </div>`
+        : '';
+
+      const imageInfoHtml = result.isImageInput && result.extractedImageText && !result.isDirectMultimodal
+        ? `<div style="font-size:0.75rem; color:#f472b6; background:rgba(236,72,153,0.08); border:1px solid rgba(236,72,153,0.25); border-radius:6px; padding:0.4rem 0.6rem; margin-bottom:0.6rem;">
+            📷 <strong>画像から抽出されたテキスト (OCR/SVG):</strong> ${result.extractedImageText.length > 80 ? result.extractedImageText.slice(0, 80) + '...' : result.extractedImageText}
+           </div>`
+        : '';
+
+      const speechInfoHtml = (result.isSpeechInput || result.speechTranscript)
+        ? `<div style="font-size:0.75rem; color:#38bdf8; background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.25); border-radius:6px; padding:0.4rem 0.6rem; margin-bottom:0.6rem;">
+            🎙️ <strong>マイク音声認識結果 (Transcript):</strong> 「${result.speechTranscript}」
+           </div>`
+        : '';
+
       container.innerHTML = `
         <div style="border:1px solid rgba(56,189,248,0.3); background:rgba(56,189,248,0.06); border-radius:10px; padding:1.2rem; margin-top:0.6rem;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
@@ -1972,6 +2242,10 @@ document.addEventListener(<span class="code-string">'nano-judgement-cancelled'</
             ${cachedBadge}
           </div>
           <div style="font-size:1.3rem; font-weight:700; margin-bottom:0.4rem; color:#f0f6fc;">${result.topChoice.name}</div>
+          ${multimodalInfoHtml}
+          ${fileInfoHtml}
+          ${imageInfoHtml}
+          ${speechInfoHtml}
           ${summaryHtml}
           <div style="font-weight:600; font-size:0.85rem; margin-top:0.6rem; color:#94a3b8;">全候補の確率 (確信度):</div>
           ${rankingsHtml}
@@ -1988,7 +2262,18 @@ document.addEventListener(<span class="code-string">'nano-judgement-cancelled'</
             <path d="M12 2a10 10 0 0 1 10 10"></path>
           </svg>
           <style>@keyframes nano-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }</style>
-          <span>Gemini Nano が再判定中...</span>
+          <span>Gemini Nano が判定中...</span>
+        </div>
+      `;
+    }
+
+    // 音声認識待機中描画ヘルパー
+    function renderListeningStatus(container) {
+      container.innerHTML = `
+        <div style="font-size:0.85rem; color:#f472b6; display:flex; align-items:center; gap:0.5rem; padding:0.8rem; background:rgba(236,72,153,0.08); border-radius:8px; border:1px solid rgba(236,72,153,0.3); margin-top:0.6rem;">
+          <span style="font-size:1.1rem; animation: pulse 1s infinite alternate;">🎙️</span>
+          <span>マイクに向かって話してください... (発話終了で自動判定)</span>
+          <style>@keyframes pulse { from { opacity: 0.5; transform: scale(0.95); } to { opacity: 1; transform: scale(1.15); } }</style>
         </div>
       `;
     }
@@ -2003,6 +2288,18 @@ document.addEventListener(<span class="code-string">'nano-judgement-cancelled'</
       }
     });
 
+    // 1-b. 音声認識開始イベント (nano-judgement-speech-start)
+    document.addEventListener('nano-judgement-speech-start', (e) => {
+      const el = e.detail?.element || e.target;
+      const targetSelector = el.getAttribute('data-judge-target');
+      if (targetSelector) {
+        const targetEl = document.querySelector(targetSelector);
+        if (targetEl) renderListeningStatus(targetEl);
+      }
+      const label = el.querySelector('#speechBtnLabel');
+      if (label) label.textContent = '🎙️ お話しください...';
+    });
+
     // 2. 判定完了イベント (nano-judgement-complete)
     document.addEventListener('nano-judgement-complete', (e) => {
       const el = e.detail?.element || e.target;
@@ -2010,6 +2307,27 @@ document.addEventListener(<span class="code-string">'nano-judgement-cancelled'</
       if (targetSelector && e.detail?.result) {
         const targetEl = document.querySelector(targetSelector);
         if (targetEl) renderResultCard(targetEl, e.detail.result);
+      }
+      // 音声入力だった場合、テキストエリアにも同期
+      if (e.detail?.speechTranscript) {
+        const supportTextarea = document.querySelector('#supportContextTextarea');
+        if (supportTextarea) supportTextarea.value = e.detail.speechTranscript;
+      }
+      const label = document.querySelector('#speechBtnLabel');
+      if (label) label.textContent = '音声で話して判定 (Web Speech API)';
+    });
+
+    // 2-b. 音声認識エラーイベント
+    document.addEventListener('nano-judgement-speech-error', (e) => {
+      const label = document.querySelector('#speechBtnLabel');
+      if (label) label.textContent = '音声で話して判定 (Web Speech API)';
+      const el = e.detail?.element || e.target;
+      const targetSelector = el.getAttribute('data-judge-target');
+      if (targetSelector) {
+        const targetEl = document.querySelector(targetSelector);
+        if (targetEl) {
+          targetEl.innerHTML = `<div style="font-size:0.85rem; color:#f87171; padding:0.6rem; background:rgba(239,68,68,0.1); border-radius:6px; border:1px solid rgba(239,68,68,0.25);">⚠️ 音声認識エラー: ${e.detail?.error?.message || '認識に失敗しました'}</div>`;
+        }
       }
     });
 
@@ -2024,6 +2342,116 @@ document.addEventListener(<span class="code-string">'nano-judgement-cancelled'</
         }
       }
     });
+
+    // =========================================================================
+    // 【案件4】画像データ（領収書・スクリーンショット）自動判定デモの制御ロジック
+    // =========================================================================
+    const samplePreviewImg = document.querySelector('#samplePreviewImg');
+    const imageUploadInput = document.querySelector('#imageUploadInput');
+    const imageExtractedTextDisplay = document.querySelector('#imageExtractedTextDisplay');
+    const ocrStatusBadge = document.querySelector('#ocrStatusBadge');
+    const case4ResultContainer = document.querySelector('#auto-result-4');
+    const expenseCategorySelect = document.querySelector('#expenseCategory');
+    const imagePresetButtons = document.querySelectorAll('.btn-image-preset');
+
+    async function runImageJudgement(imageSource, displayName) {
+      if (!samplePreviewImg || !case4ResultContainer || !expenseCategorySelect) return;
+
+      renderLoadingSpinner(case4ResultContainer);
+      if (imageExtractedTextDisplay) {
+        imageExtractedTextDisplay.textContent = '画像からテキストを抽出中...';
+      }
+      if (ocrStatusBadge) {
+        ocrStatusBadge.textContent = 'OCR解析中...';
+        ocrStatusBadge.style.color = '#fbbf24';
+      }
+
+      try {
+        // 画像からテキストを抽出
+        const extractedText = await judgement.extractTextFromImage(imageSource);
+        if (imageExtractedTextDisplay) {
+          imageExtractedTextDisplay.textContent = extractedText || '(テキストは検出されませんでした)';
+        }
+        if (ocrStatusBadge) {
+          ocrStatusBadge.textContent = extractedText ? 'テキスト抽出完了' : '抽出完了 (文字なし)';
+          ocrStatusBadge.style.color = '#38bdf8';
+        }
+
+        // 根拠（理由）を求めるパラメータ: デフォルト false (値のみ高速返却)
+        const includeReasonBox = document.querySelector('#includeReasonImageCheckbox');
+        const includeReason = includeReasonBox ? includeReasonBox.checked : false;
+
+        // 抽出テキストをコンテキストとしてセレクトボックス連携判定を実行（デフォルトは値のみ返却）
+        const result = await judgement.judge(expenseCategorySelect, imageSource, {
+          includeReason,
+        });
+
+        // 連動セレクトボックスを自動更新
+        if (result.topChoice && expenseCategorySelect.value !== result.topChoice.id) {
+          expenseCategorySelect.value = result.topChoice.id;
+          expenseCategorySelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        // 結果カードを描画（includeReasonがfalseの場合は根拠なしで値のみ表示）
+        renderResultCard(case4ResultContainer, result);
+      } catch (err) {
+        console.error('画像判定エラー:', err);
+        case4ResultContainer.innerHTML = `
+          <div style="font-size:0.85rem; color:#f87171; padding:0.8rem; background:rgba(239,68,68,0.1); border-radius:8px; border:1px solid rgba(239,68,68,0.3); margin-top:0.6rem;">
+            ⚠️ 画像判定中にエラーが発生しました: ${err.message}
+          </div>
+        `;
+      }
+    }
+
+    let currentImageSource = 'sample-receipt.png';
+
+    // プリセットボタン切り替え
+    imagePresetButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        imagePresetButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const src = btn.getAttribute('data-src');
+        const name = btn.getAttribute('data-name');
+        currentImageSource = src;
+        samplePreviewImg.src = src;
+        runImageJudgement(src, name);
+      });
+    });
+
+    // プレビュー画像クリックでファイル選択を開く
+    if (samplePreviewImg && imageUploadInput) {
+      samplePreviewImg.addEventListener('click', () => {
+        imageUploadInput.click();
+      });
+    }
+
+    // ユーザーローカル画像ファイル選択ハンドラ
+    if (imageUploadInput) {
+      imageUploadInput.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+
+        imagePresetButtons.forEach(b => b.classList.remove('active'));
+        const objectUrl = URL.createObjectURL(file);
+        samplePreviewImg.src = objectUrl;
+        currentImageSource = file;
+        runImageJudgement(file, file.name);
+      });
+    }
+
+    // 根拠（判断理由）トグル切り替え時の再判定ハンドラ
+    const includeReasonImageCheckbox = document.querySelector('#includeReasonImageCheckbox');
+    if (includeReasonImageCheckbox) {
+      includeReasonImageCheckbox.addEventListener('change', () => {
+        runImageJudgement(currentImageSource, '再判定');
+      });
+    }
+
+    // 初期表示時にデフォルト画像（sample-receipt.png）で判定を自動実行 (デフォルト: 根拠なし・値のみ高速返却)
+    setTimeout(() => {
+      runImageJudgement('sample-receipt.png', 'クラウドサーバー領収書 (PNG)');
+    }, 400);
   </script>
 </body>
 </html>
