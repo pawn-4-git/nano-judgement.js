@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nano Judgement - Chrome Prompt API 判定ライブラリ</title>
+  <meta name="description" content="Chrome組み込みのGemini Nano (Prompt API) を使って、複数の選択肢の中から状況に最も適した選択肢を判定する軽量JavaScriptライブラリ。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #090d16;
+      --card-bg: rgba(18, 24, 38, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-border-hover: rgba(88, 166, 255, 0.3);
+      --text-main: #f0f6fc;
+      --text-muted: #94a3b8;
+      --primary: #38bdf8;
+      --primary-hover: #7dd3fc;
+      --accent-purple: #c084fc;
+      --accent-green: #4ade80;
+      --accent-orange: #fbbf24;
+      --danger: #f87171;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem 1.2rem;
+      background-image: 
+        radial-gradient(circle at 10% 10%, rgba(56, 189, 248, 0.1) 0%, transparent 45%),
+        radial-gradient(circle at 90% 90%, rgba(192, 132, 252, 0.1) 0%, transparent 45%);
+      background-attachment: fixed;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 920px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .badge-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--primary);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #38bdf8 0%, #c084fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.6rem;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 650px;
+      margin: 0 auto 1.5rem auto;
+      line-height: 1.6;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 2rem;
+      margin-bottom: 1.8rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      transition: border-color 0.2s;
+    }
+
+    .card:hover {
+      border-color: var(--card-border-hover);
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.7rem;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .badge-ok {
+      background: rgba(74, 222, 128, 0.15);
+      color: var(--accent-green);
+      border: 1px solid rgba(74, 222, 128, 0.3);
+    }
+
+    .badge-warn {
+      background: rgba(251, 191, 36, 0.15);
+      color: var(--accent-orange);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+    }
+
+    .badge-err {
+      background: rgba(248, 113, 113, 0.15);
+      color: var(--danger);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+    }
+
+    .preset-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.2rem;
+      align-items: center;
+    }
+
+    .preset-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-right: 0.4rem;
+    }
+
+    .btn-preset {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-main);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-preset:hover {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: rgba(56, 189, 248, 0.4);
+      color: var(--primary);
+    }
+
+    label {
+      display: block;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    textarea, input[type="text"] {
+      width: 100%;
+      background: rgba(9, 13, 22, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 0.8rem 1rem;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+    }
+
+    textarea:focus, input[type="text"]:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+    }
+
+    .choices-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .choice-item {
+      display: grid;
+      grid-template-columns: 70px 1.5fr 2.5fr auto;
+      gap: 0.6rem;
+      align-items: center;
+      background: rgba(9, 13, 22, 0.6);
+      padding: 0.6rem 0.8rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: border-color 0.2s;
+    }
+
+    .choice-item:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 0.85rem 1.6rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35);
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.45);
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-main);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: none;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: none;
+      transform: none;
+    }
+
+    .btn-icon {
+      padding: 0.5rem 0.7rem;
+      color: var(--text-muted);
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+
+    .btn-icon:hover {
+      color: var(--danger);
+      background: rgba(248, 113, 113, 0.1);
+    }
+
+    .actions-row {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin-top: 1.5rem;
+    }
+
+    .result-container {
+      display: none;
+      margin-top: 1.8rem;
+    }
+
+    .result-top-card {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(192, 132, 252, 0.15) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: 14px;
+      padding: 1.6rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .result-top-badge {
+      font-size: 0.75rem;
+      color: var(--primary);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.4rem;
+    }
+
+    .result-top-name {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+    }
+
+    .result-summary {
+      color: var(--text-muted);
+      font-size: 0.98rem;
+      line-height: 1.6;
+    }
+
+    .ranking-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 1rem;
+      background: rgba(9, 13, 22, 0.6);
+      border-radius: 10px;
+      margin-bottom: 0.75rem;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .ranking-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .bar-bg {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #38bdf8, #c084fc);
+      border-radius: 4px;
+      transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .ranking-reason {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #ffffff;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .code-box {
+      background: #06090e;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 1.2rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
+      overflow-x: auto;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+
+    .code-comment { color: #64748b; }
+    .code-keyword { color: #f472b6; }
+    .code-string { color: #38bdf8; }
+
+    .diagnostics-box {
+      margin-top: 1rem;
+      padding: 0.8rem;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* 複数枠自動判定デモ用スタイル */
+    .multi-box-card {
+      border: 1px solid rgba(192, 132, 252, 0.25);
+      background: rgba(25, 22, 40, 0.7);
+    }
+
+    .auto-slot {
+      background: rgba(9, 13, 22, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .auto-slot-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.6rem;
+    }
+
+    .auto-slot-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--accent-purple);
+    }
+
+    .result-target-area {
+      margin-top: 0.8rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 640px) {
+      .choice-item {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="badge-tag">⚡ On-Device AI Powered by Gemini Nano</div>
+      <h1>nano-judgement.js</h1>
+      <p class="subtitle">
+        Chrome 組み込みの Prompt API (window.ai) を使用し、文脈と選択肢から最も可能性・妥当性が高い選択肢をブラウザ内で安全・高速に判定します。
+      </p>
+    </header>
+
+    <!-- API ステータスカード -->
+    <div class="card" id="apiStatusCard">
+      <div class="card-title">
+        <span>Chrome Prompt API 動作状況</span>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <button id="clearCacheBtn" class="btn-preset" style="font-size: 0.75rem; padding: 0.2rem 0.5rem;">キャッシュ削除</button>
+          <button id="recheckBtn" class="btn-preset" style="font-size: 0.75rem; padding: 0.2rem 0.5rem;">再チェック</button>
+          <span id="apiStatusBadge" class="badge badge-warn">確認中...</span>
+        </div>
+      </div>
+      <p id="apiStatusText" style="font-size: 0.92rem; color: var(--text-muted); line-height: 1.6;">
+        ブラウザの AI API を確認しています...
+      </p>
+      <div id="diagnosticsDetails" class="diagnostics-box" style="display: none;"></div>
+    </div>
+
+    <!-- 複数入力枠の即時判定＆キャッシュデモ -->
+    <div class="card multi-box-card">
+      <div class="card-title">
+        <span>複数入力枠の自動即時判定 ＆ キャッシュ</span>
+        <span class="badge" style="background: rgba(192, 132, 252, 0.15); color: var(--accent-purple); border: 1px solid rgba(192, 132, 252, 0.3);">
+          data-nano-judgement
+        </span>
+      </div>
+      <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.2rem; line-height: 1.6;">
+        <code>data-nano-judgement</code> 属性を持つ入力枠に <strong>5文字以上</strong> 入力されると、<strong>Language Detector API</strong> と <strong>Translator API</strong> で即座に英語へ事前翻訳・キャッシュされ、裏で自動的に判定が開始されます。<br>
+        ・<strong>2秒以内の再更新</strong>: 英語に都度翻訳し、先ほどの文章とは別キーで安全にキャッシュ。<br>
+        ・<strong>2秒経過後の更新</strong>: 最初の文章から <strong>25%以上テキストが変化した場合</strong>、進行中の判定を即座に中断して最新の内容で再判定を開始します。
+      </p>
+
+      <!-- 枠1 (理由なし・確率のみ最速) -->
+      <div class="auto-slot">
+        <div class="auto-slot-header">
+          <span class="auto-slot-title">案件 1: コスト・納期の最適解判定 <span class="badge" style="background:rgba(56,189,248,0.15); color:var(--primary); font-size:0.7rem;">⚡ 確率のみ (最速モード)</span></span>
+          <span style="font-size:0.75rem; color:var(--text-muted);">属性: <code>data-nano-judgement</code> (理由なし)</span>
+        </div>
+        <textarea 
+          data-nano-judgement 
+          data-judge-target="#auto-result-1"
+          rows="2"
+        >スタートアップ企業で予算はほぼゼロだが、来週の投資家向けピッチまでに実働するプロトタイプが必要。</textarea>
+        <div id="auto-result-1" class="result-target-area">
+          <div style="font-size:0.85rem; color:var(--text-muted); font-style:italic;">判定中、または結果がここに表示されます...</div>
+        </div>
+      </div>
+
+      <!-- 枠2 (理由付き・Translator API翻訳) -->
+      <div class="auto-slot">
+        <div class="auto-slot-header">
+          <span class="auto-slot-title">案件 2: セキュリティ・スケーラビリティ判定 <span class="badge" style="background:rgba(192,132,252,0.15); color:var(--accent-purple); font-size:0.7rem;">💬 理由付き (Translator API翻訳)</span></span>
+          <span style="font-size:0.75rem; color:var(--text-muted);">属性: <code>data-judge-reason="true"</code></span>
+        </div>
+        <textarea 
+          data-nano-judgement 
+          data-judge-reason="true"
+          data-judge-target="#auto-result-2"
+          data-judge-choices='[
+            {"id":"X","name":"大手クラウドのマネージドDB","description":"高可用性で運用コスト最小だが月額費用が高め"},
+            {"id":"Y","name":"社内自前サーバー構築","description":"初期費用のみで機密保持が高いが保守運用負荷が甚大"},
+            {"id":"Z","name":"無料ホスティングサービス","description":"手軽だが障害時のSLA保証やバックアップ体制がない"}
+          ]'
+          rows="2"
+        >医療系データを扱う基幹システムで、データの消失や情報漏洩は絶対に許されず、24時間365日の連続稼働が必須。</textarea>
+        <div id="auto-result-2" class="result-target-area">
+          <div style="font-size:0.85rem; color:var(--text-muted); font-style:italic;">判定中、または結果がここに表示されます...</div>
+        </div>
+      </div>
+
+      <!-- 枠3 (selectbox連携 ＆ 自動選択) -->
+      <div class="auto-slot">
+        <div class="auto-slot-header">
+          <span class="auto-slot-title">案件 3: セレクトボックス連携 ＆ 自動選択 <span class="badge" style="background:rgba(74,222,128,0.15); color:var(--accent-green); font-size:0.7rem;">🎯 selectbox 自動連動</span></span>
+          <span style="font-size:0.75rem; color:var(--text-muted);">属性: <code>data-judge-select="#supportPriority"</code></span>
+        </div>
+        <div style="display: flex; gap: 0.8rem; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap;">
+          <label for="supportPriority" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0;">連動セレクトボックス:</label>
+          <select id="supportPriority" style="padding: 0.45rem 0.8rem; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border); color: var(--text-main); border-radius: 8px; font-family: inherit; font-size: 0.9rem; flex: 1; min-width: 260px;">
+            <option value="" disabled>優先度を選択してください</option>
+            <option value="P1" data-description="サービス全停止やデータ破壊の恐れがある致命的インシデント">P1 - 緊急（即時対応）</option>
+            <option value="P2" data-description="主要機能が一部制限され、広範囲のユーザーに影響がある障害">P2 - 高（当日中対応）</option>
+            <option value="P3" data-description="軽微な表示崩れや回避策が存在する通常レベルの不具合">P3 - 中（通常対応）</option>
+            <option value="P4" data-description="機能追加の要望や操作方法に関する質問">P4 - 低（次回リリース検討）</option>
+          </select>
+        </div>
+        <textarea 
+          data-nano-judgement 
+          data-judge-select="#supportPriority"
+          data-judge-target="#auto-result-3"
+          rows="2"
+          placeholder="問い合わせ内容を入力してください..."
+        >本番データベースへの接続が突如遮断され、決済処理が全てエラーになっています。顧客からの問い合わせが殺到しています。</textarea>
+        <div id="auto-result-3" class="result-target-area">
+          <div style="font-size:0.85rem; color:var(--text-muted); font-style:italic;">判定中、または結果がここに表示されます...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- インタラクティブ判定フォーム (手動自由入力) -->
+    <div class="card">
+      <div class="card-title">
+        <span>インタラクティブ判定デモ (自由入力・調整)</span>
+      </div>
+
+      <div class="preset-container">
+        <span class="preset-label">サンプルプリセット:</span>
+        <button class="btn-preset" id="preset1Btn">開発手法の選定</button>
+        <button class="btn-preset" id="preset2Btn">休日の過ごし方</button>
+        <button class="btn-preset" id="preset3Btn">障害の一次対応</button>
+      </div>
+
+      <label for="contextInput">1. 判断材料・前提条件 (Context):</label>
+      <textarea id="contextInput" rows="3" placeholder="状況を入力してください..."></textarea>
+
+      <label style="margin-top: 1.5rem;">2. 比較・判定する選択肢 (Choices):</label>
+      <div id="choicesList" class="choices-list"></div>
+
+      <button id="addChoiceBtn" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.4rem 0.9rem;">
+        + 選択肢を追加
+      </button>
+
+      <div class="actions-row">
+        <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.9rem; margin-bottom:0; color:var(--text-main);">
+          <input type="checkbox" id="includeReasonCheckbox" style="width:16px; height:16px; accent-color:var(--primary);">
+          <span>判定理由を出力する（Translator API で日本語化）</span>
+        </label>
+        <button id="judgeBtn" class="btn">
+          <span id="btnText">最も可能性が高い選択肢を判定</span>
+          <span id="btnSpinner" class="loading-spinner" style="display: none;"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 判定結果カード -->
+    <div id="resultContainer" class="result-container card">
+      <div class="card-title">判定結果 (Judgement Result)</div>
+
+      <div class="result-top-card">
+        <div class="result-top-badge">最も可能性・妥当性が高い選択肢</div>
+        <div id="topChoiceName" class="result-top-name">-</div>
+        <p id="summaryReason" class="result-summary">-</p>
+      </div>
+
+      <div style="font-weight: 600; margin-bottom: 0.8rem; font-size: 0.95rem;">全選択肢の確信度と理由</div>
+      <div id="rankingsList"></div>
+    </div>
+
+    <!-- 導入・コード例カード -->
+    <div class="card">
+      <div class="card-title">Webページへの組み込み仕様</div>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">
+        入力枠に <code>data-nano-judgement</code> 属性を付与するだけで、JS読み込み時に初期テキストがあれば自動判定・キャッシュが行われます。
+      </p>
+
+      <div class="code-box">
+<span class="code-comment">&lt;!-- 1. スクリプトの読み込み --&gt;</span>
+<span class="code-keyword">&lt;script src=</span><span class="code-string">"./nano-judgement.global.js"</span><span class="code-keyword">&gt;&lt;/script&gt;</span>
+
+<span class="code-comment">&lt;!-- 2. 入力枠に属性を付与（セレクトボックス連動例） --&gt;</span>
+<span class="code-keyword">&lt;select</span> <span class="code-string">id=</span><span class="code-string">"prioritySelect"</span><span class="code-keyword">&gt;</span>
+  <span class="code-keyword">&lt;option</span> <span class="code-string">value=</span><span class="code-string">"high"</span> <span class="code-string">data-description=</span><span class="code-string">"即時対応必須"</span><span class="code-keyword">&gt;</span>高<span class="code-keyword">&lt;/option&gt;</span>
+  <span class="code-keyword">&lt;option</span> <span class="code-string">value=</span><span class="code-string">"low"</span> <span class="code-string">data-description=</span><span class="code-string">"後回し可能"</span><span class="code-keyword">&gt;</span>低<span class="code-keyword">&lt;/option&gt;</span>
+<span class="code-keyword">&lt;/select&gt;</span>
+
+<span class="code-keyword">&lt;textarea</span> 
+  <span class="code-string">data-nano-judgement</span> 
+  <span class="code-string">data-judge-select=</span><span class="code-string">"#prioritySelect"</span>
+  <span class="code-string">data-judge-target=</span><span class="code-string">"#result-container"</span>
+<span class="code-keyword">&gt;</span>サーバーがダウンしたため緊急対応を求む<span class="code-keyword">&lt;/textarea&gt;</span>
+
+<span class="code-comment">&lt;!-- 3. 判定結果の出力先（任意） --&gt;</span>
+<span class="code-keyword">&lt;div id=</span><span class="code-string">"result-container"</span><span class="code-keyword">&gt;&lt;/div&gt;</span>
+
+<span class="code-comment">&lt;!-- 入力テキストに応じて、AIがセレクトボックスの選択肢を自動選択（Auto-select）します --&gt;</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- nano-judgement.global.js を読み込み -->
+  <script src="./nano-judgement.global.js"></script>
+
+  <script>
+    // エラーハンドラ
+    window.addEventListener('error', function(e) {
+      const badge = document.getElementById('apiStatusBadge');
+      const text = document.getElementById('apiStatusText');
+      if (badge && text) {
+        badge.className = 'badge badge-err';
+        badge.textContent = '実行エラー';
+        text.innerHTML = `JavaScriptの実行でエラーが発生しました: <code>${e.message}</code>`;
+      }
+    });
+
+    // デフォルト選択肢の定義
+    const defaultChoices = [
+      { id: "A", name: "フルスクラッチ開発", description: "自由度が高く高品質だが、納期が1ヶ月以上かかる" },
+      { id: "B", name: "ノーコード/SaaSの利用", description: "即日利用可能で安価だが、細かいカスタマイズに制約がある" },
+      { id: "C", name: "外注専門ベンダーへ特急依頼", description: "高品質かつ短納期だが、費用が予算を大幅にオーバーする" }
+    ];
+
+    // NanoJudgement インスタンスの作成
+    // autoScan: true により、読み込み時に data-nano-judgement 要素の初期テキストを即時自動判定＆キャッシュします
+    const judgement = new window.NanoJudgement({
+      defaultChoices: defaultChoices,
+      enableCache: true,
+      autoScan: true
+    });
+
+    const apiStatusBadge = document.getElementById('apiStatusBadge');
+    const apiStatusText = document.getElementById('apiStatusText');
+    const diagnosticsDetails = document.getElementById('diagnosticsDetails');
+    const recheckBtn = document.getElementById('recheckBtn');
+    const clearCacheBtn = document.getElementById('clearCacheBtn');
+    const choicesList = document.getElementById('choicesList');
+    const addChoiceBtn = document.getElementById('addChoiceBtn');
+    const judgeBtn = document.getElementById('judgeBtn');
+    const btnText = document.getElementById('btnText');
+    const btnSpinner = document.getElementById('btnSpinner');
+    const contextInput = document.getElementById('contextInput');
+    const resultContainer = document.getElementById('resultContainer');
+    const topChoiceName = document.getElementById('topChoiceName');
+    const summaryReason = document.getElementById('summaryReason');
+    const rankingsList = document.getElementById('rankingsList');
+
+    function getDiagnostics() {
+      return {
+        protocol: window.location.protocol,
+        hasLanguageModel: typeof window.LanguageModel !== 'undefined',
+        hasWindowAi: typeof window.ai !== 'undefined',
+        hasWindowAiLanguageModel: typeof window.ai?.languageModel !== 'undefined'
+      };
+    }
+
+    async function checkAPI() {
+      apiStatusBadge.className = 'badge badge-warn';
+      apiStatusBadge.textContent = '確認中...';
+      apiStatusText.textContent = 'ブラウザの Prompt API (Gemini Nano) を確認しています...';
+
+      const diag = getDiagnostics();
+      diagnosticsDetails.style.display = 'block';
+      diagnosticsDetails.innerHTML = `
+        <strong>[環境診断]</strong><br>
+        プロトコル: ${diag.protocol} ${diag.protocol === 'file:' ? '(⚠️ file:// ではなくローカルWebサーバーまたはHTTPSを推奨)' : ''}<br>
+        window.LanguageModel: ${diag.hasLanguageModel ? '✅ 存在' : '❌ 未定義'}<br>
+        window.ai.languageModel: ${diag.hasWindowAiLanguageModel ? '✅ 存在' : '❌ 未定義'}
+      `;
+
+      try {
+        const status = await judgement.checkAvailability(4000);
+        if (status.available) {
+          apiStatusBadge.className = 'badge badge-ok';
+          apiStatusBadge.textContent = '利用可能 (Ready)';
+          apiStatusText.innerHTML = `<strong>Gemini Nano が利用可能です。</strong> ブラウザ内でローカルに推論が実行されます。`;
+        } else {
+          apiStatusBadge.className = status.status === 'no_api' ? 'badge badge-err' : 'badge badge-warn';
+          apiStatusBadge.textContent = status.status === 'no_api' ? 'Prompt API 未検出' : status.status;
+          apiStatusText.innerHTML = `
+            ${status.message}
+            <div style="margin-top:0.6rem; font-size:0.85rem; color:var(--text-muted);">
+              <strong>Chrome での有効化手順:</strong><br>
+              1. <code>chrome://flags</code> を開く<br>
+              2. <code>#prompt-api-for-gemini-nano</code> を <strong>Enabled</strong> に設定<br>
+              3. <code>#optimization-guide-on-device-model</code> を <strong>Enabled BypassPerfRequirement</strong> に設定<br>
+              4. Chrome を再起動
+            </div>
+          `;
+        }
+      } catch (err) {
+        apiStatusBadge.className = 'badge badge-err';
+        apiStatusBadge.textContent = 'エラー';
+        apiStatusText.innerHTML = `チェック中にエラー: <code>${err.message}</code>`;
+      }
+    }
+
+    recheckBtn.addEventListener('click', () => {
+      checkAPI();
+      // 再スキャンも実行
+      judgement.scanAndJudge();
+    });
+
+    clearCacheBtn.addEventListener('click', () => {
+      judgement.clearCache();
+      alert('キャッシュをクリアしました。');
+    });
+
+    checkAPI();
+
+    // プリセット定義 (インタラクティブフォーム用)
+    const presets = {
+      project: {
+        context: "予算は非常に限られているが、来週末までにどうしてもリリースしなければならない緊急のWebサイト改修プロジェクト。",
+        choices: defaultChoices
+      },
+      holiday: {
+        context: "小さな子ども2人を含む家族でのお出かけ。あいにく外は強い雨が降っており、移動は車を利用する。",
+        choices: [
+          { id: "A", name: "大型室内アスレチック施設", description: "雨天でも子どもが思い切り遊べるが、混雑が予想される" },
+          { id: "B", name: "自然豊かな森林公園でピクニック", description: "費用がかからず開放的だが、雨具必須で足元が悪い" },
+          { id: "C", name: "家で映画鑑賞＆ボードゲーム", description: "安全で快適、費用もかからないが、子どもの体力発散は控えめ" }
+        ]
+      },
+      incident: {
+        context: "深夜2時、Webサービスの本番DBサーバーへの接続エラーが頻発し、顧客からの問い合わせが急増している。",
+        choices: [
+          { id: "A", name: "即時メンテナンス画面に切り替えて原因調査", description: "ユーザー影響を最小限に止め安全に調査できるが、サービスは一時停止する" },
+          { id: "B", name: "稼働させたまま本番サーバー上で直接パッチ適用", description: "復旧すれば停止ゼロだが、作業ミスによる致命的データ損失のリスクが高い" },
+          { id: "C", name: "予備のリードレプリカを昇格させてフェイルオーバー", description: "迅速にトラフィックを復旧できる可能性が高いが、直前の未同期データの確認が必要" }
+        ]
+      }
+    };
+
+    let choices = [...presets.project.choices];
+    contextInput.value = presets.project.context;
+
+    function renderChoices() {
+      choicesList.innerHTML = '';
+      choices.forEach((c, index) => {
+        const item = document.createElement('div');
+        item.className = 'choice-item';
+        item.innerHTML = `
+          <input type="text" value="${c.id}" placeholder="ID" onchange="updateChoice(${index}, 'id', this.value)" style="text-align:center;">
+          <input type="text" value="${c.name}" placeholder="名称" onchange="updateChoice(${index}, 'name', this.value)">
+          <input type="text" value="${c.description || ''}" placeholder="説明・特徴" onchange="updateChoice(${index}, 'description', this.value)">
+          <button class="btn-icon" onclick="removeChoice(${index})" title="削除">✕</button>
+        `;
+        choicesList.appendChild(item);
+      });
+    }
+
+    window.updateChoice = (index, field, value) => {
+      choices[index][field] = value;
+    };
+
+    window.removeChoice = (index) => {
+      if (choices.length <= 1) {
+        alert("選択肢は最低1つ必要です。");
+        return;
+      }
+      choices.splice(index, 1);
+      renderChoices();
+    };
+
+    addChoiceBtn.addEventListener('click', () => {
+      const nextLetter = String.fromCharCode(65 + choices.length);
+      choices.push({ id: nextLetter, name: `選択肢 ${nextLetter}`, description: "" });
+      renderChoices();
+    });
+
+    function applyPreset(key) {
+      choices = JSON.parse(JSON.stringify(presets[key].choices));
+      contextInput.value = presets[key].context;
+      renderChoices();
+      resultContainer.style.display = 'none';
+    }
+
+    document.getElementById('preset1Btn').addEventListener('click', () => applyPreset('project'));
+    document.getElementById('preset2Btn').addEventListener('click', () => applyPreset('holiday'));
+    document.getElementById('preset3Btn').addEventListener('click', () => applyPreset('incident'));
+
+    renderChoices();
+
+    // 手動判定実行
+    judgeBtn.addEventListener('click', async () => {
+      const context = contextInput.value.trim();
+      if (!context) {
+        alert("判断材料・文脈 (Context) を入力してください。");
+        return;
+      }
+
+      const includeReason = document.getElementById('includeReasonCheckbox').checked;
+
+      judgeBtn.disabled = true;
+      btnText.textContent = includeReason ? "判定中（理由翻訳中）..." : "Gemini Nano が確率判定中...";
+      btnSpinner.style.display = "inline-block";
+
+      try {
+        const result = await judgement.judge(choices, context, { includeReason });
+
+        topChoiceName.innerHTML = `${result.topChoice.name} (ID: ${result.topChoice.id}) ${result.fromCache ? '<span class="badge badge-ok" style="font-size:0.75rem; vertical-align:middle; margin-left:0.5rem;">⚡ キャッシュから復元</span>' : ''}`;
+        
+        if (result.summaryReason) {
+          summaryReason.style.display = 'block';
+          summaryReason.textContent = result.summaryReason;
+        } else {
+          summaryReason.style.display = 'none';
+        }
+
+        rankingsList.innerHTML = '';
+        (result.rankings || []).forEach(r => {
+          const pct = Math.round((r.confidence || 0) * 100);
+          const reasonHtml = r.reason ? `<div class="ranking-reason">${r.reason}</div>` : '';
+
+          const div = document.createElement('div');
+          div.className = 'ranking-item';
+          div.innerHTML = `
+            <div class="ranking-header">
+              <span>[${r.id}] ${r.name}</span>
+              <span style="color: var(--primary);">${pct}% (${r.confidence})</span>
+            </div>
+            <div class="bar-bg">
+              <div class="bar-fill" style="width: ${pct}%;"></div>
+            </div>
+            ${reasonHtml}
+          `;
+          rankingsList.appendChild(div);
+        });
+
+        resultContainer.style.display = 'block';
+        resultContainer.scrollIntoView({ behavior: 'smooth' });
+      } catch (err) {
+        alert(`判定に失敗しました: ${err.message}`);
+        console.error(err);
+      } finally {
+        judgeBtn.disabled = false;
+        btnText.textContent = "最も可能性が高い選択肢を判定";
+        btnSpinner.style.display = "none";
+      }
+    });
+  </script>
+</body>
+</html>

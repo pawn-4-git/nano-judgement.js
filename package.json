@@ -1,0 +1,9 @@
+{
+  "name": "nano-judgement",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "nano-judgement.js",
+  "scripts": {
+    "start": "node nano-judgement.js"
+  }
+}
