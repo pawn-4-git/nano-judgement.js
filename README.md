@@ -97,7 +97,7 @@ console.log("キャッシュヒット:", result.fromCache);
 | `data-nano-judgement` | 自動判定対象の入力要素であることを示すフラグ | `<textarea data-nano-judgement>` |
 | `data-judge-select` | 連動する `<select>` 要素のセレクタ。選択肢を自動抽出し、判定結果に合わせて `<select>` を自動選択（Auto-select） | `data-judge-select="#mySelect"` |
 | `data-judge-auto-select` | セレクトボックス連動時、最有力候補を自動選択するか（デフォルト: `true`） | `data-judge-auto-select="false"` |
-| `data-judge-target` | 判定結果（カードHTML）を出力する先の要素セレクタ | `data-judge-target="#result-1"` |
+| `data-judge-target` | HTML側スクリプトが描画先コンテナを特定するための要素セレクタ（ライブラリは画面描画を行わずイベントを発火するため、HTML側で自由に描画可能） | `data-judge-target="#result-1"` |
 | `data-judge-reason` | `true` の場合、判定理由を出力し Chrome の **Translator API** で入力言語に自動翻訳（省略時は `false` で理由を省き確率のみ超高速出力） | `data-judge-reason="true"` |
 | `data-judge-lang` | 理由翻訳先の言語コード（省略時はコンテキストから自動検出: 例 `'ja'`） | `data-judge-lang="ja"` |
 | `data-judge-choices` | 要素専用の選択肢リスト（JSON文字列、または選択肢JSON/`<select>`を含む要素セレクタ） | `data-judge-choices='[{"id":"A","name":"..."}]'` または `data-judge-choices="#mySelect"` |

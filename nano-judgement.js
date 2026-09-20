@@ -62,6 +62,10 @@ export class NanoJudgement {
     };
     this.session = null;
     this.memoryCache = new Map();
+    // 選択肢の翻訳ペア（元言語 ⇔ 英語）のキャッシュ
+    this.choicesPairCache = new Map();
+    // 現在実行中の判定Promise（先行判定の重複防止と完了待機用）
+    this.inflightJudgements = new Map();
     // 各入力要素ごとのバックグラウンド判定・変更監視状態
     this.elementSessions = new WeakMap();
 
@@ -265,6 +269,71 @@ export class NanoJudgement {
     this.setCache(cacheKey, { original: trimmed, translated: translatedText, lang: sourceLang });
 
     return { translatedText, sourceLang };
+  }
+
+  /**
+   * 選択肢の言語を判定し、必要に応じて英語に翻訳して、
+   * 元の選択肢と翻訳された選択肢の組み合わせ（ペア）を保持・返却する
+   * @param {Choice[]} choices 
+   * @returns {Promise<{
+   *   originalChoices: Choice[],
+   *   translatedChoices: Choice[],
+   *   pairMap: Map<string, { original: Choice, translated: Choice }>
+   * }>}
+   */
+  async translateAndPairChoices(choices) {
+    if (!choices || choices.length === 0) {
+      return { originalChoices: [], translatedChoices: [], pairMap: new Map() };
+    }
+
+    const choicesKey = choices.map(c => `${c.id}:${c.name}:${c.description || ''}`).sort().join("|");
+    if (this.choicesPairCache && this.choicesPairCache.has(choicesKey)) {
+      return this.choicesPairCache.get(choicesKey);
+    }
+
+    const pairMap = new Map();
+    const translatedChoices = await Promise.all(choices.map(async (c) => {
+      // 選択肢の言語判定
+      const textToDetect = `${c.name} ${c.description || ''}`.trim();
+      const lang = await this.detectLanguage(textToDetect);
+
+      let nameEn = c.name;
+      let descriptionEn = c.description;
+
+      // 英語以外の場合は Translator API で英訳
+      if (lang !== 'en') {
+        nameEn = await this.translateText(c.name, 'en', lang);
+        if (c.description) {
+          descriptionEn = await this.translateText(c.description, 'en', lang);
+        }
+      }
+
+      const translatedChoice = {
+        ...c,
+        name: nameEn,
+        description: descriptionEn,
+      };
+
+      pairMap.set(c.id, {
+        original: c,
+        translated: translatedChoice,
+      });
+
+      return translatedChoice;
+    }));
+
+    const result = {
+      originalChoices: choices,
+      translatedChoices,
+      pairMap,
+    };
+
+    if (!this.choicesPairCache) {
+      this.choicesPairCache = new Map();
+    }
+    this.choicesPairCache.set(choicesKey, result);
+
+    return result;
   }
 
   /**
@@ -572,6 +641,8 @@ export class NanoJudgement {
       return `[${c.id}] ${desc}`;
     }).join("\n");
 
+    const contextStr = typeof context === "string" ? context : JSON.stringify(context);
+
     const exampleRankings = choices.map(c => 
       includeReason 
         ? `    { "id": "${c.id}", "confidence": 0.33, "reason": "<brief explanation>" }`
@@ -760,84 +831,131 @@ ${exampleRankings}
       }
     }
 
-    const session = await this.initSession();
-    const promptText = this.buildPrompt(choices, context, includeReason);
-
-    if (options.signal && options.signal.aborted) {
-      throw new DOMException('Aborted', 'AbortError');
+    // 3. 既に同一条件の先行判定が実行中の場合は、二重実行せずその完了を待つ（先行判定との合流）
+    if (this.inflightJudgements.has(cacheKey)) {
+      return await this.inflightJudgements.get(cacheKey);
     }
 
-    // Prompt API 呼び出し（中断・失敗時はセッションを破棄してリセット）
-    let rawResponse;
-    try {
-      rawResponse = await session.prompt(promptText);
-    } catch (err) {
-      this.destroy();
-      throw err;
-    }
+    const execute = async () => {
+      // 選択肢の言語判定・翻訳を行い、元の選択肢と翻訳された選択肢のペアを保持
+      const choicePairs = await this.translateAndPairChoices(choices);
 
-    if (options.signal && options.signal.aborted) {
-      throw new DOMException('Aborted', 'AbortError');
-    }
+      const session = await this.initSession();
+      // Prompt API には翻訳された選択肢（英語）を渡す
+      const promptText = this.buildPrompt(choicePairs.translatedChoices, context, includeReason);
 
-    const parsed = this.parseJSONResponse(rawResponse);
-    const choiceMap = new Map(choices.map(c => [c.id, c]));
-    const topChoice = choiceMap.get(parsed.topChoiceId) || choices[0];
-
-    // 全選択肢が確実に含まれるように補完（モデルが1件しか返さなかった場合でも全件表示）
-    const rawRankings = Array.isArray(parsed.rankings) ? [...parsed.rankings] : [];
-    const returnedIds = new Set(rawRankings.map(r => r.id));
-    for (const c of choices) {
-      if (!returnedIds.has(c.id)) {
-        rawRankings.push({ id: c.id, confidence: 0 });
-      }
-    }
-
-    const targetLang = options.targetLang || (await this.detectLanguage(typeof context === "string" ? context : JSON.stringify(context)));
-
-    let summaryReason = undefined;
-    if (includeReason && parsed.summaryReason) {
-      summaryReason = await this.translateText(parsed.summaryReason, targetLang);
-    }
-
-    const rankings = await Promise.all(rawRankings.map(async (r) => {
-      const original = choiceMap.get(r.id);
-      let reason = undefined;
-
-      if (includeReason && r.reason) {
-        reason = await this.translateText(r.reason, targetLang);
+      if (options.signal && options.signal.aborted) {
+        throw new DOMException('Aborted', 'AbortError');
       }
 
-      return {
-        id: r.id,
-        name: original ? original.name : r.id,
-        confidence: typeof r.confidence === "number" ? r.confidence : 0,
-        ...(includeReason && reason ? { reason } : {}),
+      // Prompt API 呼び出し（中断・失敗時はセッションを破棄してリセット）
+      let rawResponse;
+      try {
+        rawResponse = await session.prompt(promptText);
+      } catch (err) {
+        this.destroy();
+        throw err;
+      }
+
+      if (options.signal && options.signal.aborted) {
+        throw new DOMException('Aborted', 'AbortError');
+      }
+
+      const parsed = this.parseJSONResponse(rawResponse);
+      // 保持していたペア（組み合わせ）から元の選択肢を復元
+      const originalChoiceMap = choicePairs.pairMap;
+      const topPair = originalChoiceMap.get(parsed.topChoiceId);
+      const topChoice = topPair ? topPair.original : choices[0];
+
+      // 全選択肢が確実に含まれるように補完（モデルが1件しか返さなかった場合でも全件表示）
+      const rawRankings = Array.isArray(parsed.rankings) ? [...parsed.rankings] : [];
+      const returnedIds = new Set(rawRankings.map(r => r.id));
+      for (const c of choices) {
+        if (!returnedIds.has(c.id)) {
+          rawRankings.push({ id: c.id, confidence: 0 });
+        }
+      }
+
+      const targetLang = options.targetLang || (await this.detectLanguage(typeof context === "string" ? context : JSON.stringify(context)));
+
+      let summaryReason = undefined;
+      if (includeReason && parsed.summaryReason) {
+        summaryReason = await this.translateText(parsed.summaryReason, targetLang);
+      }
+
+      const rankings = await Promise.all(rawRankings.map(async (r) => {
+        // 翻訳の組み合わせから元の選択肢の名前を復元
+        const pair = originalChoiceMap.get(r.id);
+        const original = pair ? pair.original : null;
+        let reason = undefined;
+
+        if (includeReason && r.reason) {
+          reason = await this.translateText(r.reason, targetLang);
+        }
+
+        return {
+          id: r.id,
+          name: original ? original.name : r.id,
+          confidence: typeof r.confidence === "number" ? r.confidence : 0,
+          ...(includeReason && reason ? { reason } : {}),
+        };
+      }));
+
+      rankings.sort((a, b) => b.confidence - a.confidence);
+
+      const contextStr = typeof context === "string" ? context.trim() : JSON.stringify(context);
+      const normalizedContext = this.normalizeTextForCache(contextStr);
+      const choicesKey = choices.map(c => `${c.id}:${c.name}:${c.description || ''}`).sort().join("|");
+
+      const result = {
+        context: normalizedContext,
+        rawContext: contextStr,
+        choicesKey,
+        topChoice,
+        rankings,
+        ...(includeReason && summaryReason ? { summaryReason } : {}),
+        rawResponse,
+        fromCache: false,
       };
-    }));
 
-    rankings.sort((a, b) => b.confidence - a.confidence);
+      if (useCache) {
+        this.setCache(cacheKey, result);
+      }
 
-    const contextStr = typeof context === "string" ? context.trim() : JSON.stringify(context);
-    const normalizedContext = this.normalizeTextForCache(contextStr);
-    const choicesKey = choices.map(c => `${c.id}:${c.name}:${c.description || ''}`).sort().join("|");
-
-    const result = {
-      context: normalizedContext,
-      rawContext: contextStr,
-      choicesKey,
-      topChoice,
-      rankings,
-      ...(includeReason && summaryReason ? { summaryReason } : {}),
-      rawResponse,
-      fromCache: false,
+      return result;
     };
 
-    if (useCache) {
-      this.setCache(cacheKey, result);
+    const inflightPromise = execute();
+    this.inflightJudgements.set(cacheKey, inflightPromise);
+    try {
+      return await inflightPromise;
+    } finally {
+      this.inflightJudgements.delete(cacheKey);
     }
+  }
 
-    return result;
+  /**
+   * 入力内容を事前に判定開始（投機的先行実行 / Pre-judgement）する。
+   * ボタン押下前に裏側で非同期に計算を走らせ、ボタン押下時の待ち時間をゼロ（0ms）または最小化する。
+   * @param {Choice[]|HTMLSelectElement|string} choices 
+   * @param {string|Record<string, any>} context 
+   * @param {Object} [options] 
+   * @returns {Promise<JudgementResult>}
+   */
+  preJudge(choices, context, options = {}) {
+    return this.judge(choices, context, options);
+  }
+
+  /**
+   * 指定した条件の判定が現在実行中（先行判定中）かどうかを確認する
+   * @param {Choice[]|HTMLSelectElement|string} choices 
+   * @param {string|Record<string, any>} context 
+   * @param {boolean} [includeReason=false] 
+   * @returns {boolean}
+   */
+  isJudging(choices, context, includeReason = false) {
+    const cacheKey = this.generateCacheKey(choices, context, includeReason);
+    return this.inflightJudgements.has(cacheKey);
   }
 
   /**
@@ -898,23 +1016,11 @@ ${exampleRankings}
 
       element.setAttribute('data-judge-status', 'judging');
 
-      // ターゲット要素に「再判定中...」のスピナーを表示
-      const targetSelector = element.getAttribute('data-judge-target');
-      if (targetSelector) {
-        const targetEl = document.querySelector(targetSelector);
-        if (targetEl) {
-          targetEl.innerHTML = `
-            <div style="font-size:0.85rem; color:#38bdf8; display:flex; align-items:center; gap:0.5rem; padding:0.8rem; background:rgba(56,189,248,0.06); border-radius:8px; border:1px solid rgba(56,189,248,0.2);">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="animation: nano-spin 1s linear infinite;">
-                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-opacity="0.25"></circle>
-                <path d="M12 2a10 10 0 0 1 10 10"></path>
-              </svg>
-              <style>@keyframes nano-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }</style>
-              <span>Gemini Nano が再判定中...</span>
-            </div>
-          `;
-        }
-      }
+      // 判定開始イベントを発火（画面描画・スピナー表示はHTML側の責務）
+      element.dispatchEvent(new CustomEvent('nano-judgement-start', {
+        detail: { element, textToJudge, selectElement: selectEl },
+        bubbles: true,
+      }));
 
       // 判定開始から2秒経過した瞬間のチェックタイマー
       if (sessionState.twoSecondTimer) clearTimeout(sessionState.twoSecondTimer);
@@ -977,13 +1083,6 @@ ${exampleRankings}
           }
         }
 
-        if (targetSelector) {
-          const targetEl = document.querySelector(targetSelector);
-          if (targetEl) {
-            this.renderResultToElement(targetEl, result);
-          }
-        }
-
         element.dispatchEvent(new CustomEvent('nano-judgement-complete', {
           detail: { result, element, choices: currentChoices, fromCache: result.fromCache, selectElement: selectEl },
           bubbles: true,
@@ -1025,14 +1124,6 @@ ${exampleRankings}
         sessionState.latestText = '';
         element.setAttribute('data-judge-status', 'idle');
         element.removeAttribute('data-judge-cached');
-
-        const targetSelector = element.getAttribute('data-judge-target');
-        if (targetSelector) {
-          const targetEl = document.querySelector(targetSelector);
-          if (targetEl) {
-            targetEl.innerHTML = '';
-          }
-        }
 
         element.dispatchEvent(new CustomEvent('nano-judgement-cancelled', {
           detail: { element, reason: 'empty_input' },
@@ -1167,59 +1258,6 @@ ${exampleRankings}
     }
 
     return results;
-  }
-
-  /**
-   * 指定した要素に判定結果のHTMLを描画するヘルパー
-   * @param {HTMLElement} container 
-   * @param {JudgementResult} result 
-   */
-  renderResultToElement(container, result) {
-    let cachedBadge = '<span class="badge" style="font-size:0.75rem; background:rgba(56,189,248,0.2); color:#38bdf8; padding:0.2rem 0.5rem; border-radius:4px;">新規判定</span>';
-    if (result.fromCache) {
-      if (result.inferredFromCache) {
-        cachedBadge = '<span class="badge" style="font-size:0.75rem; background:rgba(192,132,252,0.2); color:#c084fc; padding:0.2rem 0.5rem; border-radius:4px;">⚡ 前方一致類推キャッシュ</span>';
-      } else {
-        cachedBadge = '<span class="badge badge-ok" style="font-size:0.75rem; background:rgba(74,222,128,0.2); color:#4ade80; padding:0.2rem 0.5rem; border-radius:4px;">⚡ キャッシュから即時復元</span>';
-      }
-    }
-
-    const rankingsHtml = (result.rankings || []).map(r => {
-      const pct = Math.round((r.confidence || 0) * 100);
-      const reasonHtml = r.reason 
-        ? `<div style="font-size:0.8rem; color:#94a3b8; margin-top:0.2rem;">${r.reason}</div>` 
-        : '';
-
-      return `
-        <div style="margin-top:0.4rem; padding:0.5rem 0.7rem; background:rgba(0,0,0,0.25); border-radius:6px; border:1px solid rgba(255,255,255,0.05);">
-          <div style="display:flex; justify-content:space-between; font-weight:600; font-size:0.9rem;">
-            <span>[${r.id}] ${r.name}</span>
-            <span style="color:#38bdf8;">${pct}% (${r.confidence})</span>
-          </div>
-          <div style="height:6px; background:rgba(255,255,255,0.1); border-radius:3px; margin:0.3rem 0; overflow:hidden;">
-            <div style="height:100%; width:${pct}%; background:linear-gradient(90deg, #38bdf8, #c084fc); border-radius:3px;"></div>
-          </div>
-          ${reasonHtml}
-        </div>
-      `;
-    }).join('');
-
-    const summaryHtml = result.summaryReason 
-      ? `<div style="font-size:0.88rem; color:#cbd5e1; margin-bottom:0.8rem; line-height:1.5;">${result.summaryReason}</div>` 
-      : '';
-
-    container.innerHTML = `
-      <div style="border:1px solid rgba(56,189,248,0.3); background:rgba(56,189,248,0.06); border-radius:10px; padding:1.2rem; margin-top:0.6rem;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
-          <div style="font-size:0.75rem; color:#38bdf8; font-weight:700; text-transform:uppercase;">最有力候補</div>
-          ${cachedBadge}
-        </div>
-        <div style="font-size:1.3rem; font-weight:700; margin-bottom:0.4rem; color:#f0f6fc;">${result.topChoice.name}</div>
-        ${summaryHtml}
-        <div style="font-weight:600; font-size:0.85rem; margin-top:0.6rem; color:#94a3b8;">全候補の確率 (確信度):</div>
-        ${rankingsHtml}
-      </div>
-    `;
   }
 
   /**

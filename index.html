@@ -360,21 +360,33 @@
       animation: spin 0.8s linear infinite;
     }
 
+    pre.code-box,
     .code-box {
-      background: #06090e;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      padding: 1.2rem;
+      background: #070b12;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 1.4rem;
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.88rem;
       overflow-x: auto;
       color: #e2e8f0;
-      line-height: 1.6;
+      line-height: 1.8;
+      tab-size: 2;
+      white-space: pre !important;
+      margin: 0;
     }
 
-    .code-comment { color: #64748b; }
-    .code-keyword { color: #f472b6; }
-    .code-string { color: #38bdf8; }
+    pre.code-box *,
+    .code-box * {
+      white-space: inherit;
+    }
+
+    .code-comment { color: #818cf8; font-style: italic; }
+    .code-keyword { color: #f472b6; font-weight: 600; }
+    .code-tag { color: #f472b6; font-weight: 600; }
+    .code-attr { color: #38bdf8; }
+    .code-string { color: #4ade80; }
+    .code-val { color: #fde047; }
 
     .diagnostics-box {
       margin-top: 1rem;
@@ -421,9 +433,226 @@
       to { transform: rotate(360deg); }
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .card {
+      scroll-margin-top: 1.5rem;
+    }
+
+    /* クイックナビゲーションバー */
+    .quick-nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-top: 1.5rem;
+    }
+
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.86rem;
+      font-weight: 500;
+      text-decoration: none;
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: rgba(56, 189, 248, 0.4);
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .nav-btn-highlight {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2) 0%, rgba(192, 132, 252, 0.2) 100%);
+      border-color: rgba(56, 189, 248, 0.45);
+      color: #38bdf8;
+      font-weight: 600;
+      box-shadow: 0 2px 12px rgba(56, 189, 248, 0.25);
+    }
+
+    .nav-btn-highlight:hover {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.3) 0%, rgba(192, 132, 252, 0.3) 100%);
+      border-color: var(--primary);
+      box-shadow: 0 4px 18px rgba(56, 189, 248, 0.4);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    /* ガイド・タブ UI */
+    .guide-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 0.8rem;
+    }
+
+    .guide-tab-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      padding: 0.55rem 1.1rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .guide-tab-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+    }
+
+    .guide-tab-btn.active {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .guide-tab-pane {
+      display: none;
+      animation: fadeIn 0.25s ease-in-out;
+    }
+
+    .guide-tab-pane.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ステップカード */
+    .step-card {
+      background: rgba(9, 13, 22, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #090d16;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .step-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .step-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 0.8rem;
+    }
+
+    /* テーブルスタイル */
+    .table-container {
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 1rem;
+    }
+
+    .guide-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      text-align: left;
+    }
+
+    .guide-table th {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-muted);
+      font-weight: 600;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      white-space: nowrap;
+    }
+
+    .guide-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      color: var(--text-main);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+
+    .guide-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .guide-table code {
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--primary);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+    }
+
+    .back-to-top-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .back-to-top-link:hover {
+      color: var(--primary);
+    }
+
     @media (max-width: 640px) {
       .choice-item {
         grid-template-columns: 1fr;
+      }
+      .quick-nav {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .nav-btn {
+        justify-content: center;
+      }
+      .guide-tabs {
+        flex-direction: column;
       }
     }
   </style>
@@ -437,6 +666,28 @@
       <p class="subtitle">
         Chrome 組み込みの Prompt API (window.ai) を使用し、文脈と選択肢から最も可能性・妥当性が高い選択肢をブラウザ内で安全・高速に判定します。
       </p>
+
+      <!-- 実装方法・セクションへのクイックナビゲーション -->
+      <nav class="quick-nav" aria-label="クイックナビゲーション">
+        <a href="#implementation-guide" class="nav-btn nav-btn-highlight">
+          <span>📖</span> 実装方法・コード例
+        </a>
+        <a href="#implementation-guide" class="nav-btn" onclick="document.querySelector('[data-tab=\'tab-output-dom\']')?.click()">
+          <span>🎨</span> 出力データと画面反映
+        </a>
+        <a href="#demo-live" class="nav-btn">
+          <span>⚡</span> 複数枠自動判定デモ
+        </a>
+        <a href="#demo-interactive" class="nav-btn">
+          <span>🎛️</span> インタラクティブ判定
+        </a>
+        <a href="#attributes-reference" class="nav-btn">
+          <span>⚙️</span> 属性・オプション一覧
+        </a>
+        <a href="#chrome-setup-guide" class="nav-btn">
+          <span>🛠️</span> Chrome準備
+        </a>
+      </nav>
     </header>
 
     <!-- API ステータスカード -->
@@ -456,12 +707,15 @@
     </div>
 
     <!-- 複数入力枠の即時判定＆キャッシュデモ -->
-    <div class="card multi-box-card">
+    <div class="card multi-box-card" id="demo-live">
       <div class="card-title">
         <span>複数入力枠の自動即時判定 ＆ キャッシュ</span>
-        <span class="badge" style="background: rgba(192, 132, 252, 0.15); color: var(--accent-purple); border: 1px solid rgba(192, 132, 252, 0.3);">
-          data-nano-judgement
-        </span>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <span class="badge" style="background: rgba(192, 132, 252, 0.15); color: var(--accent-purple); border: 1px solid rgba(192, 132, 252, 0.3);">
+            data-nano-judgement
+          </span>
+          <a href="#implementation-guide" class="back-to-top-link" style="font-size: 0.75rem;">📖 実装方法を見る</a>
+        </div>
       </div>
       <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.2rem; line-height: 1.6;">
         <code>data-nano-judgement</code> 属性を持つ入力枠に <strong>5文字以上</strong> 入力されると、<strong>Language Detector API</strong> と <strong>Translator API</strong> で即座に英語へ事前翻訳・キャッシュされ、裏で自動的に判定が開始されます。<br>
@@ -471,9 +725,12 @@
 
       <!-- 枠1 (理由なし・確率のみ最速) -->
       <div class="auto-slot">
-        <div class="auto-slot-header">
+        <div class="auto-slot-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem;">
           <span class="auto-slot-title">案件 1: コスト・納期の最適解判定 <span class="badge" style="background:rgba(56,189,248,0.15); color:var(--primary); font-size:0.7rem;">⚡ 確率のみ (最速モード)</span></span>
-          <span style="font-size:0.75rem; color:var(--text-muted);">属性: <code>data-nano-judgement</code> (理由なし)</span>
+          <div style="display:flex; align-items:center; gap:0.6rem;">
+            <span style="font-size:0.75rem; color:var(--text-muted);">属性: <code>data-nano-judgement</code> (理由なし)</span>
+            <button type="button" class="btn-clear-cache" style="background:rgba(239,68,68,0.12); color:#f87171; border:1px solid rgba(239,68,68,0.3); font-size:0.72rem; padding:0.22rem 0.55rem; border-radius:6px; cursor:pointer; font-weight:600; transition:all 0.2s;" title="全体のキャッシュを削除">🗑️ キャッシュ削除</button>
+          </div>
         </div>
         <textarea 
           data-nano-judgement 
@@ -487,9 +744,12 @@
 
       <!-- 枠2 (理由付き・Translator API翻訳) -->
       <div class="auto-slot">
-        <div class="auto-slot-header">
+        <div class="auto-slot-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem;">
           <span class="auto-slot-title">案件 2: セキュリティ・スケーラビリティ判定 <span class="badge" style="background:rgba(192,132,252,0.15); color:var(--accent-purple); font-size:0.7rem;">💬 理由付き (Translator API翻訳)</span></span>
-          <span style="font-size:0.75rem; color:var(--text-muted);">属性: <code>data-judge-reason="true"</code></span>
+          <div style="display:flex; align-items:center; gap:0.6rem;">
+            <span style="font-size:0.75rem; color:var(--text-muted);">属性: <code>data-judge-reason="true"</code></span>
+            <button type="button" class="btn-clear-cache" style="background:rgba(239,68,68,0.12); color:#f87171; border:1px solid rgba(239,68,68,0.3); font-size:0.72rem; padding:0.22rem 0.55rem; border-radius:6px; cursor:pointer; font-weight:600; transition:all 0.2s;" title="全体のキャッシュを削除">🗑️ キャッシュ削除</button>
+          </div>
         </div>
         <textarea 
           data-nano-judgement 
@@ -509,9 +769,12 @@
 
       <!-- 枠3 (selectbox連携 ＆ 自動選択) -->
       <div class="auto-slot">
-        <div class="auto-slot-header">
+        <div class="auto-slot-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem;">
           <span class="auto-slot-title">案件 3: セレクトボックス連携 ＆ 自動選択 <span class="badge" style="background:rgba(74,222,128,0.15); color:var(--accent-green); font-size:0.7rem;">🎯 selectbox 自動連動</span></span>
-          <span style="font-size:0.75rem; color:var(--text-muted);">属性: <code>data-judge-select="#supportPriority"</code></span>
+          <div style="display:flex; align-items:center; gap:0.6rem;">
+            <span style="font-size:0.75rem; color:var(--text-muted);">属性: <code>data-judge-select="#supportPriority"</code></span>
+            <button type="button" class="btn-clear-cache" style="background:rgba(239,68,68,0.12); color:#f87171; border:1px solid rgba(239,68,68,0.3); font-size:0.72rem; padding:0.22rem 0.55rem; border-radius:6px; cursor:pointer; font-weight:600; transition:all 0.2s;" title="全体のキャッシュを削除">🗑️ キャッシュ削除</button>
+          </div>
         </div>
         <div style="display: flex; gap: 0.8rem; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap;">
           <label for="supportPriority" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0;">連動セレクトボックス:</label>
@@ -537,9 +800,13 @@
     </div>
 
     <!-- インタラクティブ判定フォーム (手動自由入力) -->
-    <div class="card">
+    <div class="card" id="demo-interactive">
       <div class="card-title">
         <span>インタラクティブ判定デモ (自由入力・調整)</span>
+        <div style="display:flex; align-items:center; gap:0.8rem;">
+          <button type="button" class="btn-clear-cache" style="background:rgba(239,68,68,0.12); color:#f87171; border:1px solid rgba(239,68,68,0.3); font-size:0.75rem; padding:0.25rem 0.65rem; border-radius:6px; cursor:pointer; font-weight:600; transition:all 0.2s;" title="全体のキャッシュを削除">🗑️ キャッシュ削除</button>
+          <a href="#implementation-guide" class="back-to-top-link" style="font-size: 0.75rem;">📖 実装方法を見る</a>
+        </div>
       </div>
 
       <div class="preset-container">
@@ -564,10 +831,13 @@
           <input type="checkbox" id="includeReasonCheckbox" style="width:16px; height:16px; accent-color:var(--primary);">
           <span>判定理由を出力する（Translator API で日本語化）</span>
         </label>
-        <button id="judgeBtn" class="btn">
-          <span id="btnText">最も可能性が高い選択肢を判定</span>
-          <span id="btnSpinner" class="loading-spinner" style="display: none;"></span>
-        </button>
+        <div style="display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap;">
+          <span id="preJudgeBadge" class="badge" style="display: none; font-size: 0.75rem; background: rgba(56,189,248,0.12); color: var(--primary); border: 1px solid rgba(56,189,248,0.3); padding: 0.35rem 0.6rem; border-radius: 6px;"></span>
+          <button id="judgeBtn" class="btn">
+            <span id="btnText">最も可能性が高い選択肢を判定</span>
+            <span id="btnSpinner" class="loading-spinner" style="display: none;"></span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -585,33 +855,684 @@
       <div id="rankingsList"></div>
     </div>
 
-    <!-- 導入・コード例カード -->
-    <div class="card">
-      <div class="card-title">Webページへの組み込み仕様</div>
-      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">
-        入力枠に <code>data-nano-judgement</code> 属性を付与するだけで、JS読み込み時に初期テキストがあれば自動判定・キャッシュが行われます。
+    <!-- 実装方法ガイド (Implementation Guide) -->
+    <div class="card" id="implementation-guide">
+      <div class="card-title">
+        <span>📖 実装方法ガイド (Implementation Guide)</span>
+        <a href="#" class="back-to-top-link">↑ トップへ戻る</a>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.4rem; line-height: 1.6;">
+        <code>nano-judgement.js</code> は、HTML属性を追加するだけの<strong>ノーコード宣言的アプローチ</strong>から、<strong>JavaScript API による完全制御</strong>、<strong>カスタムイベント連携</strong>まで、プロジェクトの要件に合わせて柔軟に実装できます。
       </p>
 
-      <div class="code-box">
-<span class="code-comment">&lt;!-- 1. スクリプトの読み込み --&gt;</span>
-<span class="code-keyword">&lt;script src=</span><span class="code-string">"./nano-judgement.global.js"</span><span class="code-keyword">&gt;&lt;/script&gt;</span>
+      <!-- タブ切り替えボタン -->
+      <div class="guide-tabs" role="tablist">
+        <button class="guide-tab-btn active" data-tab="tab-html" role="tab">🎯 HTML属性で実装 (推奨)</button>
+        <button class="guide-tab-btn" data-tab="tab-output-dom" role="tab">🎨 出力データと画面反映の仕組み</button>
+        <button class="guide-tab-btn" data-tab="tab-js" role="tab">💻 JavaScript APIで実装</button>
+        <button class="guide-tab-btn" data-tab="tab-events" role="tab">🔔 イベント連携</button>
+        <button class="guide-tab-btn" data-tab="tab-cache-reset" role="tab">⚡ キャッシュ＆即時停止仕様</button>
+      </div>
 
-<span class="code-comment">&lt;!-- 2. 入力枠に属性を付与（セレクトボックス連動例） --&gt;</span>
-<span class="code-keyword">&lt;select</span> <span class="code-string">id=</span><span class="code-string">"prioritySelect"</span><span class="code-keyword">&gt;</span>
-  <span class="code-keyword">&lt;option</span> <span class="code-string">value=</span><span class="code-string">"high"</span> <span class="code-string">data-description=</span><span class="code-string">"即時対応必須"</span><span class="code-keyword">&gt;</span>高<span class="code-keyword">&lt;/option&gt;</span>
-  <span class="code-keyword">&lt;option</span> <span class="code-string">value=</span><span class="code-string">"low"</span> <span class="code-string">data-description=</span><span class="code-string">"後回し可能"</span><span class="code-keyword">&gt;</span>低<span class="code-keyword">&lt;/option&gt;</span>
-<span class="code-keyword">&lt;/select&gt;</span>
+      <!-- タブ 1: HTML属性で実装 -->
+      <div id="tab-html" class="guide-tab-pane active" role="tabpanel">
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-badge">1</span>
+            <span class="step-title">ライブラリの読み込み</span>
+          </div>
+          <p class="step-desc">
+            HTMLの末尾（<code>&lt;/body&gt;</code> 直前）またはヘッダーで <code>nano-judgement.global.js</code> を読み込みます。モジュールバンドラ不要でそのまま動作します。
+          </p>
+          <pre class="code-box"><code><span class="code-comment">&lt;!-- 1. scriptタグで読み込むだけでグローバルに NanoJudgement が登録・自動初期化されます --&gt;</span>
+<span class="code-tag">&lt;script</span> <span class="code-attr">src</span>=<span class="code-string">"./nano-judgement.global.js"</span><span class="code-tag">&gt;&lt;/script&gt;</span></code></pre>
+        </div>
 
-<span class="code-keyword">&lt;textarea</span> 
-  <span class="code-string">data-nano-judgement</span> 
-  <span class="code-string">data-judge-select=</span><span class="code-string">"#prioritySelect"</span>
-  <span class="code-string">data-judge-target=</span><span class="code-string">"#result-container"</span>
-<span class="code-keyword">&gt;</span>サーバーがダウンしたため緊急対応を求む<span class="code-keyword">&lt;/textarea&gt;</span>
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-badge">2</span>
+            <span class="step-title">入力枠に属性を付与（最もシンプルな例）</span>
+          </div>
+          <p class="step-desc">
+            判定させたい <code>&lt;textarea&gt;</code> または <code>&lt;input&gt;</code> に <code>data-nano-judgement</code> 属性を付与します。5文字以上入力されると自動で裏側で判定・キャッシュが行われます。
+          </p>
+          <pre class="code-box"><code><span class="code-comment">&lt;!-- ======================================================== --&gt;</span>
+<span class="code-comment">&lt;!-- 判定対象の入力枠                                         --&gt;</span>
+<span class="code-comment">&lt;!--   data-nano-judgement : 必須フラグ                       --&gt;</span>
+<span class="code-comment">&lt;!--   data-judge-target   : 判定カードHTMLの出力先セレクタ    --&gt;</span>
+<span class="code-comment">&lt;!-- ======================================================== --&gt;</span>
+<span class="code-tag">&lt;textarea</span>
+  <span class="code-attr">data-nano-judgement</span>
+  <span class="code-attr">data-judge-target</span>=<span class="code-string">"#my-result"</span>
+  <span class="code-attr">rows</span>=<span class="code-string">"3"</span>
+  <span class="code-attr">placeholder</span>=<span class="code-string">"状況や要望を入力してください（5文字以上で自動判定）..."</span>
+<span class="code-tag">&gt;</span><span class="code-val">スタートアップ企業で予算はほぼゼロだが、来週のピッチまでに動くプロトタイプが必要</span><span class="code-tag">&lt;/textarea&gt;</span>
 
-<span class="code-comment">&lt;!-- 3. 判定結果の出力先（任意） --&gt;</span>
-<span class="code-keyword">&lt;div id=</span><span class="code-string">"result-container"</span><span class="code-keyword">&gt;&lt;/div&gt;</span>
 
-<span class="code-comment">&lt;!-- 入力テキストに応じて、AIがセレクトボックスの選択肢を自動選択（Auto-select）します --&gt;</span>
+<span class="code-comment">&lt;!-- ======================================================== --&gt;</span>
+<span class="code-comment">&lt;!-- 判定結果（カードHTML）が自動描画される出力先コンテナ     --&gt;</span>
+<span class="code-comment">&lt;!-- ======================================================== --&gt;</span>
+<span class="code-tag">&lt;div</span> <span class="code-attr">id</span>=<span class="code-string">"my-result"</span><span class="code-tag">&gt;&lt;/div&gt;</span></code></pre>
+        </div>
+
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-badge">3</span>
+            <span class="step-title">セレクトボックスと自動連動させる（おすすめ！）</span>
+          </div>
+          <p class="step-desc">
+            <code>data-judge-select="#セレクトボックスID"</code> を指定すると、セレクトボックスの <code>&lt;option&gt;</code> から選択肢を自動抽出し、AIが入力テキストに合わせて最適な選択肢を自動選択（Auto-select）します。<code>data-description</code> を付与しておくとAIの判定精度が格段に向上します。
+          </p>
+          <pre class="code-box"><code><span class="code-comment">&lt;!-- ======================================================== --&gt;</span>
+<span class="code-comment">&lt;!-- 1. 選択肢を持つセレクトボックス                          --&gt;</span>
+<span class="code-comment">&lt;!--    data-description を記述すると判定精度が飛躍的に向上    --&gt;</span>
+<span class="code-comment">&lt;!-- ======================================================== --&gt;</span>
+<span class="code-tag">&lt;select</span> <span class="code-attr">id</span>=<span class="code-string">"taskPriority"</span><span class="code-tag">&gt;</span>
+
+  <span class="code-tag">&lt;option</span> <span class="code-attr">value</span>=<span class="code-string">""</span> <span class="code-attr">disabled</span> <span class="code-attr">selected</span><span class="code-tag">&gt;</span>
+    <span class="code-val">優先度を選択してください（AIが自動選択します）</span>
+  <span class="code-tag">&lt;/option&gt;</span>
+
+  <span class="code-tag">&lt;option</span>
+    <span class="code-attr">value</span>=<span class="code-string">"urgent"</span>
+    <span class="code-attr">data-description</span>=<span class="code-string">"サービス全停止やデータ消失など致命的な障害"</span>
+  <span class="code-tag">&gt;</span>
+    <span class="code-val">P1 - 緊急（即時対応）</span>
+  <span class="code-tag">&lt;/option&gt;</span>
+
+  <span class="code-tag">&lt;option</span>
+    <span class="code-attr">value</span>=<span class="code-string">"normal"</span>
+    <span class="code-attr">data-description</span>=<span class="code-string">"主要機能の一部制限など、当日中に対応すべき問題"</span>
+  <span class="code-tag">&gt;</span>
+    <span class="code-val">P2 - 通常（当日対応）</span>
+  <span class="code-tag">&lt;/option&gt;</span>
+
+  <span class="code-tag">&lt;option</span>
+    <span class="code-attr">value</span>=<span class="code-string">"low"</span>
+    <span class="code-attr">data-description</span>=<span class="code-string">"軽微な表示崩れや改善要望など次回以降の検討事項"</span>
+  <span class="code-tag">&gt;</span>
+    <span class="code-val">P3 - 低（次回検討）</span>
+  <span class="code-tag">&lt;/option&gt;</span>
+
+<span class="code-tag">&lt;/select&gt;</span>
+
+
+<span class="code-comment">&lt;!-- ======================================================== --&gt;</span>
+<span class="code-comment">&lt;!-- 2. 入力枠とセレクトボックスを data-judge-select で紐付け --&gt;</span>
+<span class="code-comment">&lt;!-- ======================================================== --&gt;</span>
+<span class="code-tag">&lt;textarea</span>
+  <span class="code-attr">data-nano-judgement</span>
+  <span class="code-attr">data-judge-select</span>=<span class="code-string">"#taskPriority"</span>
+  <span class="code-attr">data-judge-target</span>=<span class="code-string">"#priorityResult"</span>
+  <span class="code-attr">rows</span>=<span class="code-string">"3"</span>
+  <span class="code-attr">placeholder</span>=<span class="code-string">"問い合わせ内容を入力してください..."</span>
+<span class="code-tag">&gt;</span><span class="code-val">データベースがダウンし、ユーザー全員がログインできない状態です</span><span class="code-tag">&lt;/textarea&gt;</span>
+
+
+<span class="code-comment">&lt;!-- ======================================================== --&gt;</span>
+<span class="code-comment">&lt;!-- 3. 判定結果のカード出力先（任意）                         --&gt;</span>
+<span class="code-comment">&lt;!-- ======================================================== --&gt;</span>
+<span class="code-tag">&lt;div</span> <span class="code-attr">id</span>=<span class="code-string">"priorityResult"</span><span class="code-tag">&gt;&lt;/div&gt;</span></code></pre>
+        </div>
+
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-badge">4</span>
+            <span class="step-title">判定理由を翻訳して出力する</span>
+          </div>
+          <p class="step-desc">
+            <code>data-judge-reason="true"</code> を指定すると、判定の根拠・理由を生成し、Chrome 組み込みの <strong>Translator API</strong> で自動翻訳して日本語（または指定言語）で出力します。
+          </p>
+          <pre class="code-box"><code><span class="code-comment">&lt;!-- ======================================================== --&gt;</span>
+<span class="code-comment">&lt;!-- 判定理由の自動翻訳出力を有効化する例                     --&gt;</span>
+<span class="code-comment">&lt;!-- ======================================================== --&gt;</span>
+<span class="code-tag">&lt;textarea</span>
+  <span class="code-attr">data-nano-judgement</span>
+  <span class="code-attr">data-judge-reason</span>=<span class="code-string">"true"</span>
+  <span class="code-attr">data-judge-target</span>=<span class="code-string">"#reasonResult"</span>
+  <span class="code-attr">rows</span>=<span class="code-string">"3"</span>
+<span class="code-tag">&gt;</span><span class="code-val">来週の展示会までに動くモックアップを作りたいが、予算がほぼない</span><span class="code-tag">&lt;/textarea&gt;</span>
+
+<span class="code-tag">&lt;div</span> <span class="code-attr">id</span>=<span class="code-string">"reasonResult"</span><span class="code-tag">&gt;&lt;/div&gt;</span></code></pre>
+        </div>
+
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-badge">5</span>
+            <span class="step-title">コピペでそのまま動く最小完全テンプレート</span>
+          </div>
+          <p class="step-desc">
+            HTMLファイルを作成し、以下のコードをそのまま貼り付けて Chrome で開くだけで、自動判定とセレクトボックス連動が動作します。
+          </p>
+          <pre class="code-box"><code><span class="code-tag">&lt;!DOCTYPE html&gt;</span>
+<span class="code-tag">&lt;html</span> <span class="code-attr">lang</span>=<span class="code-string">"ja"</span><span class="code-tag">&gt;</span>
+<span class="code-tag">&lt;head&gt;</span>
+  <span class="code-tag">&lt;meta</span> <span class="code-attr">charset</span>=<span class="code-string">"UTF-8"</span><span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;title&gt;</span><span class="code-val">Nano Judgement Demo</span><span class="code-tag">&lt;/title&gt;</span>
+<span class="code-tag">&lt;/head&gt;</span>
+<span class="code-tag">&lt;body&gt;</span>
+
+  <span class="code-comment">&lt;!-- 1. セレクトボックス（選択肢を定義） --&gt;</span>
+  <span class="code-tag">&lt;label&gt;</span><span class="code-val">開発アプローチ:</span><span class="code-tag">&lt;/label&gt;</span>
+  <span class="code-tag">&lt;select</span> <span class="code-attr">id</span>=<span class="code-string">"mySelect"</span><span class="code-tag">&gt;</span>
+    <span class="code-tag">&lt;option</span> <span class="code-attr">value</span>=<span class="code-string">"A"</span> <span class="code-attr">data-description</span>=<span class="code-string">"高品質だが納期1ヶ月以上"</span><span class="code-tag">&gt;</span><span class="code-val">フルスクラッチ開発</span><span class="code-tag">&lt;/option&gt;</span>
+    <span class="code-tag">&lt;option</span> <span class="code-attr">value</span>=<span class="code-string">"B"</span> <span class="code-attr">data-description</span>=<span class="code-string">"即日利用可能でコスト最小"</span><span class="code-tag">&gt;</span><span class="code-val">ノーコード/SaaS利用</span><span class="code-tag">&lt;/option&gt;</span>
+  <span class="code-tag">&lt;/select&gt;</span>
+
+  <span class="code-tag">&lt;br&gt;&lt;br&gt;</span>
+
+  <span class="code-comment">&lt;!-- 2. 自動判定入力枠（5文字以上入力でAI判定開始） --&gt;</span>
+  <span class="code-tag">&lt;textarea</span>
+    <span class="code-attr">data-nano-judgement</span>
+    <span class="code-attr">data-judge-select</span>=<span class="code-string">"#mySelect"</span>
+    <span class="code-attr">data-judge-target</span>=<span class="code-string">"#myResult"</span>
+    <span class="code-attr">rows</span>=<span class="code-string">"3"</span>
+    <span class="code-attr">style</span>=<span class="code-string">"width: 100%; max-width: 500px;"</span>
+  <span class="code-tag">&gt;</span><span class="code-val">予算はほぼゼロだが、来週までにプロトタイプを動かしたい</span><span class="code-tag">&lt;/textarea&gt;</span>
+
+  <span class="code-comment">&lt;!-- 3. 判定結果カード出力先 --&gt;</span>
+  <span class="code-tag">&lt;div</span> <span class="code-attr">id</span>=<span class="code-string">"myResult"</span><span class="code-tag">&gt;&lt;/div&gt;</span>
+
+  <span class="code-comment">&lt;!-- 4. ライブラリ読み込み --&gt;</span>
+  <span class="code-tag">&lt;script</span> <span class="code-attr">src</span>=<span class="code-string">"./nano-judgement.global.js"</span><span class="code-tag">&gt;&lt;/script&gt;</span>
+
+  <span class="code-comment">&lt;!-- 5. 【画面描画】イベントを受け取ってHTML側で結果を描画 --&gt;</span>
+  <span class="code-tag">&lt;script&gt;</span>
+    <span class="code-val">document.addEventListener('nano-judgement-complete', (e) =&gt; {</span>
+      <span class="code-keyword">const</span> <span class="code-val">{ result } = e.detail;</span>
+      <span class="code-keyword">const</span> <span class="code-val">pct = Math.round(result.rankings[0].confidence * 100);</span>
+      <span class="code-val">document.getElementById('myResult').innerHTML = `</span>
+        <span class="code-val">&lt;div style="margin-top:0.8rem; padding:0.8rem; background:rgba(56,189,248,0.1); border:1px solid #38bdf8; border-radius:8px;"&gt;</span>
+          <span class="code-val">&lt;strong&gt;AI判定結果:&lt;/strong&gt; ${result.topChoice.name} (${pct}%)</span>
+        <span class="code-val">&lt;/div&gt;</span>
+      <span class="code-val">`;</span>
+    <span class="code-val">});</span>
+    <span class="code-val">document.addEventListener('nano-judgement-cancelled', () =&gt; {</span>
+      <span class="code-val">document.getElementById('myResult').innerHTML = '';</span>
+    <span class="code-val">});</span>
+  <span class="code-tag">&lt;/script&gt;</span>
+
+<span class="code-tag">&lt;/body&gt;</span>
+<span class="code-tag">&lt;/html&gt;</span></code></pre>
+        </div>
+      </div>
+
+      <!-- タブ 2: JavaScript API で実装 -->
+      <div id="tab-js" class="guide-tab-pane" role="tabpanel">
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-badge">1</span>
+            <span class="step-title">NanoJudgement インスタンスの生成</span>
+          </div>
+          <p class="step-desc">
+            ES Modules（<code>import</code>）またはグローバル（<code>window.NanoJudgement</code>）からインスタンスを作成します。
+          </p>
+          <pre class="code-box"><code><span class="code-keyword">import</span> { NanoJudgement } <span class="code-keyword">from</span> <span class="code-string">'./nano-judgement.js'</span>;
+
+<span class="code-keyword">const</span> judgement = <span class="code-keyword">new</span> NanoJudgement({
+  enableCache: <span class="code-keyword">true</span>,          <span class="code-comment">// キャッシュを有効化 (デフォルト: true)</span>
+  cacheStorage: <span class="code-string">'session'</span>,    <span class="code-comment">// 'session' (sessionStorage) または 'local' (localStorage)</span>
+  maxCacheGenerations: 1000,  <span class="code-comment">// 最大1000世代のLRU保存 (古い順に自動破棄)</span>
+  includeReason: <span class="code-keyword">false</span>,       <span class="code-comment">// true にすると理由も出力 (Translator APIで翻訳)</span>
+  autoScan: <span class="code-keyword">false</span>,            <span class="code-comment">// JS側で手動制御する場合は false に設定可能</span>
+});</code></pre>
+        </div>
+
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-badge">2</span>
+            <span class="step-title">選択肢と文脈を渡して判定を実行 (judge メソッド)</span>
+          </div>
+          <p class="step-desc">
+            <code>judgement.judge(choices, context, options)</code> を呼び出します。選択肢には配列、または <code>&lt;select&gt;</code> 要素をそのまま渡せます。
+          </p>
+          <pre class="code-box"><code><span class="code-comment">// 選択肢の配列、または &lt;select&gt; 要素を指定可能</span>
+<span class="code-keyword">const</span> choices = [
+  { id: <span class="code-string">"A"</span>, name: <span class="code-string">"フルスクラッチ開発"</span>, description: <span class="code-string">"自由度が高いが納期1ヶ月以上"</span> },
+  { id: <span class="code-string">"B"</span>, name: <span class="code-string">"SaaS/ノーコード"</span>, description: <span class="code-string">"即日利用可能で安価だがカスタマイズに制約"</span> },
+  { id: <span class="code-string">"C"</span>, name: <span class="code-string">"外注特急依頼"</span>, description: <span class="code-string">"短納期だが費用が高額"</span> }
+];
+
+<span class="code-keyword">const</span> context = <span class="code-string">"予算はほぼゼロだが、来週までにプロトタイプを動かしたい"</span>;
+
+<span class="code-comment">// 判定実行 (Promise)</span>
+<span class="code-keyword">const</span> result = <span class="code-keyword">await</span> judgement.judge(choices, context, {
+  includeReason: <span class="code-keyword">true</span>,        <span class="code-comment">// 理由を出力</span>
+  targetLang: <span class="code-string">'ja'</span>            <span class="code-comment">// 理由の翻訳先言語</span>
+});
+
+console.log(<span class="code-string">"最有力候補:"</span>, result.topChoice.name);  <span class="code-comment">// "SaaS/ノーコード"</span>
+console.log(<span class="code-string">"判定理由:"</span>, result.summaryReason);
+console.log(<span class="code-string">"キャッシュから復元:"</span>, result.fromCache); <span class="code-comment">// true / false</span>
+console.log(<span class="code-string">"全ランキング:"</span>, result.rankings);</code></pre>
+        </div>
+
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-badge">3</span>
+            <span class="step-title">特定の入力要素にライブ自動判定をアタッチ</span>
+          </div>
+          <p class="step-desc">
+            <code>attachLiveJudgement(element, choices, options)</code> により、任意の入力枠に 2秒ルール＆25%変更チェック＆0文字即時停止の監視をプログラマブルに設定できます。
+          </p>
+          <pre class="code-box"><code><span class="code-keyword">const</span> textarea = document.querySelector(<span class="code-string">'#customInput'</span>);
+<span class="code-keyword">const</span> selectEl = document.querySelector(<span class="code-string">'#customSelect'</span>);
+
+judgement.attachLiveJudgement(textarea, selectEl, {
+  selectElement: selectEl,
+  targetSelector: <span class="code-string">'#customResult'</span>
+});</code></pre>
+        </div>
+
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-badge">4</span>
+            <span class="step-title">先行判定 (Pre-judgement) でボタン押下時の待ち時間をゼロ化</span>
+          </div>
+          <p class="step-desc">
+            <code>judgement.preJudge(choices, context, options)</code> をユーザーの入力中に呼んでおくと、裏側でバックグラウンド判定を開始します。<br>
+            ボタン押下時に <code>judgement.judge(...)</code> を呼ぶと、<strong>先行判定が完了していれば待ち時間ゼロ（0ms）で即座に結果を取得</strong>でき、まだ判定中であれば二重実行せず<strong>進行中の判定完了を待機して即座に画面へ反映</strong>できます。
+          </p>
+          <pre class="code-box"><code><span class="code-comment">// ユーザーが入力枠にタイピングした時点で先行判定をキック（裏側で非同期実行）</span>
+textarea.addEventListener(<span class="code-string">'input'</span>, () =&gt; {
+  <span class="code-keyword">if</span> (textarea.value.trim().length &gt;= 5) {
+    judgement.preJudge(choices, textarea.value);
+  }
+});
+
+<span class="code-comment">// 送信・判定ボタンが押されたとき</span>
+submitBtn.addEventListener(<span class="code-string">'click'</span>, <span class="code-keyword">async</span> () =&gt; {
+  <span class="code-comment">// 先行判定が完了していれば 0ms で即座に返却！</span>
+  <span class="code-comment">// 先行判定中なら、二重実行せずその完了を待って即座に返却！</span>
+  <span class="code-keyword">const</span> result = <span class="code-keyword">await</span> judgement.judge(choices, textarea.value);
+  showResult(result);
+});</code></pre>
+        </div>
+      </div>
+
+      <!-- タブ 3: イベント連携 -->
+      <div id="tab-events" class="guide-tab-pane" role="tabpanel">
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-badge">🔔</span>
+            <span class="step-title">発火されるカスタムイベント一覧</span>
+          </div>
+          <p class="step-desc">
+            自動判定対象の要素は、判定の完了や中断などのライフサイクルに合わせて標準カスタムイベント（<code>CustomEvent</code>）を発火します。
+          </p>
+          
+          <pre class="code-box"><code><span class="code-keyword">const</span> textarea = document.querySelector(<span class="code-string">'textarea[data-nano-judgement]'</span>);
+
+<span class="code-comment">// 1. 判定が完了したとき (nano-judgement-complete)</span>
+textarea.addEventListener(<span class="code-string">'nano-judgement-complete'</span>, (e) => {
+  <span class="code-keyword">const</span> { result, fromCache, selectElement } = e.detail;
+  console.log(<span class="code-string">'判定完了:'</span>, result.topChoice.name);
+  console.log(<span class="code-string">'キャッシュ利用:'</span>, fromCache);
+
+  <span class="code-comment">// トースト通知を出したり、フォームの別フィールドを連動更新可能</span>
+});
+
+<span class="code-comment">// 2. 入力枠が0文字になった、または中断されたとき (nano-judgement-cancelled)</span>
+textarea.addEventListener(<span class="code-string">'nano-judgement-cancelled'</span>, (e) => {
+  <span class="code-keyword">const</span> { reason } = e.detail;
+  <span class="code-keyword">if</span> (reason === <span class="code-string">'empty_input'</span>) {
+    console.log(<span class="code-string">'入力が空（0文字）になったため判定が即時破棄・リセットされました'</span>);
+  }
+});</code></pre>
+        </div>
+      </div>
+
+      <!-- タブ 4: キャッシュ＆即時停止仕様 -->
+      <div id="tab-cache-reset" class="guide-tab-pane" role="tabpanel">
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-badge">⚡</span>
+            <span class="step-title">判定制御とキャッシュの4大アーキテクチャ</span>
+          </div>
+          <p class="step-desc">
+            クライアントPCのCPU/GPU負荷とトークン消費を最小化するため、以下のインテリジェント制御を内包しています。
+          </p>
+
+          <ul style="margin-left: 1.2rem; color: var(--text-muted); line-height: 1.8; font-size: 0.92rem;">
+            <li><strong style="color: var(--text-main);">1. 入力枠が0文字になった際の即時停止（Abort & Destroy）:</strong><br>
+              スペースや改行を除去した結果が 0文字になった瞬間、進行中の待機タイマーを解除し、<code>AbortController</code> で判定を中断。さらに <code>session.destroy()</code> でネイティブAIセッションを即座に破棄して結果表示もクリアします。
+            </li>
+            <li><strong style="color: var(--text-main);">2. スペース・句読点正規化キャッシュ（Normalized Cache）:</strong><br>
+              キャッシュ保存および照合時に半角・全角スペースや「、」「。」「！」等の句読点を除去して正規化。誤字修正や句読点の追記による不要な再判定を防ぎます。
+            </li>
+            <li><strong style="color: var(--text-main);">3. 前方一致推論（Prefix Heuristic Cache）:</strong><br>
+              10文字以上の文章で、末尾の 5文字以内の微修正であれば、直前のキャッシュ結果を即座に類推活用して 0ms で判定結果を表示します。
+            </li>
+            <li><strong style="color: var(--text-main);">4. 1000世代のLRUキャッシュ（Least Recently Used）:</strong><br>
+              キャッシュは最大 1,000 世代まで保存。上限を超えた古いキャッシュは自動的に破棄され、ストレージ容量圧迫を防ぎます。
+            </li>
+            <li><strong style="color: var(--text-main);">5. 2秒ルール＆25%変化チェック:</strong><br>
+              文字入力後2秒以内の編集は別キーで都度安全にキャッシュ。2秒経過後は、元の文章から 25% 以上変更された場合のみ進行中の判定を中断して最新テキストで再実行します。
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- タブ: 出力データと画面反映の仕組み -->
+      <div id="tab-output-dom" class="guide-tab-pane" role="tabpanel">
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-badge">1</span>
+            <span class="step-title">JavaScriptが出力する判定結果データ（JudgementResult 構造）</span>
+          </div>
+          <p class="step-desc">
+            判定が完了すると、ライブラリは以下の構造化された JavaScript オブジェクト（<code>Promise&lt;JudgementResult&gt;</code>）を出力します。すべての選択肢の確信度・理由・キャッシュ状況が綺麗に整理されています。
+          </p>
+          <pre class="code-box"><code><span class="code-comment">// 判定完了時に JavaScript が出力するオブジェクトの具体例</span>
+{
+  <span class="code-keyword">"topChoice"</span>: {
+    <span class="code-keyword">"id"</span>: <span class="code-string">"B"</span>,
+    <span class="code-keyword">"name"</span>: <span class="code-string">"ノーコード/SaaSの利用"</span>,
+    <span class="code-keyword">"description"</span>: <span class="code-string">"即日利用可能で安価だが、細かいカスタマイズに制約がある"</span>
+  },
+  <span class="code-keyword">"rankings"</span>: [
+    {
+      <span class="code-keyword">"id"</span>: <span class="code-string">"B"</span>,
+      <span class="code-keyword">"name"</span>: <span class="code-string">"ノーコード/SaaSの利用"</span>,
+      <span class="code-keyword">"confidence"</span>: <span class="code-string">0.82</span>,    <span class="code-comment">// 確信度 (0.00 〜 1.00、降順で自動ソート)</span>
+      <span class="code-keyword">"reason"</span>: <span class="code-string">"予算がほぼゼロかつ1週間以内のプロトタイプ作成には即日導入可能なSaaSが最も適合します。"</span>
+    },
+    {
+      <span class="code-keyword">"id"</span>: <span class="code-string">"A"</span>,
+      <span class="code-keyword">"name"</span>: <span class="code-string">"フルスクラッチ開発"</span>,
+      <span class="code-keyword">"confidence"</span>: <span class="code-string">0.12</span>,
+      <span class="code-keyword">"reason"</span>: <span class="code-string">"開発期間が1ヶ月以上かかるため来週のピッチ期日に間に合いません。"</span>
+    },
+    {
+      <span class="code-keyword">"id"</span>: <span class="code-string">"C"</span>,
+      <span class="code-keyword">"name"</span>: <span class="code-string">"外注専門ベンダーへ特急依頼"</span>,
+      <span class="code-keyword">"confidence"</span>: <span class="code-string">0.06</span>,
+      <span class="code-keyword">"reason"</span>: <span class="code-string">"予算ゼロの条件と相容れません。"</span>
+    }
+  ],
+  <span class="code-keyword">"summaryReason"</span>: <span class="code-string">"来週の投資家ピッチという短納期と予算ゼロの制約に基づき、SaaS/ノーコードツールの活用が最も現実的で高い適合率を示しています。"</span>,
+  <span class="code-keyword">"fromCache"</span>: <span class="code-keyword">false</span>,            <span class="code-comment">// キャッシュから復元されたか (true / false)</span>
+  <span class="code-keyword">"inferredFromCache"</span>: <span class="code-keyword">false</span>,    <span class="code-comment">// 前方一致推論キャッシュか (true / false)</span>
+  <span class="code-keyword">"context"</span>: <span class="code-string">"スタートアップ企業で予算はほぼゼロだが来週の投資家向けピッチまでに実働するプロトタイプが必要"</span>, <span class="code-comment">// スペース・句読点除去後</span>
+  <span class="code-keyword">"rawContext"</span>: <span class="code-string">"スタートアップ企業で予算はほぼゼロだが、来週の投資家向けピッチまでに実働するプロトタイプが必要。"</span>
+}</code></pre>
+        </div>
+
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-badge">2</span>
+            <span class="step-title">画面描画の切り離しと責務分離（SoC）の仕組み</span>
+          </div>
+          <p class="step-desc">
+            <code>nano-judgement.js</code> は画面への直接的な HTML 描画を行いません（<strong>画面描画は HTML / UI 層の責任</strong>）。<br>
+            ライブラリは AI 判定・翻訳・キャッシュ・ライフサイクル管理に特化し、以下の 3 つのイベントおよび属性連携を通じて HTML 側に状態を通知します。
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+            <div style="background: rgba(0,0,0,0.3); border-left: 3px solid var(--accent-green); padding: 0.9rem 1.1rem; border-radius: 0 8px 8px 0;">
+              <div style="font-weight: 700; color: var(--accent-green); font-size: 0.95rem; margin-bottom: 0.3rem;">
+                A. 連動セレクトボックス（&lt;select&gt;）の自動選択（Auto-select）
+              </div>
+              <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">
+                <code>data-judge-select="#セレクトボックス"</code> が指定されている場合、最有力候補 <code>result.topChoice.id</code> と一致する <code>&lt;option value="..."&gt;</code> を自動選択（<code>selectEl.value = result.topChoice.id</code>）します。<br>
+                さらに <strong><code>selectEl.dispatchEvent(new Event('change', { bubbles: true }))</code></strong> を発火させるため、既存のフォーム処理や他の連動スクリプトも自動的に動作します。
+              </p>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.3); border-left: 3px solid var(--primary); padding: 0.9rem 1.1rem; border-radius: 0 8px 8px 0;">
+              <div style="font-weight: 700; color: var(--primary); font-size: 0.95rem; margin-bottom: 0.3rem;">
+                B. 判定ライフサイクルイベントの発火（HTML側で自由に描画）
+              </div>
+              <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">
+                判定の進行状態に合わせて、入力要素からカスタムイベントがバブリング（<code>bubbles: true</code>）で発火されます：<br>
+                ・<strong><code>nano-judgement-start</code></strong>: 判定開始時。HTML 側でローディングスピナーやプレースホルダーを表示します。<br>
+                ・<strong><code>nano-judgement-complete</code></strong>: 判定完了時。<code>event.detail.result</code> に判定結果（最有力候補、確信度、理由等）が渡されます。HTML 側で任意のカードやグラフを描画します。<br>
+                ・<strong><code>nano-judgement-cancelled</code></strong>: 入力枠が0文字になった、または中断された時。HTML 側で表示領域をクリアします。
+              </p>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.3); border-left: 3px solid var(--accent-purple); padding: 0.9rem 1.1rem; border-radius: 0 8px 8px 0;">
+              <div style="font-weight: 700; color: var(--accent-purple); font-size: 0.95rem; margin-bottom: 0.3rem;">
+                C. ライフサイクル属性（data-judge-status）の自動更新
+              </div>
+              <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">
+                入力枠の DOM 属性がリアルタイムに変化するため、CSS セレクタでスピナーやローディング枠線を簡単に実装できます：<br>
+                ・<code>data-judge-status="idle"</code>: 待機中（未入力、または0文字リセット後）<br>
+                ・<code>data-judge-status="judging"</code>: Gemini Nano が判定中（裏側で実行中）<br>
+                ・<code>data-judge-status="completed"</code>: 判定完了<br>
+                ・<code>data-judge-cached="true"</code>: キャッシュから即座に結果を復元した際に付与
+              </p>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.3); border-left: 3px solid var(--danger); padding: 0.9rem 1.1rem; border-radius: 0 8px 8px 0;">
+              <div style="font-weight: 700; color: var(--danger); font-size: 0.95rem; margin-bottom: 0.3rem;">
+                D. 0文字クリア時の即時中断と通知
+              </div>
+              <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">
+                ユーザーが入力テキストを全消去（スペース除去後 0文字）にした瞬間、実行中の判定を即時 abort し、セッションを破棄して <code>nano-judgement-cancelled</code>（<code>reason: 'empty_input'</code>）を発火します。古い判定結果が遅れて画面に残る心配はありません。
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-header">
+            <span class="step-badge">3</span>
+            <span class="step-title">HTML側でイベントを受け取って画面に描画する実装例</span>
+          </div>
+          <p class="step-desc">
+            <code>nano-judgement.js</code> から送られるカスタムイベントを HTML 側で購読し、結果表示領域（<code>#myResult</code>）に結果カードやスピナーを描画する実装コードです。
+          </p>
+          <pre class="code-box"><code><span class="code-comment">// 1. 判定開始時: HTML側でローディングスピナーを表示</span>
+document.addEventListener(<span class="code-string">'nano-judgement-start'</span>, (event) => {
+  <span class="code-keyword">const</span> target = event.detail.element.getAttribute(<span class="code-string">'data-judge-target'</span>);
+  <span class="code-keyword">if</span> (target) {
+    document.querySelector(target).innerHTML = <span class="code-string">'&lt;div class="spinner"&gt;判定中...&lt;/div&gt;'</span>;
+  }
+});
+
+<span class="code-comment">// 2. 判定完了時: HTML側で結果カードやグラフを描画</span>
+document.addEventListener(<span class="code-string">'nano-judgement-complete'</span>, (event) => {
+  <span class="code-keyword">const</span> { result, fromCache, element } = event.detail;
+  <span class="code-keyword">const</span> target = element.getAttribute(<span class="code-string">'data-judge-target'</span>);
+  <span class="code-keyword">if</span> (!target) <span class="code-keyword">return</span>;
+
+  <span class="code-keyword">const</span> topPct = Math.round(result.rankings[0].confidence * 100);
+  <span class="code-keyword">const</span> container = document.querySelector(target);
+  container.innerHTML = `
+    &lt;div class="result-card"&gt;
+      &lt;div&gt;最有力: &lt;strong&gt;${result.topChoice.name}&lt;/strong&gt; (${topPct}%)&lt;/div&gt;
+      &lt;div&gt;理由: ${result.summaryReason || '（理由なし）'}&lt;/div&gt;
+    &lt;/div&gt;
+  `;
+});
+
+<span class="code-comment">// 3. 0文字リセット時: HTML側で描画エリアをクリア</span>
+document.addEventListener(<span class="code-string">'nano-judgement-cancelled'</span>, (event) => {
+  <span class="code-keyword">const</span> target = event.detail.element.getAttribute(<span class="code-string">'data-judge-target'</span>);
+  <span class="code-keyword">if</span> (target) {
+    document.querySelector(target).innerHTML = <span class="code-string">''</span>;
+  }
+});</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- HTML属性 ＆ APIオプション一覧 (Reference) -->
+    <div class="card" id="attributes-reference">
+      <div class="card-title">
+        <span>⚙️ 属性・オプション一覧 (Reference)</span>
+        <a href="#" class="back-to-top-link">↑ トップへ戻る</a>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1rem;">
+        HTML属性による宣言的指定と、JavaScript API 初期化時に渡せるオプションの一覧です。
+      </p>
+
+      <div style="font-weight: 600; font-size: 1rem; margin-top: 1.2rem; margin-bottom: 0.5rem; color: var(--accent-purple);">
+        HTML属性リファレンス
+      </div>
+      <div class="table-container">
+        <table class="guide-table">
+          <thead>
+            <tr>
+              <th>属性名</th>
+              <th>対象要素</th>
+              <th>デフォルト</th>
+              <th>説明</th>
+              <th>記述例</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>data-nano-judgement</code></td>
+              <td><code>&lt;textarea&gt;</code><br><code>&lt;input&gt;</code></td>
+              <td>-</td>
+              <td>自動判定対象であることを宣言する必須属性。5文字以上の入力で自動判定が発火します。</td>
+              <td><code>data-nano-judgement</code></td>
+            </tr>
+            <tr>
+              <td><code>data-judge-select</code></td>
+              <td>判定対象要素</td>
+              <td>-</td>
+              <td>連動する <code>&lt;select&gt;</code> のセレクタ。選択肢を自動抽出し、判定結果に合わせて自動選択します。</td>
+              <td><code>data-judge-select="#priority"</code></td>
+            </tr>
+            <tr>
+              <td><code>data-judge-auto-select</code></td>
+              <td>判定対象要素</td>
+              <td><code>true</code></td>
+              <td>セレクトボックス連動時、最有力候補を自動選択するかどうか。<code>"false"</code> で自動選択のみOFFにできます。</td>
+              <td><code>data-judge-auto-select="false"</code></td>
+            </tr>
+            <tr>
+              <td><code>data-judge-target</code></td>
+              <td>判定対象要素</td>
+              <td>-</td>
+              <td>HTML側スクリプトが描画先コンテナを特定するためのセレクタ。イベント受取時に <code>event.detail.element.getAttribute('data-judge-target')</code> で参照できます。</td>
+              <td><code>data-judge-target="#resultBox"</code></td>
+            </tr>
+            <tr>
+              <td><code>data-judge-reason</code></td>
+              <td>判定対象要素</td>
+              <td><code>false</code></td>
+              <td><code>"true"</code> にすると判定理由を出力し、Translator API で日本語化。<code>"false"</code> で確率のみ最速出力。</td>
+              <td><code>data-judge-reason="true"</code></td>
+            </tr>
+            <tr>
+              <td><code>data-judge-lang</code></td>
+              <td>判定対象要素</td>
+              <td>自動判定</td>
+              <td>判定理由の翻訳先言語コード（例: <code>'ja'</code>, <code>'en'</code>）。省略時はコンテキストから自動検出。</td>
+              <td><code>data-judge-lang="ja"</code></td>
+            </tr>
+            <tr>
+              <td><code>data-judge-choices</code></td>
+              <td>判定対象要素</td>
+              <td>デフォルト選択肢</td>
+              <td>要素固有の選択肢JSON文字列、または選択肢を含む要素のセレクタ。</td>
+              <td><code>data-judge-choices='[{"id":"1","name":"A"}]'</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="font-weight: 600; font-size: 1rem; margin-top: 1.8rem; margin-bottom: 0.5rem; color: var(--primary);">
+        JavaScript 初期化オプション (new NanoJudgement)
+      </div>
+      <div class="table-container">
+        <table class="guide-table">
+          <thead>
+            <tr>
+              <th>オプション名</th>
+              <th>型</th>
+              <th>デフォルト値</th>
+              <th>説明</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>defaultChoices</code></td>
+              <td><code>Array</code></td>
+              <td><code>[]</code></td>
+              <td>全体で共通使用するデフォルトの選択肢リスト <code>[{ id, name, description }]</code>。</td>
+            </tr>
+            <tr>
+              <td><code>enableCache</code></td>
+              <td><code>boolean</code></td>
+              <td><code>true</code></td>
+              <td>判定結果および翻訳結果のキャッシュを有効にするか。</td>
+            </tr>
+            <tr>
+              <td><code>cacheStorage</code></td>
+              <td><code>string</code></td>
+              <td><code>'session'</code></td>
+              <td>キャッシュの保存先。<code>'session'</code> (sessionStorage) または <code>'local'</code> (localStorage)。</td>
+            </tr>
+            <tr>
+              <td><code>maxCacheGenerations</code></td>
+              <td><code>number</code></td>
+              <td><code>1000</code></td>
+              <td>キャッシュする最大世代数（LRU方式）。1000世代を超えると古い順に自動破棄されます。</td>
+            </tr>
+            <tr>
+              <td><code>autoScan</code></td>
+              <td><code>boolean</code></td>
+              <td><code>true</code></td>
+              <td>インスタンス作成時に <code>data-nano-judgement</code> 属性を持つ要素を自動スキャンして監視を開始するか。</td>
+            </tr>
+            <tr>
+              <td><code>includeReason</code></td>
+              <td><code>boolean</code></td>
+              <td><code>false</code></td>
+              <td>デフォルトで判定理由を生成・翻訳するかどうか。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Chrome での事前準備 (Prompt API セットアップガイド) -->
+    <div class="card" id="chrome-setup-guide">
+      <div class="card-title">
+        <span>🛠️ Chrome での事前準備 (Prompt API 有効化ガイド)</span>
+        <a href="#" class="back-to-top-link">↑ トップへ戻る</a>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.2rem; line-height: 1.6;">
+        本ライブラリは Chrome 組み込みの <strong>Gemini Nano (Prompt API)</strong> を使用します。初回利用時は以下の3ステップでブラウザのフラグを有効にしてください。
+      </p>
+
+      <div class="step-card">
+        <div class="step-header">
+          <span class="step-badge">1</span>
+          <span class="step-title">Chrome Flags の設定</span>
+        </div>
+        <p class="step-desc">
+          Chromeのアドレスバーに <code>chrome://flags</code> と入力して開き、以下の2項目を設定します：
+        </p>
+        <ul style="margin-left: 1.2rem; color: var(--text-muted); line-height: 1.8; font-size: 0.88rem;">
+          <li><code>#prompt-api-for-gemini-nano</code> → <strong style="color: var(--primary);">Enabled</strong></li>
+          <li><code>#optimization-guide-on-device-model</code> → <strong style="color: var(--primary);">Enabled BypassPerfRequirement</strong></li>
+        </ul>
+      </div>
+
+      <div class="step-card">
+        <div class="step-header">
+          <span class="step-badge">2</span>
+          <span class="step-title">ブラウザの再起動</span>
+        </div>
+        <p class="step-desc">
+          画面右下に表示される <strong style="color: var(--text-main);">Relaunch</strong> ボタンをクリックして Chrome を再起動します。
+        </p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-header">
+          <span class="step-badge">3</span>
+          <span class="step-title">Gemini Nano モデルのダウンロード確認</span>
+        </div>
+        <p class="step-desc">
+          アドレスバーに <code>chrome://components</code> と入力して開き、<strong>Optimization Guide On Device Model</strong> の「アップデートを確認」をクリックします。バージョン番号（例: <code>2024.x.x</code>）が表示されていれば準備完了です！
+        </p>
       </div>
     </div>
   </div>
@@ -718,9 +1639,79 @@
       judgement.scanAndJudge();
     });
 
-    clearCacheBtn.addEventListener('click', () => {
-      judgement.clearCache();
-      alert('キャッシュをクリアしました。');
+    // トースト通知ヘルパー（alertモーダルのOK押下手間を排除）
+    function showToast(message) {
+      let toast = document.getElementById('globalToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'globalToast';
+        toast.style.cssText = `
+          position: fixed;
+          bottom: 24px;
+          right: 24px;
+          background: rgba(15, 23, 42, 0.95);
+          color: #f8fafc;
+          border: 1px solid rgba(56, 189, 248, 0.4);
+          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+          backdrop-filter: blur(8px);
+          padding: 0.75rem 1.25rem;
+          border-radius: 8px;
+          font-size: 0.88rem;
+          font-weight: 600;
+          z-index: 9999;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          opacity: 0;
+          transform: translateY(12px);
+          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+          pointer-events: none;
+        `;
+        document.body.appendChild(toast);
+      }
+      toast.textContent = message;
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+      clearTimeout(toast._timeout);
+      toast._timeout = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(12px)';
+      }, 2000);
+    }
+
+    // キャッシュ一括削除ボタン（各サンプルのボタンおよび上部ボタン共通）
+    document.querySelectorAll('.btn-clear-cache, #clearCacheBtn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // 全体のキャッシュを即時クリア
+        judgement.clearCache();
+
+        // 押されたボタンに完了フィードバック
+        const origText = btn.innerHTML;
+        btn.innerHTML = '✅ 削除完了';
+        btn.style.color = '#4ade80';
+        btn.style.borderColor = 'rgba(74,222,128,0.4)';
+        btn.style.background = 'rgba(74,222,128,0.12)';
+
+        setTimeout(() => {
+          btn.innerHTML = origText;
+          btn.style.color = '';
+          btn.style.borderColor = '';
+          btn.style.background = '';
+        }, 1200);
+
+        // インタラクティブ判定の先行判定バッジをリセット
+        if (preJudgeBadge) {
+          preJudgeBadge.style.display = 'none';
+        }
+
+        // 自動判定対象要素の data-judge-cached 属性を除去
+        document.querySelectorAll('[data-judge-cached]').forEach(el => {
+          el.removeAttribute('data-judge-cached');
+        });
+
+        // 控えめなトーストで通知（alertでOKを押す手間を解消）
+        showToast('🗑️ 全サンプルのキャッシュを削除しました');
+      });
     });
 
     checkAPI();
@@ -767,8 +1758,53 @@
       });
     }
 
+    // =========================================================================
+    // 【先行判定 (Pre-judgement) 機構】
+    // 入力・プリセット選択時に裏側で事前に判定を開始し、
+    // ボタン押下時に判定完了済みなら即時表示(0ms)、判定中なら完了を待機して即時反映
+    // =========================================================================
+    const preJudgeBadge = document.getElementById('preJudgeBadge');
+    let preJudgeTimer = null;
+
+    function triggerPreJudge() {
+      if (preJudgeTimer) clearTimeout(preJudgeTimer);
+      preJudgeTimer = setTimeout(async () => {
+        const context = contextInput.value.trim();
+        if (context.length < 5 || choices.length === 0) {
+          if (preJudgeBadge) preJudgeBadge.style.display = 'none';
+          return;
+        }
+
+        const includeReason = document.getElementById('includeReasonCheckbox').checked;
+
+        if (preJudgeBadge) {
+          preJudgeBadge.style.display = 'inline-flex';
+          preJudgeBadge.style.borderColor = 'rgba(56,189,248,0.3)';
+          preJudgeBadge.style.color = 'var(--primary)';
+          preJudgeBadge.innerHTML = '⚡ 裏側で先行判定中...';
+        }
+
+        try {
+          // 先行判定を開始（裏側で非同期に計算され、完了時に自動キャッシュされる）
+          await judgement.preJudge(choices, context, { includeReason });
+          if (preJudgeBadge) {
+            preJudgeBadge.style.borderColor = 'rgba(74,222,128,0.4)';
+            preJudgeBadge.style.color = '#4ade80';
+            preJudgeBadge.innerHTML = '⚡ 先行判定完了 (即時表示可能)';
+          }
+        } catch (e) {
+          if (preJudgeBadge) preJudgeBadge.style.display = 'none';
+        }
+      }, 300);
+    }
+
+    // 入力・選択肢変更・理由チェック変更時に先行判定をトリガー
+    contextInput.addEventListener('input', triggerPreJudge);
+    document.getElementById('includeReasonCheckbox').addEventListener('change', triggerPreJudge);
+
     window.updateChoice = (index, field, value) => {
       choices[index][field] = value;
+      triggerPreJudge();
     };
 
     window.removeChoice = (index) => {
@@ -778,12 +1814,14 @@
       }
       choices.splice(index, 1);
       renderChoices();
+      triggerPreJudge();
     };
 
     addChoiceBtn.addEventListener('click', () => {
       const nextLetter = String.fromCharCode(65 + choices.length);
       choices.push({ id: nextLetter, name: `選択肢 ${nextLetter}`, description: "" });
       renderChoices();
+      triggerPreJudge();
     });
 
     function applyPreset(key) {
@@ -791,6 +1829,7 @@
       contextInput.value = presets[key].context;
       renderChoices();
       resultContainer.style.display = 'none';
+      triggerPreJudge();
     }
 
     document.getElementById('preset1Btn').addEventListener('click', () => applyPreset('project'));
@@ -798,6 +1837,8 @@
     document.getElementById('preset3Btn').addEventListener('click', () => applyPreset('incident'));
 
     renderChoices();
+    // 初期表示時もプリセット1の先行判定を開始
+    triggerPreJudge();
 
     // 手動判定実行
     judgeBtn.addEventListener('click', async () => {
@@ -808,15 +1849,28 @@
       }
 
       const includeReason = document.getElementById('includeReasonCheckbox').checked;
+      const isCurrentlyJudging = judgement.isJudging(choices, context, includeReason);
 
       judgeBtn.disabled = true;
-      btnText.textContent = includeReason ? "判定中（理由翻訳中）..." : "Gemini Nano が確率判定中...";
       btnSpinner.style.display = "inline-block";
+      if (isCurrentlyJudging) {
+        btnText.textContent = "先行判定の完了を待機中...";
+      } else {
+        btnText.textContent = includeReason ? "判定中（理由翻訳中）..." : "Gemini Nano が確率判定中...";
+      }
 
       try {
+        // 先行判定が完了していれば 0ms で即座にキャッシュから返却
+        // 先行判定中であれば二重実行せず、進行中の判定完了を待機して即座に返却
         const result = await judgement.judge(choices, context, { includeReason });
 
-        topChoiceName.innerHTML = `${result.topChoice.name} (ID: ${result.topChoice.id}) ${result.fromCache ? '<span class="badge badge-ok" style="font-size:0.75rem; vertical-align:middle; margin-left:0.5rem;">⚡ キャッシュから復元</span>' : ''}`;
+        if (preJudgeBadge) {
+          preJudgeBadge.style.borderColor = 'rgba(74,222,128,0.4)';
+          preJudgeBadge.style.color = '#4ade80';
+          preJudgeBadge.innerHTML = '⚡ 先行判定完了 (即時表示可能)';
+        }
+
+        topChoiceName.innerHTML = `${result.topChoice.name} (ID: ${result.topChoice.id}) ${result.fromCache ? '<span class="badge badge-ok" style="font-size:0.75rem; vertical-align:middle; margin-left:0.5rem;">⚡ キャッシュ / 先行判定から即時復元</span>' : ''}`;
         
         if (result.summaryReason) {
           summaryReason.style.display = 'block';
@@ -854,6 +1908,120 @@
         judgeBtn.disabled = false;
         btnText.textContent = "最も可能性が高い選択肢を判定";
         btnSpinner.style.display = "none";
+      }
+    });
+
+    // 実装ガイドのタブ切り替え
+    document.querySelectorAll('.guide-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-tab');
+        document.querySelectorAll('.guide-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.guide-tab-pane').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        const targetPane = document.getElementById(targetId);
+        if (targetPane) {
+          targetPane.classList.add('active');
+        }
+      });
+    });
+
+    // =========================================================================
+    // 【HTML側の責務】nano-judgement カスタムイベントを購読して画面（DOM）に描画
+    // nano-judgement.js は画面描画を行わないため、HTML側で自由にデザインして描画します
+    // =========================================================================
+
+    // 結果カード描画ヘルパー
+    function renderResultCard(container, result) {
+      let cachedBadge = '<span class="badge" style="font-size:0.75rem; background:rgba(56,189,248,0.2); color:#38bdf8; padding:0.2rem 0.5rem; border-radius:4px;">新規判定</span>';
+      if (result.fromCache) {
+        if (result.inferredFromCache) {
+          cachedBadge = '<span class="badge" style="font-size:0.75rem; background:rgba(192,132,252,0.2); color:#c084fc; padding:0.2rem 0.5rem; border-radius:4px;">⚡ 前方一致類推キャッシュ</span>';
+        } else {
+          cachedBadge = '<span class="badge badge-ok" style="font-size:0.75rem; background:rgba(74,222,128,0.2); color:#4ade80; padding:0.2rem 0.5rem; border-radius:4px;">⚡ キャッシュから即時復元</span>';
+        }
+      }
+
+      const rankingsHtml = (result.rankings || []).map(r => {
+        const pct = Math.round((r.confidence || 0) * 100);
+        const reasonHtml = r.reason 
+          ? `<div style="font-size:0.8rem; color:#94a3b8; margin-top:0.2rem;">${r.reason}</div>` 
+          : '';
+
+        return `
+          <div style="margin-top:0.4rem; padding:0.5rem 0.7rem; background:rgba(0,0,0,0.25); border-radius:6px; border:1px solid rgba(255,255,255,0.05);">
+            <div style="display:flex; justify-content:space-between; font-weight:600; font-size:0.9rem;">
+              <span>[${r.id}] ${r.name}</span>
+              <span style="color:#38bdf8;">${pct}% (${r.confidence})</span>
+            </div>
+            <div style="height:6px; background:rgba(255,255,255,0.1); border-radius:3px; margin:0.3rem 0; overflow:hidden;">
+              <div style="height:100%; width:${pct}%; background:linear-gradient(90deg, #38bdf8, #c084fc); border-radius:3px;"></div>
+            </div>
+            ${reasonHtml}
+          </div>
+        `;
+      }).join('');
+
+      const summaryHtml = result.summaryReason 
+        ? `<div style="font-size:0.88rem; color:#cbd5e1; margin-bottom:0.8rem; line-height:1.5;">${result.summaryReason}</div>` 
+        : '';
+
+      container.innerHTML = `
+        <div style="border:1px solid rgba(56,189,248,0.3); background:rgba(56,189,248,0.06); border-radius:10px; padding:1.2rem; margin-top:0.6rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+            <div style="font-size:0.75rem; color:#38bdf8; font-weight:700; text-transform:uppercase;">最有力候補</div>
+            ${cachedBadge}
+          </div>
+          <div style="font-size:1.3rem; font-weight:700; margin-bottom:0.4rem; color:#f0f6fc;">${result.topChoice.name}</div>
+          ${summaryHtml}
+          <div style="font-weight:600; font-size:0.85rem; margin-top:0.6rem; color:#94a3b8;">全候補の確率 (確信度):</div>
+          ${rankingsHtml}
+        </div>
+      `;
+    }
+
+    // ローディングスピナー描画ヘルパー
+    function renderLoadingSpinner(container) {
+      container.innerHTML = `
+        <div style="font-size:0.85rem; color:#38bdf8; display:flex; align-items:center; gap:0.5rem; padding:0.8rem; background:rgba(56,189,248,0.06); border-radius:8px; border:1px solid rgba(56,189,248,0.2); margin-top:0.6rem;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="animation: nano-spin 1s linear infinite;">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-opacity="0.25"></circle>
+            <path d="M12 2a10 10 0 0 1 10 10"></path>
+          </svg>
+          <style>@keyframes nano-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }</style>
+          <span>Gemini Nano が再判定中...</span>
+        </div>
+      `;
+    }
+
+    // 1. 判定開始イベント (nano-judgement-start)
+    document.addEventListener('nano-judgement-start', (e) => {
+      const el = e.detail?.element || e.target;
+      const targetSelector = el.getAttribute('data-judge-target');
+      if (targetSelector) {
+        const targetEl = document.querySelector(targetSelector);
+        if (targetEl) renderLoadingSpinner(targetEl);
+      }
+    });
+
+    // 2. 判定完了イベント (nano-judgement-complete)
+    document.addEventListener('nano-judgement-complete', (e) => {
+      const el = e.detail?.element || e.target;
+      const targetSelector = el.getAttribute('data-judge-target');
+      if (targetSelector && e.detail?.result) {
+        const targetEl = document.querySelector(targetSelector);
+        if (targetEl) renderResultCard(targetEl, e.detail.result);
+      }
+    });
+
+    // 3. 判定中断/リセットイベント (nano-judgement-cancelled)
+    document.addEventListener('nano-judgement-cancelled', (e) => {
+      const el = e.detail?.element || e.target;
+      const targetSelector = el.getAttribute('data-judge-target');
+      if (targetSelector) {
+        const targetEl = document.querySelector(targetSelector);
+        if (targetEl) {
+          targetEl.innerHTML = '<div style="font-size:0.85rem; color:var(--text-muted); font-style:italic;">判定中、または結果がここに表示されます...</div>';
+        }
       }
     });
   </script>
