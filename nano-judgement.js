@@ -1003,7 +1003,46 @@ ${exampleRankings}
 
     // 入力イベントハンドラ
     const handleInput = async () => {
-      const currentText = ('value' in element ? element.value : element.textContent || '').trim();
+      const rawText = ('value' in element ? element.value : element.textContent || '');
+      const cleanText = rawText.replace(/[\s\u3000]+/g, '');
+
+      // スペースなどを削除して0文字になったら判定を即時停止＆リセット
+      if (cleanText.length === 0) {
+        if (sessionState.twoSecondTimer) {
+          clearTimeout(sessionState.twoSecondTimer);
+          sessionState.twoSecondTimer = null;
+        }
+        if (sessionState.abortController) {
+          sessionState.abortController.abort();
+          sessionState.abortController = null;
+        }
+        this.destroy();
+
+        sessionState.currentGeneration = (sessionState.currentGeneration || 0) + 1;
+        sessionState.isJudging = false;
+        sessionState.initialText = '';
+        sessionState.initialEnText = '';
+        sessionState.latestText = '';
+        element.setAttribute('data-judge-status', 'idle');
+        element.removeAttribute('data-judge-cached');
+
+        const targetSelector = element.getAttribute('data-judge-target');
+        if (targetSelector) {
+          const targetEl = document.querySelector(targetSelector);
+          if (targetEl) {
+            targetEl.innerHTML = '';
+          }
+        }
+
+        element.dispatchEvent(new CustomEvent('nano-judgement-cancelled', {
+          detail: { element, reason: 'empty_input' },
+          bubbles: true,
+        }));
+
+        return;
+      }
+
+      const currentText = rawText.trim();
 
       // 5文字未満の場合はスキップ
       if (currentText.length < 5) {
