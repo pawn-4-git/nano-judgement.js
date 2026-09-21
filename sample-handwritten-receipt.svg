@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 410" width="640" height="410">
+  <defs>
+    <!-- Paper shadow -->
+    <filter id="voucherShadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.2"/>
+    </filter>
+
+    <!-- Guilloche / security pattern for voucher paper -->
+    <pattern id="guillochePattern" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="10" cy="10" r="9" fill="none" stroke="#e0f2fe" stroke-width="0.8"/>
+      <path d="M 0 10 Q 5 0, 10 10 T 20 10" fill="none" stroke="#bae6fd" stroke-width="0.5"/>
+      <path d="M 10 0 Q 0 5, 10 10 T 10 20" fill="none" stroke="#bae6fd" stroke-width="0.5"/>
+    </pattern>
+
+    <!-- Ink stamp filter for realistic bleed -->
+    <filter id="stampRough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="3" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+
+  <style>
+    .mincho { font-family: 'Yu Mincho', 'Hiragino Mincho ProN', 'Noto Serif JP', serif; }
+    .gothic { font-family: 'Hiragino Sans', 'Meiryo', 'Inter', -apple-system, sans-serif; }
+    .bold { font-weight: 700; }
+    .center { text-anchor: middle; }
+    .right { text-anchor: end; }
+  </style>
+
+  <!-- Canvas Outer Margin -->
+  <rect x="0" y="0" width="640" height="410" fill="#0f172a" fill-opacity="0.05" />
+
+  <!-- Paper Card Base (Classic Paper / Light Mint Hue) -->
+  <g filter="url(#voucherShadow)">
+    <rect x="15" y="15" width="610" height="380" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2"/>
+    <!-- Subtle security texture -->
+    <rect x="22" y="22" width="596" height="366" rx="4" fill="url(#guillochePattern)" opacity="0.65"/>
+    <!-- Decorative Ornate Double Border -->
+    <rect x="25" y="25" width="590" height="360" rx="4" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-opacity="0.6"/>
+    <rect x="28" y="28" width="584" height="354" rx="2" fill="none" stroke="#0284c7" stroke-width="0.6" stroke-opacity="0.5"/>
+  </g>
+
+  <!-- Watermark: SAMPLE / DUMMY -->
+  <text x="320" y="235" fill="#38bdf8" fill-opacity="0.09" font-family="'Inter', sans-serif" font-size="70" font-weight="900" class="center" transform="rotate(-15 320 235)">SAMPLE / DUMMY</text>
+
+  <!-- Top Dummy Alert Ribbon -->
+  <rect x="200" y="32" width="240" height="20" rx="4" fill="#fef2f2" stroke="#ef4444" stroke-width="0.8" stroke-dasharray="3 3"/>
+  <text x="320" y="46" fill="#dc2626" class="gothic bold center" font-size="10">⚠️ 動作検証用サンプル（架空のダミー領収証）</text>
+
+  <!-- Voucher Number & Date (Top Right) -->
+  <text x="590" y="55" fill="#334155" class="mincho right" font-size="11">No. DUMMY-2026-9081</text>
+  <text x="590" y="73" fill="#334155" class="mincho right" font-size="11">発行日: 2026年 9月 21日</text>
+
+  <!-- Main Title: 領 収 証 -->
+  <text x="320" y="95" fill="#0f172a" class="mincho bold center" font-size="28" letter-spacing="12">領 収 証</text>
+  <line x1="240" y1="104" x2="400" y2="104" stroke="#0f172a" stroke-width="1.5"/>
+  <line x1="240" y1="107" x2="400" y2="107" stroke="#0f172a" stroke-width="0.5"/>
+
+  <!-- Payee / Customer Name (宛名) -->
+  <g transform="translate(45, 138)">
+    <text x="0" y="0" fill="#0f172a" class="mincho bold" font-size="19">【架空】サンプル総研株式会社</text>
+    <text x="315" y="0" fill="#0f172a" class="mincho bold" font-size="18">御中</text>
+    <line x1="0" y1="8" x2="360" y2="8" stroke="#334155" stroke-width="1.2"/>
+  </g>
+
+  <!-- Statement text -->
+  <text x="45" y="172" fill="#475569" class="mincho" font-size="12">下記金額を正に領収いたしました。</text>
+
+  <!-- Big Amount Box (金額枠) -->
+  <rect x="45" y="184" width="370" height="52" rx="4" fill="#ffffff" fill-opacity="0.9" stroke="#0284c7" stroke-width="1.8"/>
+  <rect x="49" y="188" width="362" height="44" fill="none" stroke="#94a3b8" stroke-width="0.6"/>
+  <text x="65" y="222" fill="#0369a1" class="mincho bold" font-size="18">金 額</text>
+  <text x="130" y="224" fill="#0f172a" class="mincho bold" font-size="26">¥ 88,000 -</text>
+  <text x="350" y="222" fill="#64748b" class="mincho" font-size="14">(消費税込)</text>
+
+  <!-- Proviso / Purpose (但し書き) -->
+  <g transform="translate(45, 262)">
+    <text x="0" y="0" fill="#334155" class="mincho bold" font-size="13">但 し:</text>
+    <text x="45" y="0" fill="#1e293b" class="mincho" font-size="13">クラウド基盤設計・セキュリティ監査支援業務費用として</text>
+    <line x1="45" y1="6" x2="420" y2="6" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 2"/>
+  </g>
+
+  <!-- Tax Breakdown Box (内訳欄) -->
+  <g transform="translate(45, 285)">
+    <rect x="0" y="0" width="220" height="56" rx="3" fill="#f8fafc" stroke="#94a3b8" stroke-width="0.8"/>
+    <text x="10" y="18" fill="#475569" class="gothic" font-size="10">内訳</text>
+    <line x1="38" y1="0" x2="38" y2="56" stroke="#cbd5e1" stroke-width="0.8"/>
+    
+    <text x="48" y="22" fill="#334155" class="gothic" font-size="11">税抜金額: ¥80,000</text>
+    <line x1="38" y1="28" x2="220" y2="28" stroke="#e2e8f0" stroke-width="0.8"/>
+    <text x="48" y="45" fill="#334155" class="gothic" font-size="11">消費税等 (10%): ¥8,000</text>
+  </g>
+
+  <!-- Revenue Stamp Box (収入印紙枠) -->
+  <g transform="translate(285, 285)">
+    <rect x="0" y="0" width="70" height="56" rx="2" fill="#ffffff" stroke="#94a3b8" stroke-width="0.8" stroke-dasharray="4 3"/>
+    
+    <!-- Stamp Paper Mock (200 Yen Stamp) -->
+    <rect x="6" y="5" width="58" height="46" rx="1" fill="#ecfdf5" stroke="#059669" stroke-width="1"/>
+    <text x="35" y="22" fill="#047857" class="mincho bold center" font-size="9">収入印紙</text>
+    <text x="35" y="38" fill="#047857" class="mincho bold center" font-size="13">200</text>
+    <text x="35" y="47" fill="#047857" class="mincho center" font-size="7">日本政府</text>
+
+    <!-- Cancellation Stamp (消印) -->
+    <circle cx="55" cy="20" r="16" fill="none" stroke="#ef4444" stroke-width="1.2" opacity="0.8" filter="url(#stampRough)"/>
+    <text x="55" y="17" fill="#ef4444" class="gothic bold center" font-size="7" opacity="0.85">サンプル</text>
+    <text x="55" y="25" fill="#ef4444" class="gothic center" font-size="6" opacity="0.85">26.09.21</text>
+  </g>
+
+  <!-- Issuer Information (発行者情報・右下) -->
+  <g transform="translate(375, 255)">
+    <text x="0" y="0" fill="#0f172a" class="mincho bold" font-size="14">【架空】株式会社サンプルソリューションズ</text>
+    <text x="0" y="18" fill="#475569" class="gothic" font-size="10">〒100-0001 東京都千代田区大手町1-1-1</text>
+    <text x="0" y="32" fill="#475569" class="gothic" font-size="10">TEL: 03-0000-XXXX (代表)</text>
+    <text x="0" y="46" fill="#475569" class="gothic" font-size="10">登録番号: T9876543210987</text>
+    <text x="0" y="60" fill="#64748b" class="gothic" font-size="9">※ インボイス制度 適格請求書要件適合</text>
+  </g>
+
+  <!-- Official Red Company Seal (角印スタンプ) -->
+  <g transform="translate(535, 275)" filter="url(#stampRough)">
+    <rect x="0" y="0" width="55" height="55" rx="3" fill="#ef4444" fill-opacity="0.12" stroke="#dc2626" stroke-width="2"/>
+    <text x="14" y="24" fill="#dc2626" class="mincho bold" font-size="15">サ</text>
+    <text x="14" y="45" fill="#dc2626" class="mincho bold" font-size="15">プ</text>
+    <text x="33" y="24" fill="#dc2626" class="mincho bold" font-size="15">ン</text>
+    <text x="33" y="45" fill="#dc2626" class="mincho bold" font-size="15">ル</text>
+  </g>
+
+  <!-- Footer Disclaimer -->
+  <text x="320" y="375" fill="#64748b" class="gothic center" font-size="9.5">※ 本画像は動作確認用の架空・ダミー領収証用紙です。実在の人物・企業・団体・サービスとは一切関係ありません。</text>
+</svg>

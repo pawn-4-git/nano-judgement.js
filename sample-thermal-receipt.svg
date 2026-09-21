@@ -1,0 +1,180 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 720" width="380" height="720">
+  <defs>
+    <!-- Paper shadow -->
+    <filter id="receiptShadow" x="-10%" y="-5%" width="120%" height="110%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+    
+    <!-- Paper Jagged Edge Clip -->
+    <clipPath id="paperCut">
+      <path d="
+        M 10 15 
+        L 20 8 L 30 15 L 40 8 L 50 15 L 60 8 L 70 15 L 80 8 L 90 15 L 100 8
+        L 110 15 L 120 8 L 130 15 L 140 8 L 150 15 L 160 8 L 170 15 L 180 8
+        L 190 15 L 200 8 L 210 15 L 220 8 L 230 15 L 240 8 L 250 15 L 260 8
+        L 270 15 L 280 8 L 290 15 L 300 8 L 310 15 L 320 8 L 330 15 L 340 8
+        L 350 15 L 360 8 L 370 15
+        L 370 705 
+        L 360 712 L 350 705 L 340 712 L 330 705 L 320 712 L 310 705 L 300 712
+        L 290 705 L 280 712 L 270 705 L 260 712 L 250 705 L 240 712 L 230 705
+        L 220 712 L 210 705 L 200 712 L 190 705 L 180 712 L 170 705 L 160 712
+        L 150 705 L 140 712 L 130 705 L 120 712 L 110 705 L 100 712 L 90 705
+        L 80 712 L 70 705 L 60 712 L 50 705 L 40 712 L 30 705 L 20 712 L 10 705
+        Z" />
+    </clipPath>
+  </defs>
+
+  <style>
+    .mono { font-family: 'Courier New', 'Courier', 'SFMono-Regular', monospace; }
+    .gothic { font-family: 'Hiragino Sans', 'Meiryo', 'Inter', -apple-system, sans-serif; }
+    .bold { font-weight: 700; }
+    .center { text-anchor: middle; }
+    .right { text-anchor: end; }
+  </style>
+
+  <!-- Background Dark Container Canvas -->
+  <rect x="0" y="0" width="380" height="720" fill="#0f172a" fill-opacity="0.05" />
+
+  <!-- Thermal Paper Base with Jagged Cut -->
+  <g filter="url(#receiptShadow)">
+    <rect x="10" y="8" width="360" height="704" fill="#fafafa" clip-path="url(#paperCut)"/>
+  </g>
+
+  <!-- Watermark: SAMPLE / DUMMY -->
+  <text x="190" y="380" fill="#e2e8f0" font-family="'Inter', sans-serif" font-size="52" font-weight="900" class="center" transform="rotate(-30 190 380)">SAMPLE / DUMMY</text>
+
+  <!-- Top Dummy Alert Ribbon -->
+  <rect x="30" y="25" width="320" height="22" rx="4" fill="#fee2e2" stroke="#ef4444" stroke-width="1" stroke-dasharray="3 3"/>
+  <text x="190" y="40" fill="#b91c1c" class="gothic bold center" font-size="11">⚠️ 動作検証用サンプル（架空のダミー店舗）</text>
+
+  <!-- Store Header -->
+  <text x="190" y="75" fill="#1e293b" class="gothic bold center" font-size="18">【架空】サンプルマート</text>
+  <text x="190" y="95" fill="#475569" class="gothic center" font-size="12">六本木ITセンター前テスト店</text>
+  <text x="190" y="112" fill="#64748b" class="gothic center" font-size="10">TEL: 03-0000-DUMMY (呼出)</text>
+  <text x="190" y="128" fill="#64748b" class="mono center" font-size="10">登録番号: T1234567890123 (適格簡易請求書)</text>
+
+  <!-- Divider -->
+  <line x1="30" y1="140" x2="350" y2="140" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 2"/>
+
+  <!-- Transaction Info -->
+  <text x="35" y="158" fill="#334155" class="mono" font-size="11">領収証 No. 20260921-8812</text>
+  <text x="35" y="174" fill="#334155" class="mono" font-size="11">2026年09月21日(月) 12:45:10</text>
+  <text x="345" y="174" fill="#334155" class="mono right" font-size="11">レジ01 責: 田中[試]</text>
+
+  <!-- Divider -->
+  <line x1="30" y1="185" x2="350" y2="185" stroke="#334155" stroke-width="1.2"/>
+
+  <!-- Item Rows -->
+  <!-- Item 1 -->
+  <text x="35" y="210" fill="#1e293b" class="gothic" font-size="12">おにぎり 紀州南高梅 (軽)</text>
+  <text x="345" y="210" fill="#1e293b" class="mono bold right" font-size="13">¥160</text>
+
+  <!-- Item 2 -->
+  <text x="35" y="235" fill="#1e293b" class="gothic" font-size="12">緑茶 綾の雫 525ml (軽)</text>
+  <text x="345" y="235" fill="#1e293b" class="mono bold right" font-size="13">¥150</text>
+
+  <!-- Item 3 -->
+  <text x="35" y="260" fill="#1e293b" class="gothic" font-size="12">ミックスサンドイッチ (軽)</text>
+  <text x="345" y="260" fill="#1e293b" class="mono bold right" font-size="13">¥340</text>
+
+  <!-- Item 4 -->
+  <text x="35" y="285" fill="#1e293b" class="gothic" font-size="12">ゲルインクボールペン 0.5黒</text>
+  <text x="345" y="285" fill="#1e293b" class="mono bold right" font-size="13">¥130</text>
+
+  <!-- Divider -->
+  <line x1="30" y1="302" x2="350" y2="302" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 2"/>
+
+  <!-- Subtotal -->
+  <text x="35" y="325" fill="#475569" class="gothic" font-size="12">小計 (点数 4点)</text>
+  <text x="345" y="325" fill="#334155" class="mono right" font-size="13">¥780</text>
+
+  <!-- Tax details -->
+  <text x="50" y="345" fill="#64748b" class="gothic" font-size="11">10% 標準対象計</text>
+  <text x="345" y="345" fill="#64748b" class="mono right" font-size="11">¥130 (内税 ¥11)</text>
+
+  <text x="50" y="363" fill="#64748b" class="gothic" font-size="11">8% 軽減税率対象計 ※</text>
+  <text x="345" y="363" fill="#64748b" class="mono right" font-size="11">¥650 (内税 ¥48)</text>
+
+  <!-- Divider Double Line -->
+  <line x1="30" y1="375" x2="350" y2="375" stroke="#1e293b" stroke-width="2"/>
+  <line x1="30" y1="378" x2="350" y2="378" stroke="#1e293b" stroke-width="0.8"/>
+
+  <!-- Total Amount -->
+  <text x="35" y="412" fill="#0f172a" class="gothic bold" font-size="18">合 計 (税込)</text>
+  <text x="345" y="414" fill="#0f172a" class="mono bold right" font-size="26">¥780</text>
+
+  <!-- Divider -->
+  <line x1="30" y1="430" x2="350" y2="430" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 2"/>
+
+  <!-- Payment details -->
+  <text x="35" y="452" fill="#334155" class="gothic" font-size="12">お預かり (現金)</text>
+  <text x="345" y="452" fill="#334155" class="mono right" font-size="13">¥1,000</text>
+
+  <text x="35" y="474" fill="#334155" class="gothic bold" font-size="14">お釣り</text>
+  <text x="345" y="474" fill="#334155" class="mono bold right" font-size="16">¥220</text>
+
+  <text x="35" y="496" fill="#64748b" class="gothic" font-size="11">※ 印は軽減税率(8%)適用商品です</text>
+
+  <!-- Barcode Graphic -->
+  <g transform="translate(45, 520)">
+    <!-- Barcode lines -->
+    <rect x="0" y="0" width="3" height="42" fill="#1e293b"/>
+    <rect x="6" y="0" width="2" height="42" fill="#1e293b"/>
+    <rect x="12" y="0" width="5" height="42" fill="#1e293b"/>
+    <rect x="20" y="0" width="1" height="42" fill="#1e293b"/>
+    <rect x="25" y="0" width="4" height="42" fill="#1e293b"/>
+    <rect x="33" y="0" width="2" height="42" fill="#1e293b"/>
+    <rect x="39" y="0" width="6" height="42" fill="#1e293b"/>
+    <rect x="49" y="0" width="2" height="42" fill="#1e293b"/>
+    <rect x="55" y="0" width="4" height="42" fill="#1e293b"/>
+    <rect x="63" y="0" width="1" height="42" fill="#1e293b"/>
+    <rect x="68" y="0" width="5" height="42" fill="#1e293b"/>
+    <rect x="77" y="0" width="3" height="42" fill="#1e293b"/>
+    <rect x="84" y="0" width="2" height="42" fill="#1e293b"/>
+    <rect x="90" y="0" width="4" height="42" fill="#1e293b"/>
+    <rect x="98" y="0" width="6" height="42" fill="#1e293b"/>
+    <rect x="108" y="0" width="2" height="42" fill="#1e293b"/>
+    <rect x="114" y="0" width="3" height="42" fill="#1e293b"/>
+    <rect x="121" y="0" width="1" height="42" fill="#1e293b"/>
+    <rect x="126" y="0" width="5" height="42" fill="#1e293b"/>
+    <rect x="135" y="0" width="2" height="42" fill="#1e293b"/>
+    <rect x="141" y="0" width="4" height="42" fill="#1e293b"/>
+    <rect x="149" y="0" width="3" height="42" fill="#1e293b"/>
+    <rect x="156" y="0" width="6" height="42" fill="#1e293b"/>
+    <rect x="166" y="0" width="2" height="42" fill="#1e293b"/>
+    <rect x="172" y="0" width="4" height="42" fill="#1e293b"/>
+    <rect x="180" y="0" width="1" height="42" fill="#1e293b"/>
+    <rect x="185" y="0" width="5" height="42" fill="#1e293b"/>
+    <rect x="194" y="0" width="3" height="42" fill="#1e293b"/>
+    <rect x="201" y="0" width="2" height="42" fill="#1e293b"/>
+    <rect x="207" y="0" width="6" height="42" fill="#1e293b"/>
+    <rect x="217" y="0" width="2" height="42" fill="#1e293b"/>
+    <rect x="223" y="0" width="3" height="42" fill="#1e293b"/>
+    <rect x="230" y="0" width="5" height="42" fill="#1e293b"/>
+    <rect x="239" y="0" width="1" height="42" fill="#1e293b"/>
+    <rect x="244" y="0" width="4" height="42" fill="#1e293b"/>
+    <rect x="252" y="0" width="3" height="42" fill="#1e293b"/>
+    <rect x="259" y="0" width="5" height="42" fill="#1e293b"/>
+    <rect x="268" y="0" width="2" height="42" fill="#1e293b"/>
+    <rect x="274" y="0" width="4" height="42" fill="#1e293b"/>
+    <rect x="282" y="0" width="3" height="42" fill="#1e293b"/>
+    <rect x="288" y="0" width="2" height="42" fill="#1e293b"/>
+  </g>
+  <text x="190" y="575" fill="#475569" class="mono center" font-size="11">4 901234 567890 00780</text>
+
+  <!-- Store Footer Greeting -->
+  <text x="190" y="605" fill="#334155" class="gothic bold center" font-size="12">毎度ご来店ありがとうございます</text>
+  <text x="190" y="622" fill="#64748b" class="gothic center" font-size="10">電子マネー・コード決済・各種クレカ対応</text>
+  
+  <!-- Stamp: 検収済 -->
+  <g transform="translate(255, 630)">
+    <circle cx="35" cy="30" r="26" fill="none" stroke="#ef4444" stroke-width="1.8" stroke-dasharray="none"/>
+    <circle cx="35" cy="30" r="23" fill="#ef4444" fill-opacity="0.06"/>
+    <text x="35" y="24" fill="#ef4444" class="gothic bold center" font-size="10">サンプル</text>
+    <line x1="14" y1="28" x2="56" y2="28" stroke="#ef4444" stroke-width="1"/>
+    <text x="35" y="40" fill="#ef4444" class="gothic bold center" font-size="10">領収済</text>
+  </g>
+
+  <!-- Footer Disclaimer -->
+  <text x="190" y="688" fill="#94a3b8" class="gothic center" font-size="9">※ 本レシートはAI動作検証用の架空データです</text>
+</svg>

@@ -12,30 +12,37 @@
   <!-- Background Card -->
   <rect x="20" y="20" width="560" height="360" rx="16" fill="url(#bgGrad)" stroke="#38bdf8" stroke-width="2" filter="url(#shadow)"/>
 
-  <!-- Watermark / Decorative Icon -->
-  <circle cx="510" cy="90" r="50" fill="#38bdf8" fill-opacity="0.06"/>
-  <path d="M490 90 L510 70 L530 90 L520 90 L520 110 L500 110 L500 90 Z" fill="#38bdf8" fill-opacity="0.2"/>
+  <!-- Watermark: SAMPLE / DUMMY -->
+  <text x="300" y="240" fill="#38bdf8" fill-opacity="0.07" font-family="'Inter', -apple-system, sans-serif" font-size="70" font-weight="900" text-anchor="middle" transform="rotate(-15 300 240)">SAMPLE / DUMMY</text>
+
+  <!-- Dummy Badge Top Right -->
+  <rect x="420" y="38" width="130" height="26" rx="6" fill="#f59e0b" fill-opacity="0.15" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="485" y="55" fill="#fbbf24" font-family="'Inter', sans-serif" font-size="11" font-weight="800" text-anchor="middle">⚠️ 検証用ダミー画像</text>
 
   <!-- Header -->
-  <text x="50" y="70" fill="#38bdf8" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="700" letter-spacing="2">ELECTRONIC INVOICE / RECEIPT</text>
-  <text x="50" y="105" fill="#f8fafc" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="24" font-weight="800">領収書 (Cloud Infrastructure)</text>
-  <line x1="50" y1="125" x2="550" y2="125" stroke="#334155" stroke-width="1.5"/>
+  <text x="50" y="65" fill="#38bdf8" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="800" letter-spacing="2">ELECTRONIC INVOICE / RECEIPT [FICTIONAL SAMPLE]</text>
+  <text x="50" y="100" fill="#f8fafc" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="22" font-weight="800">領収書 (Cloud Infrastructure) 【ダミー】</text>
+  <line x1="50" y1="120" x2="550" y2="120" stroke="#334155" stroke-width="1.5"/>
 
   <!-- Details -->
-  <text x="50" y="160" fill="#94a3b8" font-family="'Inter', sans-serif" font-size="13">発行元: クラウドホスティング株式会社 (Cloud Lab Corp.)</text>
-  <text x="50" y="185" fill="#94a3b8" font-family="'Inter', sans-serif" font-size="13">宛名: 株式会社テクノロジー・ソリューションズ 御中</text>
-  <text x="50" y="210" fill="#94a3b8" font-family="'Inter', sans-serif" font-size="13">発行日: 2026年09月15日 / No. INV-202609-8842</text>
+  <text x="50" y="155" fill="#94a3b8" font-family="'Inter', sans-serif" font-size="13">発行元: 【架空】サンプルクラウド株式会社 (Fictional Cloud Lab Inc.)</text>
+  <text x="50" y="180" fill="#94a3b8" font-family="'Inter', sans-serif" font-size="13">宛名: 【架空】サンプル商事株式会社 御中 (Dummy Sample Corp.)</text>
+  <text x="50" y="205" fill="#94a3b8" font-family="'Inter', sans-serif" font-size="13">発行日: 2026年09月15日 / 伝票番号: DUMMY-INV-202609-0001</text>
 
   <!-- Items Box -->
-  <rect x="50" y="230" width="500" height="60" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1"/>
-  <text x="70" y="255" fill="#e2e8f0" font-family="'Inter', sans-serif" font-size="14" font-weight="600">但し: AWS / クラウドサーバー本番環境月額利用料 (EC2/RDS) 及び 保守管理費用として</text>
-  <text x="70" y="275" fill="#94a3b8" font-family="'Inter', sans-serif" font-size="12">適用期間: 2026/08/01 - 2026/08/31 (100% 稼働 SLA 達成)</text>
+  <rect x="50" y="225" width="500" height="60" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1"/>
+  <text x="70" y="250" fill="#e2e8f0" font-family="'Inter', sans-serif" font-size="14" font-weight="600">但し: AWS / クラウドサーバー本番環境月額利用料 (EC2/RDS) 及び 保守管理費用として</text>
+  <text x="70" y="270" fill="#94a3b8" font-family="'Inter', sans-serif" font-size="12">適用期間: 2026/08/01 - 2026/08/31 (※AI判定検証用のサンプル明細です)</text>
 
   <!-- Total Amount -->
-  <text x="50" y="335" fill="#94a3b8" font-family="'Inter', sans-serif" font-size="14">ご請求金額 (税込):</text>
-  <text x="190" y="340" fill="#38bdf8" font-family="'Inter', sans-serif" font-size="30" font-weight="900">¥128,400-</text>
+  <text x="50" y="330" fill="#94a3b8" font-family="'Inter', sans-serif" font-size="14">ご請求金額 (税込):</text>
+  <text x="190" y="335" fill="#38bdf8" font-family="'Inter', sans-serif" font-size="30" font-weight="900">¥128,400-</text>
+
+  <!-- Notice footer -->
+  <text x="50" y="362" fill="#64748b" font-family="'Inter', sans-serif" font-size="10">※ 本画像は動作確認用の架空・ダミーデータです。実在の人物・企業・団体・サービスとは一切関係ありません。</text>
 
   <!-- Stamp -->
-  <rect x="460" y="295" width="80" height="55" rx="6" fill="#dc2626" fill-opacity="0.1" stroke="#ef4444" stroke-width="1.5"/>
-  <text x="500" y="328" fill="#ef4444" font-family="'Inter', sans-serif" font-size="13" font-weight="700" text-anchor="middle">領収済</text>
+  <rect x="460" y="295" width="80" height="55" rx="6" fill="#dc2626" fill-opacity="0.12" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="500" y="322" fill="#ef4444" font-family="'Inter', sans-serif" font-size="12" font-weight="800" text-anchor="middle">サンプル</text>
+  <text x="500" y="338" fill="#ef4444" font-family="'Inter', sans-serif" font-size="11" font-weight="700" text-anchor="middle">領収済</text>
 </svg>

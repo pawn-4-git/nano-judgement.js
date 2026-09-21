@@ -64,7 +64,7 @@
         return {
           available: false,
           status: "no_api",
-          message: "Chrome Prompt API (window.LanguageModel または window.ai.languageModel) が見つかりません。最新の Chrome で chrome://flags/#prompt-api-for-gemini-nano を有効にしてください。",
+          message: "Chrome Prompt API (window.LanguageModel または window.ai.languageModel) が見つかりません。最新版の Google Chrome をご利用いただくか、chrome://flags/#prompt-api-for-gemini-nano をご確認ください。",
         };
       }
 
@@ -347,10 +347,12 @@
       }
 
       const presetDict = {
-        'sample-receipt': 'ELECTRONIC INVOICE / RECEIPT 領収書 (Cloud Infrastructure) 発行元: クラウドホスティング株式会社 宛名: 株式会社テクノロジー・ソリューションズ 御中 但し: AWS / クラウドサーバー本番環境月額利用料 (EC2/RDS) 及び 保守管理費用として 請求金額: ¥128,400',
-        'sample-incident': 'CRITICAL INCIDENT ALERT システム障害報告: 本番DB接続タイムアウト P0-緊急 影響範囲: 全ユーザーの決済トランザクション処理が完全に停止中 [FATAL] ConnectionPoolExhausted [ERROR] Transaction rollback failed: Deadlock detected payments_v2 至急オンコール対応要請 最優先障害対応 / 緊急保守',
-        'sample-cafe': 'OFFICIAL RECEIPT / 会計レシート スターライト・カフェ 渋谷店 日時: 2026年09月20日 伝票番号: #9042 用途: クライアント企業担当者様との新規案件要件定義・打ち合わせ喫茶代 但し: 外部パートナーとの商談・打合せ費用として（会議費・交際費） 合計金額: ¥2,480',
-        'sample-stationery': 'TAX INVOICE / 領収明細書 ヨドバシ・オフィスサプライ (Stationery & PC) 発行日: 2026年09月18日 購入明細: ロジクール製エルゴノミクスマウス, USB-C高速ハブ, A4コピー用紙 5束 用途: 開発環境整備に伴うPC周辺アクセサリ及び日常事務用品の補充 但し: 業務開発用PC周辺機器および事務用品消耗品費として 区分: 消耗品費 合計金額: ¥14,850'
+        'sample-receipt': '【検証用ダミー画像】ELECTRONIC INVOICE / RECEIPT 領収書 (Cloud Infrastructure) 【ダミー】 発行元: 【架空】サンプルクラウド株式会社 (Fictional Cloud Lab Inc.) 宛名: 【架空】サンプル商事株式会社 御中 (Dummy Sample Corp.) 発行日: 2026年09月15日 伝票番号: DUMMY-INV-202609-0001 但し: AWS / クラウドサーバー本番環境月額利用料 (EC2/RDS) 及び 保守管理費用として 請求金額: ¥128,400 ※本画像は動作確認用の架空・ダミーデータです。',
+        'sample-thermal-receipt': '【検証用ダミー画像】領収証 【架空】サンプルマート 六本木ITセンター前テスト店 登録番号: T1234567890123 (適格簡易請求書) 領収証 No. 20260921-8812 2026年09月21日(月) 12:45:10 レジ01 おにぎり 紀州南高梅 (軽) ¥160 緑茶 綾の雫 525ml (軽) ¥150 ミックスサンドイッチ (軽) ¥340 ゲルインクボールペン 0.5黒 ¥130 小計 4点 ¥780 10%標準対象計 ¥130 (内税 ¥11) 8%軽減税率対象計 ¥650 (内税 ¥48) 合計 (税込) ¥780 お預かり (現金) ¥1,000 お釣り ¥220 ※本画像はAI動作検証用の架空データです。',
+        'sample-handwritten-receipt': '【検証用ダミー画像】領収証 No. DUMMY-2026-9081 発行日: 2026年 9月 21日 宛名: 【架空】サンプル総研株式会社 御中 金額: ¥88,000- (消費税込) 但し: クラウド基盤設計・セキュリティ監査支援業務費用として 上記正に領収いたしました 内訳: 税抜金額 ¥80,000 消費税等 (10%) ¥8,000 収入印紙200円貼付 発行元: 【架空】株式会社サンプルソリューションズ 〒100-0001 東京都千代田区大手町1-1-1 登録番号: T9876543210987 ※本画像はAI動作確認用の架空・ダミー領収証用紙です。',
+        'sample-incident': '【検証用ダミー画像】INCIDENT REPORT 【架空障害】検証用ダミー障害報告 (DBタイムアウト) 発生検知: 2026-09-21 07:15:22 JST 監視ツール: 架空APM監視システム 影響範囲: 【架空システム】全ユーザーの決済トランザクション処理が一時停止 [DUMMY-FATAL] ConnectionPoolExhausted [DUMMY-ERROR] Transaction rollback simulated 至急オンコール対応要請 対応区分: 最優先障害対応 / 緊急保守・フェイルオーバー実行（訓練用） ※本画像は動作確認用の架空・ダミーデータです。',
+        'sample-cafe': '【検証用ダミー画像】OFFICIAL RECEIPT 【架空喫茶】サンプルカフェ 渋谷テスト店【ダミー】 日時: 2026年09月20日 伝票番号: DUMMY-CAFE-9042 用途: 【架空】クライアント担当者様との新規案件要件定義・打合せ喫茶代 但し: 外部パートナーとの商談・打合せ費用として（会議費・交際費） 合計金額: ¥2,480 ※本画像は動作確認用の架空・ダミーデータです。',
+        'sample-stationery': '【検証用ダミー画像】TAX INVOICE 【架空文具】サンプルオフィスサプライ【ダミー】 発行日: 2026年09月18日 領収証番号: DUMMY-ST-88901 購入明細: 【架空】エルゴノミクスマウス, USB-C高速ハブ, A4コピー用紙 5束 用途: 開発検証環境整備に伴うPC周辺アクセサリ及び日常事務用品の補充 但し: 業務開発用PC周辺機器および事務用品消耗品費として 区分: 消耗品費 合計金額: ¥14,850 ※本画像は動作確認用の架空・ダミーデータです。'
       };
 
       const sourceName = img.getAttribute("data-file-name") || (img.src ? img.src.split("/").pop().split("?")[0] : "");

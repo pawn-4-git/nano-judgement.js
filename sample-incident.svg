@@ -12,30 +12,32 @@
   <!-- Background Card -->
   <rect x="20" y="20" width="560" height="360" rx="16" fill="url(#bgAlertGrad)" stroke="#ef4444" stroke-width="2" filter="url(#alertShadow)"/>
 
-  <!-- Warning Icon -->
-  <circle cx="65" cy="80" r="24" fill="#ef4444" fill-opacity="0.2"/>
-  <text x="65" y="88" fill="#ef4444" font-family="'Inter', sans-serif" font-size="24" font-weight="900" text-anchor="middle">!</text>
+  <!-- Watermark: SAMPLE / DUMMY -->
+  <text x="300" y="240" fill="#ef4444" fill-opacity="0.08" font-family="'Inter', -apple-system, sans-serif" font-size="70" font-weight="900" text-anchor="middle" transform="rotate(-15 300 240)">SAMPLE / DUMMY</text>
+
+  <!-- Dummy Badge Top Right -->
+  <rect x="420" y="38" width="130" height="26" rx="6" fill="#ef4444" fill-opacity="0.25" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="485" y="55" fill="#fca5a5" font-family="'Inter', sans-serif" font-size="11" font-weight="800" text-anchor="middle">⚠️ 検証用ダミー画像</text>
 
   <!-- Header -->
-  <text x="105" y="72" fill="#ef4444" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="800" letter-spacing="2">CRITICAL INCIDENT ALERT</text>
-  <text x="105" y="98" fill="#f8fafc" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="800">システム障害報告: 本番DB接続タイムアウト</text>
-  <line x1="50" y1="125" x2="550" y2="125" stroke="#7f1d1d" stroke-width="1.5"/>
-
-  <!-- Status Badge -->
-  <rect x="460" y="55" width="85" height="30" rx="6" fill="#dc2626"/>
-  <text x="502" y="75" fill="#ffffff" font-family="'Inter', sans-serif" font-size="12" font-weight="800" text-anchor="middle">P0-緊急</text>
+  <text x="50" y="65" fill="#ef4444" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="800" letter-spacing="2">INCIDENT REPORT [FICTIONAL SAMPLE]</text>
+  <text x="50" y="100" fill="#f8fafc" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="800">【架空障害】検証用ダミー障害報告 (DBタイムアウト)</text>
+  <line x1="50" y1="120" x2="550" y2="120" stroke="#7f1d1d" stroke-width="1.5"/>
 
   <!-- Details -->
-  <text x="50" y="160" fill="#fca5a5" font-family="'Inter', sans-serif" font-size="13">発生検知: 2026-09-21 07:15:22 JST / 監視ツール: Datadog APM</text>
-  <text x="50" y="185" fill="#fca5a5" font-family="'Inter', sans-serif" font-size="13">影響範囲: 全ユーザーの決済トランザクション処理が完全に停止中</text>
-  <text x="50" y="210" fill="#fca5a5" font-family="'Inter', sans-serif" font-size="13">ステータス: エラー率 98.4% (HTTP 500 / 504 Gateway Timeout)</text>
+  <text x="50" y="155" fill="#fca5a5" font-family="'Inter', sans-serif" font-size="13">発生検知: 2026-09-21 07:15:22 JST / 監視ツール: 架空APM監視システム</text>
+  <text x="50" y="180" fill="#fca5a5" font-family="'Inter', sans-serif" font-size="13">影響範囲: 【架空システム】全ユーザーの決済トランザクション処理が一時停止</text>
+  <text x="50" y="205" fill="#fca5a5" font-family="'Inter', sans-serif" font-size="13">ステータス: エラー率 98.4% (HTTP 500 / 504) ※テスト用の模擬ログ</text>
 
   <!-- Error Log Box -->
-  <rect x="50" y="230" width="500" height="75" rx="8" fill="#0c0a09" stroke="#991b1b" stroke-width="1"/>
-  <text x="70" y="255" fill="#f87171" font-family="'Courier New', monospace" font-size="12">[FATAL] ConnectionPoolExhausted: Unable to acquire connection from pool</text>
-  <text x="70" y="273" fill="#f87171" font-family="'Courier New', monospace" font-size="12">[ERROR] Transaction rollback failed: Deadlock detected on payments_v2 table</text>
-  <text x="70" y="291" fill="#cbd5e1" font-family="'Inter', sans-serif" font-size="12">至急オンコール対応要請: インフラ担当およびリードエンジニアを招集</text>
+  <rect x="50" y="225" width="500" height="75" rx="8" fill="#0c0a09" stroke="#991b1b" stroke-width="1"/>
+  <text x="70" y="248" fill="#f87171" font-family="'Courier New', monospace" font-size="12">[DUMMY-FATAL] ConnectionPoolExhausted: Mock pool error for AI testing</text>
+  <text x="70" y="266" fill="#f87171" font-family="'Courier New', monospace" font-size="12">[DUMMY-ERROR] Transaction rollback simulated: Lock detected on test_table</text>
+  <text x="70" y="286" fill="#cbd5e1" font-family="'Inter', sans-serif" font-size="12">至急オンコール対応要請: インフラ担当およびリードエンジニアを招集【模擬演習】</text>
 
-  <!-- Action Advice -->
-  <text x="50" y="345" fill="#ef4444" font-family="'Inter', sans-serif" font-size="15" font-weight="700">対応区分: 最優先障害対応 / 緊急保守・フェイルオーバー実行</text>
+  <!-- Total Amount / Action Advice -->
+  <text x="50" y="335" fill="#ef4444" font-family="'Inter', sans-serif" font-size="14" font-weight="700">対応区分: 最優先障害対応 / 緊急保守・フェイルオーバー実行（訓練用）</text>
+
+  <!-- Notice footer -->
+  <text x="50" y="362" fill="#f87171" fill-opacity="0.8" font-family="'Inter', sans-serif" font-size="10">※ 本画像は動作確認用の架空・ダミーデータです。実在の障害・システム・企業とは一切関係ありません。</text>
 </svg>

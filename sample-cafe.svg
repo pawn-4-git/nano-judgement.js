@@ -12,30 +12,37 @@
   <!-- Background Card -->
   <rect x="20" y="20" width="560" height="360" rx="16" fill="url(#bgCafeGrad)" stroke="#f59e0b" stroke-width="2" filter="url(#cafeShadow)"/>
 
-  <!-- Coffee Icon -->
-  <circle cx="510" cy="85" r="40" fill="#f59e0b" fill-opacity="0.1"/>
-  <text x="510" y="98" fill="#f59e0b" font-family="'Inter', sans-serif" font-size="36" text-anchor="middle">☕</text>
+  <!-- Watermark: SAMPLE / DUMMY -->
+  <text x="300" y="240" fill="#f59e0b" fill-opacity="0.07" font-family="'Inter', -apple-system, sans-serif" font-size="70" font-weight="900" text-anchor="middle" transform="rotate(-15 300 240)">SAMPLE / DUMMY</text>
+
+  <!-- Dummy Badge Top Right -->
+  <rect x="420" y="38" width="130" height="26" rx="6" fill="#f59e0b" fill-opacity="0.15" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="485" y="55" fill="#fbbf24" font-family="'Inter', sans-serif" font-size="11" font-weight="800" text-anchor="middle">⚠️ 検証用ダミー画像</text>
 
   <!-- Header -->
-  <text x="50" y="70" fill="#f59e0b" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="700" letter-spacing="2">OFFICIAL RECEIPT / 会計レシート</text>
-  <text x="50" y="105" fill="#f8fafc" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="24" font-weight="800">スターライト・カフェ 渋谷店 (Cafe Receipt)</text>
-  <line x1="50" y1="125" x2="550" y2="125" stroke="#44403c" stroke-width="1.5"/>
+  <text x="50" y="65" fill="#f59e0b" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="800" letter-spacing="2">OFFICIAL RECEIPT [FICTIONAL SAMPLE]</text>
+  <text x="50" y="100" fill="#f8fafc" font-family="'Inter', -apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="800">【架空喫茶】サンプルカフェ 渋谷テスト店【ダミー】</text>
+  <line x1="50" y1="120" x2="550" y2="120" stroke="#44403c" stroke-width="1.5"/>
 
   <!-- Details -->
-  <text x="50" y="160" fill="#a8a29e" font-family="'Inter', sans-serif" font-size="13">日時: 2026年09月20日 15:30 / 伝票番号: #9042</text>
-  <text x="50" y="185" fill="#a8a29e" font-family="'Inter', sans-serif" font-size="13">用途: クライアント企業担当者様との新規案件要件定義・打ち合わせ喫茶代</text>
-  <text x="50" y="210" fill="#a8a29e" font-family="'Inter', sans-serif" font-size="13">参加人数: 2名 (ブレンドコーヒー × 2, 本日のスイーツセット × 1)</text>
+  <text x="50" y="155" fill="#a8a29e" font-family="'Inter', sans-serif" font-size="13">日時: 2026年09月20日 15:30 / 伝票番号: DUMMY-CAFE-9042</text>
+  <text x="50" y="180" fill="#a8a29e" font-family="'Inter', sans-serif" font-size="13">用途: 【架空】クライアント担当者様との新規案件要件定義・打合せ喫茶代</text>
+  <text x="50" y="205" fill="#a8a29e" font-family="'Inter', sans-serif" font-size="13">参加人数: 2名 (ブレンドコーヒー × 2, 本日のスイーツセット × 1)</text>
 
   <!-- Items Box -->
-  <rect x="50" y="230" width="500" height="60" rx="8" fill="#1c1917" stroke="#57534e" stroke-width="1"/>
-  <text x="70" y="255" fill="#e7e5e4" font-family="'Inter', sans-serif" font-size="14" font-weight="600">但し: 外部パートナーとの商談・打合せ費用として（会議費・交際費）</text>
-  <text x="70" y="275" fill="#a8a29e" font-family="'Inter', sans-serif" font-size="12">支払方法: クレジットカード一括払い (Corp Card)</text>
+  <rect x="50" y="225" width="500" height="60" rx="8" fill="#1c1917" stroke="#57534e" stroke-width="1"/>
+  <text x="70" y="250" fill="#e7e5e4" font-family="'Inter', sans-serif" font-size="14" font-weight="600">但し: 外部パートナーとの商談・打合せ費用として（会議費・交際費）</text>
+  <text x="70" y="270" fill="#a8a29e" font-family="'Inter', sans-serif" font-size="12">支払方法: クレジットカード一括払い (Corp Card) ※AI検証用ダミーレシート</text>
 
   <!-- Total Amount -->
-  <text x="50" y="335" fill="#a8a29e" font-family="'Inter', sans-serif" font-size="14">合計金額 (税込):</text>
-  <text x="180" y="340" fill="#fbbf24" font-family="'Inter', sans-serif" font-size="30" font-weight="900">¥2,480-</text>
+  <text x="50" y="330" fill="#a8a29e" font-family="'Inter', sans-serif" font-size="14">合計金額 (税込):</text>
+  <text x="180" y="335" fill="#fbbf24" font-family="'Inter', sans-serif" font-size="30" font-weight="900">¥2,480-</text>
+
+  <!-- Notice footer -->
+  <text x="50" y="362" fill="#78716c" font-family="'Inter', sans-serif" font-size="10">※ 本画像は動作確認用の架空・ダミーデータです。実在の店舗・人物・団体とは一切関係ありません。</text>
 
   <!-- Stamp -->
   <rect x="460" y="295" width="80" height="55" rx="6" fill="#f59e0b" fill-opacity="0.1" stroke="#f59e0b" stroke-width="1.5"/>
-  <text x="500" y="328" fill="#fbbf24" font-family="'Inter', sans-serif" font-size="13" font-weight="700" text-anchor="middle">受領済</text>
+  <text x="500" y="322" fill="#fbbf24" font-family="'Inter', sans-serif" font-size="12" font-weight="800" text-anchor="middle">サンプル</text>
+  <text x="500" y="338" fill="#fbbf24" font-family="'Inter', sans-serif" font-size="11" font-weight="700" text-anchor="middle">受領済</text>
 </svg>

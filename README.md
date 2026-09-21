@@ -141,6 +141,76 @@ console.log("認識テキスト:", transcript);
 
 ---
 
+### 実践的な実装例（コピペで動作）
+
+#### 1. 📷 領収書・レシート画像のドラッグ＆ドロップ自動仕訳
+```html
+<div id="dropZone" style="border: 2px dashed #38bdf8; padding: 2rem; text-align: center; cursor: pointer;">
+  <p>ここに領収書画像をドラッグ＆ドロップ</p>
+  <input type="file" id="receiptInput" accept="image/*" style="display: none;">
+</div>
+
+<select id="accountCategory">
+  <option value="travel" data-description="電車・タクシー・航空券等の移動交通費">旅費交通費</option>
+  <option value="supplies" data-description="PC周辺機器・文具・消耗品">消耗品費</option>
+  <option value="entertainment" data-description="会食・カフェでの打合せ代">会議接待費</option>
+  <option value="other" data-description="その他の経費">その他</option>
+</select>
+
+<script type="module">
+  import { NanoJudgement } from './nano-judgement.js';
+  const judgement = new NanoJudgement();
+  const selectEl = document.getElementById('accountCategory');
+
+  document.getElementById('receiptInput').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    // Fileオブジェクトをそのまま渡すだけで自動判定＆セレクトボックス選択！
+    const result = await judgement.judge(selectEl, file, { includeReason: true });
+    console.log('仕訳結果:', selectEl.value, result.summaryReason);
+  });
+</script>
+```
+
+#### 2. 📹 Webカメラ・スマホ撮影レシートの即時キャプチャ判定
+```javascript
+// カメラから Canvas 経由で Blob を取り出して直接判定
+canvas.toBlob(async (blob) => {
+  const result = await judgement.judge('#accountCategory', blob);
+  console.log('撮影レシートの判定結果:', result.topChoice.name);
+}, 'image/jpeg', 0.9);
+```
+
+#### 3. 🎙️ マイク音声でのお問い合わせ優先度判定（ノーコード HTML 属性）
+```html
+<!-- ボタンを押すだけでマイクが起動し、話した内容から緊急度（P0〜P3）を自動判定 -->
+<button type="button"
+        data-nano-judgement-speech
+        data-judge-select="#prioritySelect"
+        data-judge-target="#resultCard"
+        data-judge-reason="true">
+  🎙️ 声で話して優先度を判定
+</button>
+
+<select id="prioritySelect">
+  <option value="p0" data-description="本番障害、決済停止、全ユーザー影響">P0-緊急</option>
+  <option value="p1" data-description="主要機能の不具合">P1-高</option>
+  <option value="p2" data-description="軽微な質問・相談">P2-中</option>
+  <option value="other" data-description="その他">その他</option>
+</select>
+<div id="resultCard"></div>
+```
+
+#### 4. 🎵 音声ファイル（.mp3, .wav, .m4a）の直接投入判定
+```javascript
+// コールセンターの録音データなどをそのまま投入
+const audioFile = audioInput.files[0];
+const result = await judgement.judge(categories, audioFile, { includeReason: true });
+console.log('音声仕訳結果:', result.topChoice.name);
+```
+
+---
+
 ## HTML属性オプション一覧
 
 | 属性 | 説明 | 例 |
@@ -192,13 +262,18 @@ const judgement = new NanoJudgement({
 
 ---
 
-## Chrome での事前準備（Prompt API の有効化）
+## Chrome での事前準備（Prompt API 利用ガイド）
 
-1. 最新版の **Google Chrome** を起動
-2. アドレスバーに `chrome://flags` を入力して開く
-3. 以下のフラグを設定：
-   - `#prompt-api-for-gemini-nano` → **Enabled**
-   - `#prompt-api-for-gemini-nano-multimodal-input` → **Enabled**（画像・音声ファイルを直接渡すマルチモーダル機能）
-   - `#optimization-guide-on-device-model` → **Enabled BypassPerfRequirement**
-4. Chrome を再起動
-5. `chrome://components` を開き、**Optimization Guide On Device Model** の「アップデートを確認」をクリックしてモデルがダウンロードされていることを確認（バージョン番号が表示されていれば完了）
+Prompt API は通常の **Google Chrome（最新版）** に標準統合されています。最新版をご利用であれば**事前のフラグ変更は原則不要**でそのまま動作します。
+
+1. **Google Chrome を最新版に更新**
+   - 特別な flags の変更を行わずにそのまま Prompt API をご利用いただけます。
+2. **モデルのダウンロード（初回自動処理）**
+   - 初回判定時にオンデバイスモデル（Gemini Nano / 約1〜2GB）が自動ダウンロードされます。
+   - 事前に手動でダウンロードを完了させたい場合は、[`chrome://components`](chrome://components) を開き、**Optimization Guide On Device Model** の「アップデートを確認」をクリックしてください（バージョン番号が表示されれば準備完了）。
+3. **（補足）動作しない場合・先行機能（マルチモーダル直接渡し等）**
+   - 企業の制限ポリシー等で利用できない場合、あるいは画像・音声ファイルを直接渡すマルチモーダル先行入力を試したい場合は、[`chrome://flags`](chrome://flags) を開き以下をご確認ください：
+     - `#prompt-api-for-gemini-nano` → **Enabled**
+     - `#prompt-api-for-gemini-nano-multimodal-input` → **Enabled**（画像・音声ファイルの直接渡し用）
+     - `#optimization-guide-on-device-model` → **Enabled BypassPerfRequirement**
+     - `#translation-api` → **Enabled**（判断理由の多言語自動翻訳用）

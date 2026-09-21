@@ -667,10 +667,30 @@
         Chrome 組み込みの Prompt API (window.ai) を使用し、文脈と選択肢から最も可能性・妥当性が高い選択肢をブラウザ内で安全・高速に判定します。
       </p>
 
+      <!-- JavaScript ダウンロードボタン群（ヒーローエリア） -->
+      <div style="display: flex; gap: 0.8rem; justify-content: center; align-items: center; flex-wrap: wrap; margin-bottom: 1.8rem;">
+        <a href="nano-judgement.global.js" download="nano-judgement.global.js" class="btn" style="text-decoration: none; padding: 0.65rem 1.3rem; font-size: 0.92rem; font-weight: 700; border-radius: 10px; background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%); color: #090d16; box-shadow: 0 4px 16px rgba(56, 189, 248, 0.35); display: inline-flex; align-items: center; gap: 0.5rem; transition: transform 0.15s, box-shadow 0.15s;">
+          <span style="font-size: 1.15rem;">📥</span>
+          <span>nano-judgement.global.js をダウンロード</span>
+          <span style="font-size: 0.72rem; padding: 0.15rem 0.45rem; background: rgba(9, 13, 22, 0.25); border-radius: 4px; color: #090d16; font-weight: 800;">&lt;script&gt;タグ用</span>
+        </a>
+        <a href="nano-judgement.js" download="nano-judgement.js" class="btn btn-secondary" style="text-decoration: none; padding: 0.65rem 1.25rem; font-size: 0.92rem; font-weight: 600; border-radius: 10px; border: 1px solid rgba(192, 132, 252, 0.45); color: var(--accent-purple); background: rgba(192, 132, 252, 0.12); display: inline-flex; align-items: center; gap: 0.5rem; transition: background 0.15s, border-color 0.15s;">
+          <span style="font-size: 1.15rem;">📦</span>
+          <span>nano-judgement.js をダウンロード</span>
+          <span style="font-size: 0.72rem; padding: 0.15rem 0.45rem; background: rgba(192, 132, 252, 0.2); border-radius: 4px; color: var(--accent-purple); font-weight: 700;">ESM版</span>
+        </a>
+      </div>
+
       <!-- 実装方法・セクションへのクイックナビゲーション -->
       <nav class="quick-nav" aria-label="クイックナビゲーション">
-        <a href="#implementation-guide" class="nav-btn nav-btn-highlight">
+        <a href="#download-section" class="nav-btn nav-btn-highlight">
+          <span>📥</span> JSダウンロード
+        </a>
+        <a href="#implementation-guide" class="nav-btn">
           <span>📖</span> 実装方法・コード例
+        </a>
+        <a href="#implementation-guide" class="nav-btn" onclick="document.querySelector('[data-tab=\'tab-image-ocr\']')?.click()">
+          <span>📷🎙️</span> 画像・音声の実装例
         </a>
         <a href="#implementation-guide" class="nav-btn" onclick="document.querySelector('[data-tab=\'tab-output-dom\']')?.click()">
           <span>🎨</span> 出力データと画面反映
@@ -689,6 +709,60 @@
         </a>
       </nav>
     </header>
+
+    <!-- JavaScript ダウンロードセクションカード -->
+    <div class="card" id="download-section" style="background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(192, 132, 252, 0.08) 100%); border: 1px solid rgba(56, 189, 248, 0.28); margin-bottom: 1.8rem;">
+      <div class="card-title" style="margin-bottom: 0.8rem;">
+        <span style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.3rem;">📦</span>
+          <span>JavaScript ライブラリのダウンロード</span>
+        </span>
+        <span class="badge badge-ok" style="font-size: 0.75rem;">無料 / 商用利用可</span>
+      </div>
+      <p style="font-size: 0.92rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.2rem;">
+        ご利用のプロジェクト構成（通常のHTML、または Vite / Next.js / webpack 等のモダンフロントエンド）に合わせて、以下の2種類のいずれかを直接ダウンロードして読み込んでください。
+      </p>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem;">
+        <!-- グローバル版カード -->
+        <div style="background: rgba(9, 13, 22, 0.6); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 1.2rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span style="font-weight: 700; color: var(--primary); font-size: 1rem;">nano-judgement.global.js</span>
+              <span class="badge" style="background: rgba(56, 189, 248, 0.15); color: var(--primary); font-size: 0.7rem;">一番おすすめ</span>
+            </div>
+            <p style="font-size: 0.84rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 0.8rem;">
+              ビルドツール不要。<code>&lt;script src="nano-judgement.global.js"&gt;&lt;/script&gt;</code> で読み込むだけで、属性ベースの自動判定や <code>window.NanoJudgement</code> が即座に使えるスタンドアロン版です。
+            </p>
+            <div style="background: rgba(0, 0, 0, 0.35); padding: 0.5rem 0.8rem; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: #94a3b8; margin-bottom: 1rem;">
+              &lt;script src="./nano-judgement.global.js"&gt;&lt;/script&gt;
+            </div>
+          </div>
+          <a href="nano-judgement.global.js" download="nano-judgement.global.js" class="btn" style="text-decoration: none; text-align: center; justify-content: center; padding: 0.6rem 1rem; font-size: 0.88rem; font-weight: 700; background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%); color: #090d16; border-radius: 8px;">
+            ⬇️ nano-judgement.global.js を保存
+          </a>
+        </div>
+
+        <!-- ES Modules版カード -->
+        <div style="background: rgba(9, 13, 22, 0.6); border: 1px solid rgba(192, 132, 252, 0.25); border-radius: 12px; padding: 1.2rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span style="font-weight: 700; color: var(--accent-purple); font-size: 1rem;">nano-judgement.js</span>
+              <span class="badge" style="background: rgba(192, 132, 252, 0.15); color: var(--accent-purple); font-size: 0.7rem;">ES Modules (ESM)</span>
+            </div>
+            <p style="font-size: 0.84rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 0.8rem;">
+              モダンな JavaScript 開発用。<code>import { judge } from './nano-judgement.js'</code> で個別の判定関数や初期化メソッドを直接インポートして制御したい場合に最適です。
+            </p>
+            <div style="background: rgba(0, 0, 0, 0.35); padding: 0.5rem 0.8rem; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: #94a3b8; margin-bottom: 1rem;">
+              import { judge } from './nano-judgement.js';
+            </div>
+          </div>
+          <a href="nano-judgement.js" download="nano-judgement.js" class="btn btn-secondary" style="text-decoration: none; text-align: center; justify-content: center; padding: 0.6rem 1rem; font-size: 0.88rem; font-weight: 600; border: 1px solid rgba(192, 132, 252, 0.4); color: var(--accent-purple); background: rgba(192, 132, 252, 0.12); border-radius: 8px;">
+            ⬇️ nano-judgement.js を保存
+          </a>
+        </div>
+      </div>
+    </div>
 
     <!-- API ステータスカード -->
     <div class="card" id="apiStatusCard">
@@ -830,12 +904,14 @@
 
         <!-- サンプル画像プリセット ＆ ユーザー画像変更ボタン -->
         <div style="display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap; margin-bottom:0.8rem;">
-          <span style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">サンプル画像プリセット:</span>
-          <button type="button" class="btn-preset btn-image-preset active" data-src="sample-receipt.png" data-name="クラウドサーバー領収書 (PNG)">🧾 クラウド領収書 <span style="font-size:0.65rem; opacity:0.8;">[PNG]</span></button>
-          <button type="button" class="btn-preset btn-image-preset" data-src="sample-stationery.png" data-name="事務用品・PC周辺消耗品レシート (PNG)">📦 事務用品レシート <span style="font-size:0.65rem; opacity:0.8;">[PNG]</span></button>
-          <button type="button" class="btn-preset btn-image-preset" data-src="sample-incident.jpg" data-name="システム障害アラートスクショ (JPEG)">🚨 障害アラート <span style="font-size:0.65rem; opacity:0.8;">[JPEG]</span></button>
-          <button type="button" class="btn-preset btn-image-preset" data-src="sample-cafe.jpg" data-name="カフェ打合せ会計レシート (JPEG)">☕ カフェ打合せ <span style="font-size:0.65rem; opacity:0.8;">[JPEG]</span></button>
-          <button type="button" class="btn-preset btn-image-preset" data-src="sample-receipt.svg" data-name="クラウドサーバー領収書 (SVG)">📄 サーバー領収書 <span style="font-size:0.65rem; opacity:0.8;">[SVG]</span></button>
+          <span style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">サンプル画像プリセット（すべて架空・ダミー）:</span>
+          <button type="button" class="btn-preset btn-image-preset" data-src="sample-thermal-receipt.png" data-name="【架空】感熱紙レシート (コンビニ・スーパー風 PNG)">🧾 リアル感熱紙レシート【ダミー】 <span style="font-size:0.65rem; opacity:0.8;">[PNG]</span></button>
+          <button type="button" class="btn-preset btn-image-preset" data-src="sample-handwritten-receipt.png" data-name="【架空】伝統的紙領収証 (印紙・角印付き PNG)">📜 伝統的紙領収証【ダミー】 <span style="font-size:0.65rem; opacity:0.8;">[PNG]</span></button>
+          <button type="button" class="btn-preset btn-image-preset active" data-src="sample-receipt.png" data-name="【架空】クラウドサーバー領収書 (PNG)">☁️ クラウド領収書【ダミー】 <span style="font-size:0.65rem; opacity:0.8;">[PNG]</span></button>
+          <button type="button" class="btn-preset btn-image-preset" data-src="sample-stationery.png" data-name="【架空】事務用品・PC周辺消耗品レシート (PNG)">📦 事務用品レシート【ダミー】 <span style="font-size:0.65rem; opacity:0.8;">[PNG]</span></button>
+          <button type="button" class="btn-preset btn-image-preset" data-src="sample-incident.jpg" data-name="【架空】模擬システム障害アラート (JPEG)">🚨 障害アラート【ダミー】 <span style="font-size:0.65rem; opacity:0.8;">[JPEG]</span></button>
+          <button type="button" class="btn-preset btn-image-preset" data-src="sample-cafe.jpg" data-name="【架空】カフェ打合せ会計レシート (JPEG)">☕ カフェ打合せ【ダミー】 <span style="font-size:0.65rem; opacity:0.8;">[JPEG]</span></button>
+          <button type="button" class="btn-preset btn-image-preset" data-src="sample-receipt.svg" data-name="【架空】クラウドサーバー領収書 (SVG)">📄 サーバー領収書 <span style="font-size:0.65rem; opacity:0.8;">[SVG]</span></button>
           
           <label class="btn btn-secondary" style="font-size:0.75rem; padding:0.35rem 0.75rem; cursor:pointer; margin-bottom:0; display:inline-flex; align-items:center; gap:0.3rem;">
             📁 自分のファイルを選択 / 直接判定 (画像 PNG/JPG/SVG、または .txt/.json/.csv)
@@ -854,8 +930,9 @@
         <!-- 画像プレビュー ＆ 抽出テキスト表示 -->
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:1rem; margin-bottom:0.8rem;">
           <div style="border:1px dashed var(--card-border); border-radius:8px; padding:0.8rem; background:rgba(0,0,0,0.25); text-align:center;">
-            <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.4rem; font-weight:600;">画像プレビュー（クリックまたはファイル選択で変更可能）</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.4rem; font-weight:600;">画像プレビュー（※検証用ダミーデータ / クリックでファイル変更可能）</div>
             <img id="samplePreviewImg" src="sample-receipt.png" alt="判定対象サンプル画像" style="max-width:100%; height:auto; max-height:190px; border-radius:6px; box-shadow:0 4px 12px rgba(0,0,0,0.3); object-fit:contain; cursor:pointer;" title="クリックしてファイル選択">
+            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.3rem;">※ サンプル画像内の社名・店名・金額等は全て検証用の架空（ダミー）です</div>
           </div>
           <div style="border:1px solid var(--card-border); border-radius:8px; padding:0.8rem; background:rgba(0,0,0,0.25); display:flex; flex-direction:column;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
@@ -956,7 +1033,10 @@
             <span class="step-title">ライブラリの読み込み</span>
           </div>
           <p class="step-desc">
-            HTMLの末尾（<code>&lt;/body&gt;</code> 直前）またはヘッダーで <code>nano-judgement.global.js</code> を読み込みます。モジュールバンドラ不要でそのまま動作します。
+            HTMLの末尾（<code>&lt;/body&gt;</code> 直前）またはヘッダーで <code>nano-judgement.global.js</code> を読み込みます。モジュールバンドラ不要でそのまま動作します。<br>
+            <a href="nano-judgement.global.js" download="nano-judgement.global.js" class="btn-preset" style="display:inline-flex; align-items:center; gap:0.35rem; margin-top:0.5rem; color:var(--primary); border-color:rgba(56,189,248,0.4); text-decoration:none; padding:0.35rem 0.75rem; font-size:0.82rem; font-weight:600;">
+              📥 nano-judgement.global.js をダウンロード
+            </a>
           </p>
           <pre class="code-box"><code><span class="code-comment">&lt;!-- 1. scriptタグで読み込むだけでグローバルに NanoJudgement が登録・自動初期化されます --&gt;</span>
 <span class="code-tag">&lt;script</span> <span class="code-attr">src</span>=<span class="code-string">"./nano-judgement.global.js"</span><span class="code-tag">&gt;&lt;/script&gt;</span></code></pre>
@@ -1140,7 +1220,10 @@
             <span class="step-title">NanoJudgement インスタンスの生成</span>
           </div>
           <p class="step-desc">
-            ES Modules（<code>import</code>）またはグローバル（<code>window.NanoJudgement</code>）からインスタンスを作成します。
+            ES Modules（<code>import</code>）またはグローバル（<code>window.NanoJudgement</code>）からインスタンスを作成します。<br>
+            <a href="nano-judgement.js" download="nano-judgement.js" class="btn-preset" style="display:inline-flex; align-items:center; gap:0.35rem; margin-top:0.5rem; color:var(--accent-purple); border-color:rgba(192,132,252,0.4); text-decoration:none; padding:0.35rem 0.75rem; font-size:0.82rem; font-weight:600;">
+              📦 nano-judgement.js (ESM) をダウンロード
+            </a>
           </p>
           <pre class="code-box"><code><span class="code-keyword">import</span> { NanoJudgement } <span class="code-keyword">from</span> <span class="code-string">'./nano-judgement.js'</span>;
 
@@ -1380,6 +1463,191 @@ speechBtn.addEventListener(<span class="code-string">'nano-judgement-speech-erro
   speechBtn.classList.remove(<span class="code-string">'recording-pulse'</span>);
   speechBtn.textContent = <span class="code-string">'🎙️ 音声で話して判定'</span>;
   alert(<span class="code-string">'音声認識エラー: '</span> + e.detail.error.message);
+});</code></pre>
+        </div>
+
+        <!-- 6. 実戦実装例 A: 領収書・レシート画像のドラッグ＆ドロップ自動仕訳 -->
+        <div class="step-card" style="border-left: 3px solid var(--primary); margin-top: 1.5rem;">
+          <div class="step-header">
+            <span class="step-badge" style="background:var(--primary); color:#090d16;">例1</span>
+            <span class="step-title">📷 領収書・レシート画像のドラッグ＆ドロップ自動仕訳フォーム（コピペで動作）</span>
+          </div>
+          <p class="step-desc">
+            ユーザーがレシート画像（PNG/JPEG/SVG）を画面上にドロップまたは選択すると、自動で Gemini Nano へ画像を直接渡し、勘定科目セレクトボックス（旅費交通費・消耗品費・会議接待費等）を瞬時に自動選択する完全な実装例です。
+          </p>
+          <pre class="code-box"><code><span class="code-comment">&lt;!-- 1. HTML構造: ドロップゾーン ＆ 勘定科目セレクトボックス --&gt;</span>
+&lt;<span class="code-tag">div</span> <span class="code-attr">id</span>=<span class="code-string">"dropZone"</span> <span class="code-attr">style</span>=<span class="code-string">"border:2px dashed #38bdf8; padding:2rem; text-align:center; border-radius:12px; cursor:pointer;"</span>&gt;
+  &lt;<span class="code-tag">p</span>&gt;📂 領収書・レシート画像をここにドラッグ＆ドロップ、またはクリックして選択&lt;/<span class="code-tag">p</span>&gt;
+  &lt;<span class="code-tag">input</span> <span class="code-attr">type</span>=<span class="code-string">"file"</span> <span class="code-attr">id</span>=<span class="code-string">"receiptInput"</span> <span class="code-attr">accept</span>=<span class="code-string">"image/*"</span> <span class="code-attr">style</span>=<span class="code-string">"display:none;"</span>&gt;
+&lt;/<span class="code-tag">div</span>&gt;
+
+&lt;<span class="code-tag">select</span> <span class="code-attr">id</span>=<span class="code-string">"accountCategory"</span> <span class="code-attr">style</span>=<span class="code-string">"margin-top:1rem; padding:0.5rem; width:100%;"</span>&gt;
+  &lt;<span class="code-tag">option</span> <span class="code-attr">value</span>=<span class="code-string">""</span>&gt;-- AIが自動判定して選択します --&lt;/<span class="code-tag">option</span>&gt;
+  &lt;<span class="code-tag">option</span> <span class="code-attr">value</span>=<span class="code-string">"travel"</span> <span class="code-attr">data-description</span>=<span class="code-string">"電車・タクシー・新幹線・航空券等の移動交通費"</span>&gt;旅費交通費&lt;/<span class="code-tag">option</span>&gt;
+  &lt;<span class="code-tag">option</span> <span class="code-attr">value</span>=<span class="code-string">"supplies"</span> <span class="code-attr">data-description</span>=<span class="code-string">"PC周辺機器・文房具・事務消耗品・コピー用紙"</span>&gt;消耗品費&lt;/<span class="code-tag">option</span>&gt;
+  &lt;<span class="code-tag">option</span> <span class="code-attr">value</span>=<span class="code-string">"entertainment"</span> <span class="code-attr">data-description</span>=<span class="code-string">"取引先との会食・カフェでの商談打ち合わせ代"</span>&gt;会議接待費&lt;/<span class="code-tag">option</span>&gt;
+  &lt;<span class="code-tag">option</span> <span class="code-attr">value</span>=<span class="code-string">"cloud"</span> <span class="code-attr">data-description</span>=<span class="code-string">"AWS/GCPサーバー利用料・SaaSサブスクリプション"</span>&gt;通信開発費&lt;/<span class="code-tag">option</span>&gt;
+  &lt;<span class="code-tag">option</span> <span class="code-attr">value</span>=<span class="code-string">"other"</span> <span class="code-attr">data-description</span>=<span class="code-string">"上記いずれにも当てはまらないその他の経費"</span>&gt;その他&lt;/<span class="code-tag">option</span>&gt;
+&lt;/<span class="code-tag">select</span>&gt;
+
+&lt;<span class="code-tag">div</span> <span class="code-attr">id</span>=<span class="code-string">"judgementResult"</span>&gt;&lt;/<span class="code-tag">div</span>&gt;
+
+<span class="code-comment">&lt;!-- 2. JavaScript ロジック --&gt;</span>
+&lt;<span class="code-tag">script</span> <span class="code-attr">type</span>=<span class="code-string">"module"</span>&gt;
+  <span class="code-keyword">import</span> { NanoJudgement } <span class="code-keyword">from</span> <span class="code-string">'./nano-judgement.js'</span>;
+  <span class="code-keyword">const</span> judgement = <span class="code-keyword">new</span> NanoJudgement();
+
+  <span class="code-keyword">const</span> dropZone = document.getElementById(<span class="code-string">'dropZone'</span>);
+  <span class="code-keyword">const</span> fileInput = document.getElementById(<span class="code-string">'receiptInput'</span>);
+  <span class="code-keyword">const</span> selectEl = document.getElementById(<span class="code-string">'accountCategory'</span>);
+  <span class="code-keyword">const</span> resultDiv = document.getElementById(<span class="code-string">'judgementResult'</span>);
+
+  dropZone.addEventListener(<span class="code-string">'click'</span>, () => fileInput.click());
+  dropZone.addEventListener(<span class="code-string">'dragover'</span>, (e) => { e.preventDefault(); dropZone.style.background = <span class="code-string">'rgba(56,189,248,0.1)'</span>; });
+  dropZone.addEventListener(<span class="code-string">'dragleave'</span>, () => { dropZone.style.background = <span class="code-string">'transparent'</span>; });
+  dropZone.addEventListener(<span class="code-string">'drop'</span>, (e) => {
+    e.preventDefault();
+    dropZone.style.background = <span class="code-string">'transparent'</span>;
+    <span class="code-keyword">if</span> (e.dataTransfer.files?.length) handleImageFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener(<span class="code-string">'change'</span>, () => {
+    <span class="code-keyword">if</span> (fileInput.files?.length) handleImageFile(fileInput.files[0]);
+  });
+
+  <span class="code-keyword">async</span> <span class="code-keyword">function</span> handleImageFile(file) {
+    resultDiv.innerHTML = <span class="code-string">'⏳ Gemini Nano が画像そのものを直接解析中...'</span>;
+    <span class="code-keyword">try</span> {
+      <span class="code-comment">// judge() の第2引数に File オブジェクトを直接投入！</span>
+      <span class="code-keyword">const</span> result = <span class="code-keyword">await</span> judgement.judge(selectEl, file, {
+        target: resultDiv,    <span class="code-comment">// 判定結果カードを自動描画</span>
+        includeReason: <span class="code-keyword">true</span>   <span class="code-comment">// 理由も合わせて表示</span>
+      });
+      console.log(<span class="code-string">'自動選択された科目:'</span>, selectEl.value);
+    } <span class="code-keyword">catch</span> (err) {
+      resultDiv.innerHTML = <span class="code-string">'❌ エラー: '</span> + err.message;
+    }
+  }
+&lt;/<span class="code-tag">script</span>&gt;</code></pre>
+        </div>
+
+        <!-- 7. 実戦実装例 B: Webカメラ・スマホ撮影レシートの即時判定 -->
+        <div class="step-card" style="border-left: 3px solid var(--accent-green);">
+          <div class="step-header">
+            <span class="step-badge" style="background:var(--accent-green); color:#090d16;">例2</span>
+            <span class="step-title">📹 Webカメラ・スマホ撮影レシートの即時キャプチャ判定</span>
+          </div>
+          <p class="step-desc">
+            ブラウザのカメラ（<code>navigator.mediaDevices.getUserMedia</code>）でレシートを写し、「撮影」ボタンを押した瞬間に <code>canvas.toBlob()</code> でバイナリを抽出し、そのままオンデバイスで判定する実装例です。
+          </p>
+          <pre class="code-box"><code><span class="code-comment">// 1. カメラストリームの開始</span>
+<span class="code-keyword">const</span> video = document.querySelector(<span class="code-string">'#cameraVideo'</span>);
+<span class="code-keyword">const</span> stream = <span class="code-keyword">await</span> navigator.mediaDevices.getUserMedia({
+  video: { facingMode: <span class="code-string">'environment'</span>, width: 1280, height: 720 }
+});
+video.srcObject = stream;
+
+<span class="code-comment">// 2. シャッターを押して Canvas 経由で Blob 取得 ＆ 即時判定</span>
+document.querySelector(<span class="code-string">'#captureBtn'</span>).addEventListener(<span class="code-string">'click'</span>, () => {
+  <span class="code-keyword">const</span> canvas = document.createElement(<span class="code-string">'canvas'</span>);
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  <span class="code-keyword">const</span> ctx = canvas.getContext(<span class="code-string">'2d'</span>);
+  ctx.drawImage(video, 0, 0);
+
+  <span class="code-comment">// Blob 形式で直接画像を取り出し、judge() に渡す</span>
+  canvas.toBlob(<span class="code-keyword">async</span> (imageBlob) => {
+    <span class="code-keyword">const</span> result = <span class="code-keyword">await</span> judgement.judge(<span class="code-string">'#expenseSelect'</span>, imageBlob);
+    console.log(<span class="code-string">'撮影レシートの判定結果:'</span>, result.topChoice.name);
+    console.log(<span class="code-string">'確信度:'</span>, result.topChoice.confidence);
+  }, <span class="code-string">'image/jpeg'</span>, 0.9);
+});</code></pre>
+        </div>
+
+        <!-- 8. 実戦実装例 C: マイク音声での問い合わせ優先度・タスク自動判定 -->
+        <div class="step-card" style="border-left: 3px solid var(--accent-orange);">
+          <div class="step-header">
+            <span class="step-badge" style="background:var(--accent-orange); color:#090d16;">例3</span>
+            <span class="step-title">🎙️ マイク音声での問い合わせ優先度・感情の自動仕訳</span>
+          </div>
+          <p class="step-desc">
+            ユーザーが「ログイン画面でエラー500が出て決済できない」と声に出して話すと、Chrome の <strong>Web Speech API</strong> がオンデバイスで即座に文字起こしし、Prompt API が緊急度（P0-緊急, P1-高, P2-中, P3-低, その他）をミリ秒単位で自動選択します。
+          </p>
+          <pre class="code-box"><code><span class="code-comment">&lt;!-- 1. ボタンをクリックするだけでマイク起動 ＆ 自動判定（ノーコード版） --&gt;</span>
+&lt;<span class="code-tag">button</span> <span class="code-attr">type</span>=<span class="code-string">"button"</span>
+        <span class="code-attr">data-nano-judgement-speech</span>
+        <span class="code-attr">data-judge-select</span>=<span class="code-string">"#ticketPriority"</span>
+        <span class="code-attr">data-judge-target</span>=<span class="code-string">"#voiceResult"</span>
+        <span class="code-attr">data-judge-reason</span>=<span class="code-string">"true"</span>&gt;
+  🎙️ 声で話して優先度を判定
+&lt;/<span class="code-tag">button</span>&gt;
+
+&lt;<span class="code-tag">select</span> <span class="code-attr">id</span>=<span class="code-string">"ticketPriority"</span>&gt;
+  &lt;<span class="code-tag">option</span> <span class="code-attr">value</span>=<span class="code-string">"p0"</span> <span class="code-attr">data-description</span>=<span class="code-string">"本番システム停止、決済不能、全ユーザー影響"</span>&gt;P0-最優先緊急&lt;/<span class="code-tag">option</span>&gt;
+  &lt;<span class="code-tag">option</span> <span class="code-attr">value</span>=<span class="code-string">"p1"</span> <span class="code-attr">data-description</span>=<span class="code-string">"主要機能の不具合だが回避策が存在する"</span>&gt;P1-重要度高&lt;/<span class="code-tag">option</span>&gt;
+  &lt;<span class="code-tag">option</span> <span class="code-attr">value</span>=<span class="code-string">"p2"</span> <span class="code-attr">data-description</span>=<span class="code-string">"軽微な表示崩れや一般的な問い合わせ"</span>&gt;P2-通常対応&lt;/<span class="code-tag">option</span>&gt;
+  &lt;<span class="code-tag">option</span> <span class="code-attr">value</span>=<span class="code-string">"other"</span> <span class="code-attr">data-description</span>=<span class="code-string">"上記に該当しないその他・要望"</span>&gt;その他&lt;/<span class="code-tag">option</span>&gt;
+&lt;/<span class="code-tag">select</span>&gt;
+
+<span class="code-comment">&lt;!-- 2. JavaScript でマイク音声認識とAI判定を完全に制御する場合 --&gt;</span>
+&lt;<span class="code-tag">script</span> <span class="code-attr">type</span>=<span class="code-string">"module"</span>&gt;
+  <span class="code-keyword">import</span> { NanoJudgement } <span class="code-keyword">from</span> <span class="code-string">'./nano-judgement.js'</span>;
+  <span class="code-keyword">const</span> judgement = <span class="code-keyword">new</span> NanoJudgement();
+
+  <span class="code-keyword">const</span> micBtn = document.querySelector(<span class="code-string">'#customMicBtn'</span>);
+  micBtn.addEventListener(<span class="code-string">'click'</span>, <span class="code-keyword">async</span> () => {
+    micBtn.textContent = <span class="code-string">'🎙️ 音声を聞き取り中...'</span>;
+    <span class="code-keyword">try</span> {
+      <span class="code-keyword">const</span> result = <span class="code-keyword">await</span> judgement.judgeFromSpeech(<span class="code-string">'#ticketPriority'</span>, {
+        speechLang: <span class="code-string">'ja-JP'</span>,     <span class="code-comment">// 日本語認識</span>
+        speechTimeoutMs: 8000,   <span class="code-comment">// 8秒無音でタイムアウト</span>
+        includeReason: <span class="code-keyword">true</span>      <span class="code-comment">// 理由も生成</span>
+      });
+
+      console.log(<span class="code-string">'マイクが認識した日本語テキスト:'</span>, result.speechTranscript);
+      console.log(<span class="code-string">'Gemini Nano が判定した選択肢:'</span>, result.topChoice.name);
+      console.log(<span class="code-string">'確信度スコア:'</span>, result.topChoice.confidence);
+      console.log(<span class="code-string">'判断理由 (日本語自動翻訳済):'</span>, result.summaryReason);
+    } <span class="code-keyword">catch</span> (err) {
+      console.warn(<span class="code-string">'音声認識エラー:'</span>, err.message);
+    } <span class="code-keyword">finally</span> {
+      micBtn.textContent = <span class="code-string">'🎙️ 声で話して優先度を判定'</span>;
+    }
+  });
+&lt;/<span class="code-tag">script</span>&gt;</code></pre>
+        </div>
+
+        <!-- 9. 実戦実装例 D: 音声ファイル（.mp3, .wav, .m4a）の直接入力判定 -->
+        <div class="step-card" style="border-left: 3px solid var(--accent-purple);">
+          <div class="step-header">
+            <span class="step-badge" style="background:var(--accent-purple); color:#090d16;">例4</span>
+            <span class="step-title">🎵 音声ファイル（.mp3, .wav, .m4a 録音データ）の直接投入判定</span>
+          </div>
+          <p class="step-desc">
+            コールセンターの通話録音ファイルや、会議のボイスメモ音声ファイルをそのまま <code>File</code> オブジェクトとして渡し、問い合わせ種別や感情・対応要否を直接判定させることができます。
+          </p>
+          <pre class="code-box"><code><span class="code-comment">// 1. 音声ファイル選択イベント</span>
+<span class="code-keyword">const</span> audioInput = document.querySelector(<span class="code-string">'#audioFileInput'</span>); <span class="code-comment">// &lt;input type="file" accept="audio/*"&gt;</span>
+
+audioInput.addEventListener(<span class="code-string">'change'</span>, <span class="code-keyword">async</span> () => {
+  <span class="code-keyword">const</span> audioFile = audioInput.files[0];
+  <span class="code-keyword">if</span> (!audioFile) <span class="code-keyword">return</span>;
+
+  <span class="code-comment">// 判定候補の定義（問い合わせ種別）</span>
+  <span class="code-keyword">const</span> categories = [
+    { id: <span class="code-string">'billing'</span>, name: <span class="code-string">'請求・決済に関するクレーム'</span>, description: <span class="code-string">'過大請求、二重引き落とし、返金要求'</span> },
+    { id: <span class="code-string">'technical'</span>, name: <span class="code-string">'技術的トラブル・障害'</span>, description: <span class="code-string">'ログインできない、アプリがクラッシュする'</span> },
+    { id: <span class="code-string">'inquiry'</span>, name: <span class="code-string">'一般的なサービス質問'</span>, description: <span class="code-string">'料金プラン、営業時間、契約変更の手順'</span> },
+    { id: <span class="code-string">'other'</span>, name: <span class="code-string">'その他・該当なし'</span>, description: <span class="code-string">'間違い電話や上記に該当しない要件'</span> }
+  ];
+
+  <span class="code-comment">// 音声ファイルを直接 judge() に投入</span>
+  <span class="code-keyword">const</span> result = <span class="code-keyword">await</span> judgement.judge(categories, audioFile, {
+    includeReason: <span class="code-keyword">true</span>
+  });
+
+  console.log(<span class="code-string">'音声ファイル名:'</span>, audioFile.name);
+  console.log(<span class="code-string">'音声仕訳結果:'</span>, result.topChoice.name);
+  console.log(<span class="code-string">'根拠・理由:'</span>, result.summaryReason);
 });</code></pre>
         </div>
       </div>
@@ -1734,45 +2002,88 @@ document.addEventListener(<span class="code-string">'nano-judgement-cancelled'</
     <!-- Chrome での事前準備 (Prompt API セットアップガイド) -->
     <div class="card" id="chrome-setup-guide">
       <div class="card-title">
-        <span>🛠️ Chrome での事前準備 (Prompt API 有効化ガイド)</span>
+        <span>🛠️ Chrome での事前準備 (Prompt API 利用ガイド)</span>
         <a href="#" class="back-to-top-link">↑ トップへ戻る</a>
       </div>
       <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.2rem; line-height: 1.6;">
-        本ライブラリは Chrome 組み込みの <strong>Gemini Nano (Prompt API)</strong> を使用します。初回利用時は以下の3ステップでブラウザのフラグを有効にしてください。
+        本ライブラリは Chrome 組み込みの <strong>Gemini Nano (Prompt API)</strong> を使用します。Prompt API は通常の Google Chrome に標準統合されているため、<strong>最新版の Chrome をご利用であれば特別なフラグ設定を行わずにそのまま利用可能</strong>です。
       </p>
 
       <div class="step-card">
         <div class="step-header">
           <span class="step-badge">1</span>
-          <span class="step-title">Chrome Flags の設定</span>
+          <span class="step-title">最新バージョンの Google Chrome を使用</span>
         </div>
         <p class="step-desc">
-          Chromeのアドレスバーに <code>chrome://flags</code> と入力して開き、以下の2項目を設定します：
+          Google Chrome が最新版に更新されていることを確認します（Chrome メニュー「ヘルプ」→「Google Chrome について」）。通常の最新ブラウザ環境であれば、事前のフラグ変更は一切不要です。
         </p>
-        <ul style="margin-left: 1.2rem; color: var(--text-muted); line-height: 1.8; font-size: 0.88rem;">
-          <li><code>#prompt-api-for-gemini-nano</code> → <strong style="color: var(--primary);">Enabled</strong></li>
-          <li><code>#optimization-guide-on-device-model</code> → <strong style="color: var(--primary);">Enabled BypassPerfRequirement</strong></li>
-        </ul>
       </div>
 
       <div class="step-card">
         <div class="step-header">
           <span class="step-badge">2</span>
-          <span class="step-title">ブラウザの再起動</span>
+          <span class="step-title">Gemini Nano モデルのダウンロード（初回自動処理）</span>
         </div>
         <p class="step-desc">
-          画面右下に表示される <strong style="color: var(--text-main);">Relaunch</strong> ボタンをクリックして Chrome を再起動します。
+          初回利用時、ブラウザがオンデバイスモデル（Gemini Nano / 容量約1〜2GB）を自動ダウンロードします。ディスクに十分な空き容量があることを確認してください。
         </p>
+        <div style="margin-top: 0.8rem; background: rgba(0,0,0,0.25); border: 1px solid var(--card-border); border-radius: 8px; padding: 0.8rem 1rem;">
+          <div style="font-size: 0.84rem; color: #cbd5e1; margin-bottom: 0.5rem;">
+            事前に手動でダウンロードを完了させたい場合は、コンポーネント管理画面を開いて <strong>Optimization Guide On Device Model</strong> の「アップデートを確認」をクリックしてください：
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+            <code style="background: rgba(0,0,0,0.4); padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.9rem; color: var(--primary); border: 1px solid rgba(56,189,248,0.3); font-weight: 600;">chrome://components</code>
+            <button type="button" class="btn-copy-address" data-copy="chrome://components" style="background: var(--primary); color: #0f172a; border: none; padding: 0.35rem 0.85rem; border-radius: 6px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.3rem;">
+              <span>📋 URLをコピー</span>
+            </button>
+          </div>
+          <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 0.5rem; line-height: 1.4;">
+            ※ <strong>なぜリンクで直接開かないのか？</strong>: Web サイトから悪意あるスクリプトがブラウザ内部設定を勝手に開いたり改ざんしたりするのを防ぐため、Chrome のセキュリティ仕様により Web ページ上のリンクから <code>chrome://</code> への直接遷移は一律ブロックされています。URLをコピーし、新規タブ（<kbd style="background:#334155; padding:2px 5px; border-radius:4px; font-size:0.75rem;">Cmd+T</kbd> / <kbd style="background:#334155; padding:2px 5px; border-radius:4px; font-size:0.75rem;">Ctrl+T</kbd>）のアドレスバーに貼り付けて開いてください。
+          </div>
+        </div>
       </div>
 
       <div class="step-card">
         <div class="step-header">
           <span class="step-badge">3</span>
-          <span class="step-title">Gemini Nano モデルのダウンロード確認</span>
+          <span class="step-title">（補足）動作しない場合・先行機能（マルチモーダル直接渡し等）</span>
         </div>
         <p class="step-desc">
-          アドレスバーに <code>chrome://components</code> と入力して開き、<strong>Optimization Guide On Device Model</strong> の「アップデートを確認」をクリックします。バージョン番号（例: <code>2024.x.x</code>）が表示されていれば準備完了です！
+          一部の環境や企業の制限ポリシーにより利用できない場合、あるいは画像・音声ファイルを直接渡すマルチモーダル先行入力を利用したい場合のみ、以下のフラグを新規タブのアドレスバーに貼り付けて設定してください：
         </p>
+        <div style="display: flex; flex-direction: column; gap: 0.6rem; margin-top: 0.6rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; background: rgba(0,0,0,0.2); padding: 0.45rem 0.8rem; border-radius: 6px; border: 1px solid var(--card-border); flex-wrap: wrap;">
+            <div>
+              <code style="color: var(--primary); font-size: 0.85rem;">chrome://flags/#prompt-api-for-gemini-nano</code>
+              <span style="font-size: 0.8rem; color: var(--text-muted); margin-left: 0.5rem;">→ <strong style="color: var(--primary);">Enabled</strong></span>
+            </div>
+            <button type="button" class="btn-copy-address" data-copy="chrome://flags/#prompt-api-for-gemini-nano" style="background: rgba(56,189,248,0.15); color: var(--primary); border: 1px solid rgba(56,189,248,0.3); padding: 0.25rem 0.65rem; border-radius: 5px; font-size: 0.78rem; font-weight: 600; cursor: pointer;">📋 コピー</button>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; background: rgba(0,0,0,0.2); padding: 0.45rem 0.8rem; border-radius: 6px; border: 1px solid var(--card-border); flex-wrap: wrap;">
+            <div>
+              <code style="color: var(--primary); font-size: 0.85rem;">chrome://flags/#prompt-api-for-gemini-nano-multimodal-input</code>
+              <span style="font-size: 0.8rem; color: var(--text-muted); margin-left: 0.5rem;">→ <strong style="color: var(--primary);">Enabled</strong> (画像・音声直接渡し)</span>
+            </div>
+            <button type="button" class="btn-copy-address" data-copy="chrome://flags/#prompt-api-for-gemini-nano-multimodal-input" style="background: rgba(56,189,248,0.15); color: var(--primary); border: 1px solid rgba(56,189,248,0.3); padding: 0.25rem 0.65rem; border-radius: 5px; font-size: 0.78rem; font-weight: 600; cursor: pointer;">📋 コピー</button>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; background: rgba(0,0,0,0.2); padding: 0.45rem 0.8rem; border-radius: 6px; border: 1px solid var(--card-border); flex-wrap: wrap;">
+            <div>
+              <code style="color: var(--primary); font-size: 0.85rem;">chrome://flags/#optimization-guide-on-device-model</code>
+              <span style="font-size: 0.8rem; color: var(--text-muted); margin-left: 0.5rem;">→ <strong style="color: var(--primary);">Enabled BypassPerfRequirement</strong></span>
+            </div>
+            <button type="button" class="btn-copy-address" data-copy="chrome://flags/#optimization-guide-on-device-model" style="background: rgba(56,189,248,0.15); color: var(--primary); border: 1px solid rgba(56,189,248,0.3); padding: 0.25rem 0.65rem; border-radius: 5px; font-size: 0.78rem; font-weight: 600; cursor: pointer;">📋 コピー</button>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; background: rgba(0,0,0,0.2); padding: 0.45rem 0.8rem; border-radius: 6px; border: 1px solid var(--card-border); flex-wrap: wrap;">
+            <div>
+              <code style="color: var(--primary); font-size: 0.85rem;">chrome://flags/#translation-api</code>
+              <span style="font-size: 0.8rem; color: var(--text-muted); margin-left: 0.5rem;">→ <strong style="color: var(--primary);">Enabled</strong> (理由の多言語自動翻訳)</span>
+            </div>
+            <button type="button" class="btn-copy-address" data-copy="chrome://flags/#translation-api" style="background: rgba(56,189,248,0.15); color: var(--primary); border: 1px solid rgba(56,189,248,0.3); padding: 0.25rem 0.65rem; border-radius: 5px; font-size: 0.78rem; font-weight: 600; cursor: pointer;">📋 コピー</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1858,11 +2169,10 @@ document.addEventListener(<span class="code-string">'nano-judgement-cancelled'</
           apiStatusText.innerHTML = `
             ${status.message}
             <div style="margin-top:0.6rem; font-size:0.85rem; color:var(--text-muted);">
-              <strong>Chrome での有効化手順:</strong><br>
-              1. <code>chrome://flags</code> を開く<br>
-              2. <code>#prompt-api-for-gemini-nano</code> を <strong>Enabled</strong> に設定<br>
-              3. <code>#optimization-guide-on-device-model</code> を <strong>Enabled BypassPerfRequirement</strong> に設定<br>
-              4. Chrome を再起動
+              <strong>確認・有効化手順:</strong><br>
+              1. 最新バージョンの Google Chrome をご利用中か確認してください（最新版は標準搭載）。<br>
+              2. 初回利用時はモデルダウンロード（約1〜2GB）が必要です。<a href="chrome://components" target="_blank" rel="noopener noreferrer" style="color:var(--primary); text-decoration:underline;"><code>chrome://components</code> ↗ (別タブで開く)</a> で「Optimization Guide On Device Model」をご確認ください。<br>
+              3. 動作しない場合は <a href="chrome://flags/#prompt-api-for-gemini-nano" target="_blank" rel="noopener noreferrer" style="color:var(--primary); text-decoration:underline;"><code>chrome://flags</code> ↗ (別タブで開く)</a> でフラグ状態をご確認ください。
             </div>
           `;
         }
@@ -1918,6 +2228,26 @@ document.addEventListener(<span class="code-string">'nano-judgement-cancelled'</
         toast.style.transform = 'translateY(12px)';
       }, 2000);
     }
+
+
+    // Chrome アドレス（chrome://...）のワンクリックコピー支援
+    document.querySelectorAll('.btn-copy-address').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const text = btn.getAttribute('data-copy');
+        if (navigator.clipboard && text) {
+          navigator.clipboard.writeText(text).then(() => {
+            const orig = btn.innerHTML;
+            btn.innerHTML = '✅ コピー完了！';
+            showToast(`📋 "${text}" をコピーしました！新規タブ (Cmd+T / Ctrl+T) のアドレスバーに貼り付けて開いてください`);
+            setTimeout(() => { btn.innerHTML = orig; }, 1500);
+          }).catch(() => {
+            prompt('以下のURLをコピーしてアドレスバーに貼り付けてください:', text);
+          });
+        } else if (text) {
+          prompt('以下のURLをコピーしてアドレスバーに貼り付けてください:', text);
+        }
+      });
+    });
 
     // キャッシュ一括削除ボタン（各サンプルのボタンおよび上部ボタン共通）
     document.querySelectorAll('.btn-clear-cache, #clearCacheBtn').forEach(btn => {
@@ -2450,7 +2780,7 @@ document.addEventListener(<span class="code-string">'nano-judgement-cancelled'</
 
     // 初期表示時にデフォルト画像（sample-receipt.png）で判定を自動実行 (デフォルト: 根拠なし・値のみ高速返却)
     setTimeout(() => {
-      runImageJudgement('sample-receipt.png', 'クラウドサーバー領収書 (PNG)');
+      runImageJudgement('sample-receipt.png', '【架空】クラウドサーバー領収書 (PNG)');
     }, 400);
   </script>
 </body>
