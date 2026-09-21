@@ -116,23 +116,21 @@ const detailedResult = await judgement.judge(choices, fileInput.files[0], {
 console.log("判断理由 (根拠):", detailedResult.summaryReason);
 ```
 
-### 音声入力（マイク音声認識: Web Speech API）の実装方法
-Chrome 標準の **Web Speech API**（`webkitSpeechRecognition`）と連携し、マイクからの発話音声をリアルタイムにオンデバイス文字起こしして直接AI判定を実行します。
+### 音声ファイル直接アップロード（.mp3, .wav, .m4a 録音データ）の実装方法
+コールセンターの通話録音ファイルや留守番電話、ボイスメモなどの音声ファイルを `File` または `Blob` オブジェクトとしてそのまま渡すだけで、オンデバイスで直接判定を実行できます。
 
 ```javascript
-// 1. judgeFromSpeech: 音声認識からAI判定・セレクトボックス連動まで一括実行
-const speechResult = await judgement.judgeFromSpeech('#supportPriority', {
-  speechLang: 'ja-JP',      // 音声認識言語（デフォルト: 'ja-JP'）
-  speechTimeoutMs: 10000,   // 発話待機タイムアウト（ミリ秒）
-  includeReason: false,     // デフォルト: false（値のみ高速返却）
+// 1. 音声ファイル（.mp3, .wav, .m4a）を直接 judge() に渡す
+const audioInput = document.querySelector('#audioFileInput');
+const audioFile = audioInput.files[0];
+
+const result = await judgement.judge('#supportPriority', audioFile, {
+  includeReason: true, // 理由も出力
 });
 
-console.log("話した内容 (テキスト):", speechResult.speechTranscript);
-console.log("判定結果:", speechResult.topChoice.name);
-
-// 2. 音声認識テキストのみを単体で取得したい場合
-const transcript = await judgement.recognizeSpeech({ lang: 'ja-JP' });
-console.log("認識テキスト:", transcript);
+console.log("音声ファイル名:", audioFile.name);
+console.log("AI判定結果:", result.topChoice.name);
+console.log("判断理由:", result.summaryReason);
 ```
 
 > **根拠（判断理由）の表示制御について**:
@@ -142,6 +140,8 @@ console.log("認識テキスト:", transcript);
 ---
 
 ### 実践的な実装例（コピペで動作）
+
+> 💡 ブラウザ上で実際に動作する完全なデモおよび実装コードは [index.html](index.html) の **[📷🎙️ 画像・音声の実装例 (index.html#image-speech-guide)](index.html#image-speech-guide)** をご覧ください。
 
 #### 1. 📷 領収書・レシート画像のドラッグ＆ドロップ自動仕訳
 ```html
@@ -181,16 +181,13 @@ canvas.toBlob(async (blob) => {
 }, 'image/jpeg', 0.9);
 ```
 
-#### 3. 🎙️ マイク音声でのお問い合わせ優先度判定（ノーコード HTML 属性）
+#### 3. 🎵 音声ファイル（通話録音・留守電）のドラッグ＆ドロップ直接判定（コピペ動作）
 ```html
-<!-- ボタンを押すだけでマイクが起動し、話した内容から緊急度（P0〜P3）を自動判定 -->
-<button type="button"
-        data-nano-judgement-speech
-        data-judge-select="#prioritySelect"
-        data-judge-target="#resultCard"
-        data-judge-reason="true">
-  🎙️ 声で話して優先度を判定
-</button>
+<!-- 音声ファイルをドラッグ＆ドロップして即座に優先度自動選択 -->
+<div id="audioDropZone" style="border: 2px dashed #e879f9; padding: 2rem; text-align: center; cursor: pointer;">
+  <p>🎵 通話録音ファイル（.mp3 / .wav / .m4a）をここにドロップ</p>
+  <input type="file" id="audioInput" accept="audio/*,.mp3,.wav,.m4a" style="display: none;">
+</div>
 
 <select id="prioritySelect">
   <option value="p0" data-description="本番障害、決済停止、全ユーザー影響">P0-緊急</option>
@@ -198,15 +195,33 @@ canvas.toBlob(async (blob) => {
   <option value="p2" data-description="軽微な質問・相談">P2-中</option>
   <option value="other" data-description="その他">その他</option>
 </select>
-<div id="resultCard"></div>
+<div id="audioResult"></div>
+
+<script type="module">
+  import { NanoJudgement } from './nano-judgement.js';
+  const judgement = new NanoJudgement();
+  const selectEl = document.getElementById('prioritySelect');
+
+  document.getElementById('audioInput').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    // 音声ファイルを直接 judge() に渡す
+    const result = await judgement.judge(selectEl, file, {
+      target: '#audioResult',
+      includeReason: true,
+    });
+    console.log('判定結果:', result.topChoice.name);
+  });
+</script>
 ```
 
-#### 4. 🎵 音声ファイル（.mp3, .wav, .m4a）の直接投入判定
-```javascript
-// コールセンターの録音データなどをそのまま投入
-const audioFile = audioInput.files[0];
-const result = await judgement.judge(categories, audioFile, { includeReason: true });
-console.log('音声仕訳結果:', result.topChoice.name);
+#### 4. 🪄 ノーコード HTML 属性（音声ファイル選択で即判定）
+```html
+<!-- 音声ファイル選択でセレクトボックス自動連動 -->
+<input type="file" accept="audio/*,.mp3,.wav,.m4a"
+       data-nano-judgement
+       data-judge-select="#prioritySelect"
+       data-judge-target="#audioResult">
 ```
 
 ---

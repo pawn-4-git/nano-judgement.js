@@ -679,6 +679,10 @@
           <span>nano-judgement.js をダウンロード</span>
           <span style="font-size: 0.72rem; padding: 0.15rem 0.45rem; background: rgba(192, 132, 252, 0.2); border-radius: 4px; color: var(--accent-purple); font-weight: 700;">ESM版</span>
         </a>
+        <a href="#image-speech-guide" class="btn" style="text-decoration: none; padding: 0.65rem 1.2rem; font-size: 0.92rem; font-weight: 700; border-radius: 10px; background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%); color: #ffffff; box-shadow: 0 4px 16px rgba(168, 85, 247, 0.35); display: inline-flex; align-items: center; gap: 0.5rem; transition: transform 0.15s, box-shadow 0.15s;">
+          <span style="font-size: 1.15rem;">📷🎵</span>
+          <span>画像・音声ファイルの実装例を見る</span>
+        </a>
       </div>
 
       <!-- 実装方法・セクションへのクイックナビゲーション -->
@@ -686,11 +690,11 @@
         <a href="#download-section" class="nav-btn nav-btn-highlight">
           <span>📥</span> JSダウンロード
         </a>
+        <a href="#image-speech-guide" class="nav-btn nav-btn-highlight" style="background: rgba(168, 85, 247, 0.22); border-color: rgba(168, 85, 247, 0.55); color: #c084fc; font-weight: 700;">
+          <span>📷🎵</span> 画像・音声ファイルの実装例
+        </a>
         <a href="#implementation-guide" class="nav-btn">
           <span>📖</span> 実装方法・コード例
-        </a>
-        <a href="#implementation-guide" class="nav-btn" onclick="document.querySelector('[data-tab=\'tab-image-ocr\']')?.click()">
-          <span>📷🎙️</span> 画像・音声の実装例
         </a>
         <a href="#implementation-guide" class="nav-btn" onclick="document.querySelector('[data-tab=\'tab-output-dom\']')?.click()">
           <span>🎨</span> 出力データと画面反映
@@ -761,6 +765,20 @@
             ⬇️ nano-judgement.js を保存
           </a>
         </div>
+      </div>
+
+      <!-- 画像・音声実装例へのショートカットバナー -->
+      <div style="margin-top: 1.2rem; padding: 0.85rem 1.1rem; background: rgba(168, 85, 247, 0.12); border: 1px solid rgba(168, 85, 247, 0.35); border-radius: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem;">
+        <div style="display: flex; align-items: center; gap: 0.6rem;">
+          <span style="font-size: 1.4rem;">📷🎵</span>
+          <div>
+            <div style="font-size: 0.92rem; font-weight: 700; color: #f3e8ff;">画像（レシート・領収書・障害画面）や 音声ファイル（通話録音・留守電 .mp3/.wav）の実装例をお探しですか？</div>
+            <div style="font-size: 0.8rem; color: #cbd5e1;">ドラッグ＆ドロップ、音声ファイルの直接アップロード、カメラ撮影のコピペコード例を掲載しています。</div>
+          </div>
+        </div>
+        <a href="#image-speech-guide" class="btn" style="text-decoration: none; padding: 0.45rem 1rem; font-size: 0.85rem; font-weight: 700; border-radius: 8px; background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%); color: #ffffff; box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3);">
+          実装例を見る →
+        </a>
       </div>
     </div>
 
@@ -841,17 +859,19 @@
         </div>
       </div>
 
-      <!-- 枠3 (selectbox連携 ＆ 自動選択) -->
-      <div class="auto-slot">
+      <!-- 枠3 (音声ファイルそのもの・通話録音からの自動判定 ＆ セレクトボックス連動) -->
+      <div class="auto-slot" id="case3-audio-slot">
         <div class="auto-slot-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem;">
-          <span class="auto-slot-title">案件 3: セレクトボックス連携 ＆ 自動選択 <span class="badge" style="background:rgba(74,222,128,0.15); color:var(--accent-green); font-size:0.7rem;">🎯 selectbox 自動連動</span></span>
+          <span class="auto-slot-title">案件 3: 音声ファイル（通話録音・留守電）直接判定 <span class="badge" style="background:rgba(232,121,249,0.15); color:#e879f9; font-size:0.7rem;">🎵 音声ファイル直接入力 (.wav / .mp3 / .m4a)</span></span>
           <div style="display:flex; align-items:center; gap:0.6rem;">
+            <a href="#image-speech-guide" class="back-to-top-link" style="font-size:0.75rem; color:var(--accent-purple); font-weight:600;">🎵 音声ファイル判定の実装例</a>
             <span style="font-size:0.75rem; color:var(--text-muted);">属性: <code>data-judge-select="#supportPriority"</code></span>
             <button type="button" class="btn-clear-cache" style="background:rgba(239,68,68,0.12); color:#f87171; border:1px solid rgba(239,68,68,0.3); font-size:0.72rem; padding:0.22rem 0.55rem; border-radius:6px; cursor:pointer; font-weight:600; transition:all 0.2s;" title="全体のキャッシュを削除">🗑️ キャッシュ削除</button>
           </div>
         </div>
+
         <div style="display: flex; gap: 0.8rem; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap;">
-          <label for="supportPriority" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0;">連動セレクトボックス:</label>
+          <label for="supportPriority" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0;">連動セレクトボックス (障害・問い合わせ優先度):</label>
           <select id="supportPriority" style="padding: 0.45rem 0.8rem; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border); color: var(--text-main); border-radius: 8px; font-family: inherit; font-size: 0.9rem; flex: 1; min-width: 260px;">
             <option value="" disabled>優先度を選択してください</option>
             <option value="P1" data-description="サービス全停止やデータ破壊の恐れがある致命的インシデント">P1 - 緊急（即時対応）</option>
@@ -861,22 +881,38 @@
             <option value="OTHER" data-description="上記のいずれの優先度基準にも該当しない、または一般的な問い合わせ・その他">その他（未分類・その他）</option>
           </select>
         </div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem; flex-wrap:wrap; gap:0.4rem;">
-          <span style="font-size:0.8rem; color:var(--text-muted);">テキスト入力、またはマイクから発話して判定:</span>
-          <button type="button" id="btnSpeechSupport" class="btn btn-secondary" style="font-size:0.75rem; padding:0.25rem 0.65rem; display:inline-flex; align-items:center; gap:0.35rem;" data-nano-judgement-speech data-judge-select="#supportPriority" data-judge-target="#auto-result-3" title="マイクをクリックして話すと、発話内容から自動判定されます">
-            <span id="speechBtnIcon">🎙️</span> <span id="speechBtnLabel">音声で話して判定 (Web Speech API)</span>
-          </button>
+
+        <!-- 音声ファイル選択 ＆ ドラッグ＆ドロップ ゾーン -->
+        <div id="audioDropZone" style="border: 2px dashed rgba(168, 85, 247, 0.4); border-radius: 10px; padding: 1.4rem 1rem; text-align: center; background: rgba(168, 85, 247, 0.04); transition: all 0.2s ease; cursor: pointer; margin-bottom: 0.8rem;">
+          <div style="font-size: 1.8rem; margin-bottom: 0.4rem;">📁🎙️</div>
+          <div style="font-weight: 600; font-size: 0.95rem; color: #f3e8ff; margin-bottom: 0.2rem;">手持ちの音声ファイルをここにドラッグ＆ドロップ</div>
+          <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.6rem;">またはボタンをクリックして音声ファイルを選択 (.mp3, .wav, .m4a, .webm, .ogg)</div>
+          <div style="display:flex; justify-content:center; gap:0.6rem; align-items:center; flex-wrap:wrap;">
+            <label class="btn btn-secondary" style="font-size: 0.78rem; padding: 0.4rem 1rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; margin-bottom:0;">
+              📁 音声ファイルを選択
+              <input type="file" id="audioUploadInput" accept="audio/*,.mp3,.wav,.m4a,.ogg,.webm" style="display:none;">
+            </label>
+            <a href="#image-speech-guide" style="font-size:0.78rem; color:var(--accent-purple); font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:0.3rem;">
+              📖 音声ファイル判定の実装コードを見る →
+            </a>
+          </div>
         </div>
-        <textarea 
-          id="supportContextTextarea"
-          data-nano-judgement 
-          data-judge-select="#supportPriority"
-          data-judge-target="#auto-result-3"
-          rows="2"
-          placeholder="問い合わせ内容を入力、または上のマイクボタンで話してください..."
-        >本番データベースへの接続が突如遮断され、決済処理が全てエラーになっています。顧客からの問い合わせが殺到しています。</textarea>
+
+        <!-- 音声プレイヤー ＆ ファイル情報プレビュー (アップロード後に表示) -->
+        <div id="audioPreviewContainer" style="display:none; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:0.8rem; margin-bottom:0.8rem; background:rgba(0,0,0,0.25); padding:0.8rem; border-radius:8px; border:1px solid var(--card-border);">
+          <div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.35rem; font-weight:600;">アップロード音声の試聴:</div>
+            <audio id="sampleAudioPlayer" controls style="width:100%; height:36px; border-radius:6px;"></audio>
+          </div>
+          <div style="display:flex; flex-direction:column; justify-content:center;">
+            <div style="font-size:0.75rem; color:var(--text-muted); font-weight:600; margin-bottom:0.2rem;">選択された音声ファイル:</div>
+            <div id="currentAudioLabel" style="font-size:0.82rem; color:#f3e8ff; font-weight:600;">未選択</div>
+            <div id="currentAudioMeta" style="font-size:0.7rem; color:var(--text-muted); margin-top:0.2rem;"></div>
+          </div>
+        </div>
+
         <div id="auto-result-3" class="result-target-area">
-          <div style="font-size:0.85rem; color:var(--text-muted); font-style:italic;">判定中、または結果がここに表示されます...</div>
+          <div style="font-size:0.85rem; color:var(--text-muted); font-style:italic;">音声ファイルをアップロードすると自動判定が開始され、セレクトボックスと連動します...</div>
         </div>
       </div>
 
@@ -885,6 +921,7 @@
         <div class="auto-slot-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem;">
           <span class="auto-slot-title">案件 4: ファイルそのもの（画像・テキスト）直接判定 <span class="badge" style="background:rgba(168,85,247,0.15); color:#c084fc; font-size:0.7rem;">🤖 Gemini Nano マルチモーダル直接入力</span></span>
           <div style="display:flex; align-items:center; gap:0.6rem;">
+            <a href="#image-speech-guide" class="back-to-top-link" style="font-size:0.75rem; color:var(--accent-purple); font-weight:700;">📷 画像判定の実装例を見る</a>
             <span style="font-size:0.75rem; color:var(--text-muted);">属性: <code>data-judge-select="#expenseCategory"</code></span>
             <button type="button" class="btn-clear-cache" style="background:rgba(239,68,68,0.12); color:#f87171; border:1px solid rgba(239,68,68,0.3); font-size:0.72rem; padding:0.22rem 0.55rem; border-radius:6px; cursor:pointer; font-weight:600; transition:all 0.2s;" title="全体のキャッシュを削除">🗑️ キャッシュ削除</button>
           </div>
@@ -917,6 +954,10 @@
             📁 自分のファイルを選択 / 直接判定 (画像 PNG/JPG/SVG、または .txt/.json/.csv)
             <input type="file" id="imageUploadInput" accept="image/*,text/*,.json,.csv,.txt,.md" style="display:none;">
           </label>
+
+          <a href="#image-speech-guide" style="font-size:0.78rem; color:var(--accent-purple); font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:0.3rem; margin-left:auto;">
+            📖 画像・音声判定の実装コードを見る →
+          </a>
         </div>
 
         <!-- 根拠（理由）取得オプション: デフォルトOFF（値のみ返却） -->
@@ -1005,6 +1046,308 @@
       <div id="rankingsList"></div>
     </div>
 
+    <!-- ========================================================================= -->
+    <!-- 📷 画像 ＆ 🎵 音声ファイル直接判定 実装例 (独立セクション) -->
+    <!-- ========================================================================= -->
+    <div class="card" id="image-speech-guide" style="border: 1px solid rgba(168, 85, 247, 0.4); background: linear-gradient(180deg, rgba(168, 85, 247, 0.04) 0%, rgba(15, 23, 42, 0.6) 100%); margin-bottom: 2rem; box-shadow: 0 8px 32px rgba(168, 85, 247, 0.12);">
+      <div class="card-title" style="border-bottom: 1px solid rgba(168, 85, 247, 0.25); padding-bottom: 0.8rem; margin-bottom: 1.2rem;">
+        <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+          <span style="font-size: 1.4rem;">📷🎵</span>
+          <span style="font-size: 1.2rem; font-weight: 700; color: #f3e8ff;">画像 ＆ 音声ファイル（直接アップロード）の判定 実装例</span>
+          <span class="badge" style="background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); font-size: 0.72rem;">Gemini Nano マルチモーダル対応</span>
+          <span class="badge" style="background: rgba(232, 121, 249, 0.2); color: #e879f9; border: 1px solid rgba(232, 121, 249, 0.4); font-size: 0.72rem;">音声ファイル (.wav/.mp3/.m4a) 直接対応</span>
+        </div>
+        <div style="display: flex; gap: 0.8rem; align-items: center;">
+          <a href="#implementation-guide" class="back-to-top-link" style="font-size: 0.8rem; color: #cbd5e1;">📖 基本ガイドへ</a>
+          <a href="#" class="back-to-top-link" style="font-size: 0.8rem;">↑ トップへ戻る</a>
+        </div>
+      </div>
+
+      <!-- 概要説明と重要仕様 -->
+      <div style="background: rgba(0, 0, 0, 0.3); border-radius: 10px; padding: 1.1rem 1.3rem; margin-bottom: 1.5rem; border: 1px solid rgba(255, 255, 255, 0.08);">
+        <p style="color: #e2e8f0; font-size: 0.94rem; line-height: 1.7; margin-bottom: 0.7rem;">
+          <code>NanoJudgement.judge()</code> の第2引数（Context）には、テキスト文字列だけでなく <strong>画像や音声の <code>File</code> / <code>Blob</code> オブジェクトをそのまま直接渡せます</strong>。<br>
+          マイクでの録音作業を行わなくても、<strong>既存の音声ファイル（コールセンターの通話録音、留守番電話、ボイスメモなど）をそのままアップロードするだけ</strong>で、オンデバイス判定が実行されます。
+        </p>
+        <ul style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.6; margin: 0; padding-left: 1.2rem;">
+          <li><strong>Gemini Nano 直接入力</strong>: Chrome のマルチモーダル Prompt API（<code>expectedInputs: [{ type: "audio" }, { type: "image" }]</code>）有効環境では、画像・音声のバイナリそのものを直接 Gemini Nano に渡して推論します。</li>
+          <li><strong>デフォルトは「値のみ高速返却」</strong>: 速度優先のためデフォルトでは<strong>根拠（理由）は出力せず、判定値（最有力候補・確信度）のみを高速に返却</strong>します。根拠が必要な場合のみ <code>includeReason: true</code>（または <code>data-judge-reason="true"</code>）を指定してください。</li>
+          <li><strong style="color: #fbbf24;">※ サンプルデータについて</strong>: デモや実装例内のレシート・領収証画像や社名・金額等は<strong>全て検証用の架空（ダミー）</strong>です。実在する企業・団体とは一切関係ありません。音声判定はご自身の手元の音声ファイルを直接アップロードして検証いただけます。</li>
+        </ul>
+      </div>
+
+      <!-- 例1: 領収書・レシート画像のドラッグ＆ドロップ ＆ 勘定科目自動仕訳 -->
+      <div class="step-card" id="guide-image-dropzone" style="border-left: 3px solid var(--primary); margin-bottom: 1.4rem;">
+        <div class="step-header">
+          <span class="step-badge" style="background: var(--primary); color: #090d16;">例1</span>
+          <span class="step-title">📷 領収書・レシート画像のドラッグ＆ドロップ ＆ 勘定科目自動仕訳（コピペで動作）</span>
+        </div>
+        <p class="step-desc">
+          ユーザーが領収書画像（PNG/JPEG/SVG）をドロップまたはファイル選択すると、画像を直接 Gemini Nano へ投入し、勘定科目セレクトボックス（旅費交通費・消耗品費・会議接待費等）を瞬時に自動選択する完全な実装例です。
+        </p>
+        <pre class="code-box"><code><span class="code-comment">&lt;!-- 1. HTML: ドロップゾーン ＆ 勘定科目セレクトボックス --&gt;</span>
+&lt;<span class="code-tag">div</span> <span class="code-attr">id</span>=<span class="code-string">"dropZone"</span> <span class="code-attr">style</span>=<span class="code-string">"border:2px dashed #38bdf8; padding:2rem; text-align:center; border-radius:12px; cursor:pointer;"</span>&gt;
+  &lt;<span class="code-tag">p</span>&gt;📂 領収書・レシート画像をここにドラッグ＆ドロップ、またはクリックして選択&lt;/<span class="code-tag">p</span>&gt;
+  &lt;<span class="code-tag">input</span> <span class="code-attr">type</span>=<span class="code-string">"file"</span> <span class="code-attr">id</span>=<span class="code-string">"receiptInput"</span> <span class="code-attr">accept</span>=<span class="code-string">"image/*"</span> <span class="code-attr">style</span>=<span class="code-string">"display:none;"</span>&gt;
+&lt;/<span class="code-tag">div</span>&gt;
+
+&lt;<span class="code-tag">select</span> <span class="code-attr">id</span>=<span class="code-string">"accountCategory"</span> <span class="code-attr">style</span>=<span class="code-string">"margin-top:1rem; padding:0.5rem; width:100%;"</span>&gt;
+  &lt;<span class="code-tag">option</span> <span class="code-attr">value</span>=<span class="code-string">""</span>&gt;-- AIが自動判定して選択します --&lt;/<span class="code-tag">option</span>&gt;
+  &lt;<span class="code-tag">option</span> <span class="code-attr">value</span>=<span class="code-string">"travel"</span> <span class="code-attr">data-description</span>=<span class="code-string">"電車・タクシー・新幹線・航空券等の移動交通費"</span>&gt;旅費交通費&lt;/<span class="code-tag">option</span>&gt;
+  &lt;<span class="code-tag">option</span> <span class="code-attr">value</span>=<span class="code-string">"supplies"</span> <span class="code-attr">data-description</span>=<span class="code-string">"PC周辺機器・文房具・事務消耗品・コピー用紙"</span>&gt;消耗品費&lt;/<span class="code-tag">option</span>&gt;
+  &lt;<span class="code-tag">option</span> <span class="code-attr">value</span>=<span class="code-string">"entertainment"</span> <span class="code-attr">data-description</span>=<span class="code-string">"取引先との会食・カフェでの商談打ち合わせ代"</span>&gt;会議接待費&lt;/<span class="code-tag">option</span>&gt;
+  &lt;<span class="code-tag">option</span> <span class="code-attr">value</span>=<span class="code-string">"cloud"</span> <span class="code-attr">data-description</span>=<span class="code-string">"AWS/GCPサーバー利用料・SaaSサブスクリプション"</span>&gt;通信開発費&lt;/<span class="code-tag">option</span>&gt;
+  &lt;<span class="code-tag">option</span> <span class="code-attr">value</span>=<span class="code-string">"other"</span> <span class="code-attr">data-description</span>=<span class="code-string">"上記いずれにも当てはまらないその他の経費"</span>&gt;その他&lt;/<span class="code-tag">option</span>&gt;
+&lt;/<span class="code-tag">select</span>&gt;
+
+&lt;<span class="code-tag">div</span> <span class="code-attr">id</span>=<span class="code-string">"judgementResult"</span>&gt;&lt;/<span class="code-tag">div</span>&gt;
+
+<span class="code-comment">&lt;!-- 2. JavaScript ロジック --&gt;</span>
+&lt;<span class="code-tag">script</span> <span class="code-attr">type</span>=<span class="code-string">"module"</span>&gt;
+  <span class="code-keyword">import</span> { NanoJudgement } <span class="code-keyword">from</span> <span class="code-string">'./nano-judgement.js'</span>;
+  <span class="code-keyword">const</span> judgement = <span class="code-keyword">new</span> NanoJudgement();
+
+  <span class="code-keyword">const</span> dropZone = document.getElementById(<span class="code-string">'dropZone'</span>);
+  <span class="code-keyword">const</span> fileInput = document.getElementById(<span class="code-string">'receiptInput'</span>);
+  <span class="code-keyword">const</span> selectEl = document.getElementById(<span class="code-string">'accountCategory'</span>);
+  <span class="code-keyword">const</span> resultDiv = document.getElementById(<span class="code-string">'judgementResult'</span>);
+
+  dropZone.addEventListener(<span class="code-string">'click'</span>, () => fileInput.click());
+  dropZone.addEventListener(<span class="code-string">'dragover'</span>, (e) => { e.preventDefault(); dropZone.style.background = <span class="code-string">'rgba(56,189,248,0.1)'</span>; });
+  dropZone.addEventListener(<span class="code-string">'dragleave'</span>, () => { dropZone.style.background = <span class="code-string">'transparent'</span>; });
+  dropZone.addEventListener(<span class="code-string">'drop'</span>, (e) => {
+    e.preventDefault();
+    dropZone.style.background = <span class="code-string">'transparent'</span>;
+    <span class="code-keyword">if</span> (e.dataTransfer.files?.length) handleImageFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener(<span class="code-string">'change'</span>, () => {
+    <span class="code-keyword">if</span> (fileInput.files?.length) handleImageFile(fileInput.files[0]);
+  });
+
+  <span class="code-keyword">async</span> <span class="code-keyword">function</span> handleImageFile(file) {
+    resultDiv.innerHTML = <span class="code-string">'⏳ Gemini Nano が画像そのものを直接解析中...'</span>;
+    <span class="code-keyword">try</span> {
+      <span class="code-comment">// judge() の第2引数に File オブジェクトを直接投入！</span>
+      <span class="code-keyword">const</span> result = <span class="code-keyword">await</span> judgement.judge(selectEl, file, {
+        target: resultDiv,    <span class="code-comment">// 判定結果カードを自動描画</span>
+        includeReason: <span class="code-keyword">true</span>   <span class="code-comment">// 理由も合わせて取得</span>
+      });
+      console.log(<span class="code-string">'自動選択された科目:'</span>, selectEl.value);
+      console.log(<span class="code-string">'最有力候補:'</span>, result.topChoice.name);
+    } <span class="code-keyword">catch</span> (err) {
+      resultDiv.innerHTML = <span class="code-string">'❌ エラー: '</span> + err.message;
+    }
+  }
+&lt;/<span class="code-tag">script</span>&gt;</code></pre>
+      </div>
+
+      <!-- 例2: 音声ファイル（通話録音・留守電）のドラッグ＆ドロップ ＆ 問い合わせ優先度自動判定 -->
+      <div class="step-card" id="guide-audio-dropzone" style="border-left: 3px solid #e879f9; margin-bottom: 1.4rem;">
+        <div class="step-header">
+          <span class="step-badge" style="background: #e879f9; color: #090d16;">例2</span>
+          <span class="step-title">🎵 音声ファイル（通話録音・留守電 .mp3 / .wav / .m4a）の直接判定 ＆ 自動選択（コピペで動作）</span>
+        </div>
+        <p class="step-desc">
+          マイク録音の手間なし！ コールセンターの通話録音ファイルや留守電の音声ファイル（<code>.wav</code>, <code>.mp3</code>, <code>.m4a</code>, <code>.webm</code>）を画面にドロップするだけで、音声を Gemini Nano が直接解析し、問い合わせ優先度（P1-緊急, P2-高, P3-中, P4-低, その他）を自動選択します。
+        </p>
+        <pre class="code-box"><code><span class="code-comment">&lt;!-- 1. HTML: 音声ドロップゾーン ＆ 優先度セレクトボックス --&gt;</span>
+&lt;<span class="code-tag">div</span> <span class="code-attr">id</span>=<span class="code-string">"audioDropZone"</span> <span class="code-attr">style</span>=<span class="code-string">"border:2px dashed #e879f9; padding:2rem; text-align:center; border-radius:12px; cursor:pointer;"</span>&gt;
+  &lt;<span class="code-tag">p</span>&gt;🎵 通話録音・音声ファイル（.mp3 / .wav / .m4a）をここにドロップ、または選択&lt;/<span class="code-tag">p</span>&gt;
+  &lt;<span class="code-tag">input</span> <span class="code-attr">type</span>=<span class="code-string">"file"</span> <span class="code-attr">id</span>=<span class="code-string">"audioFileInput"</span> <span class="code-attr">accept</span>=<span class="code-string">"audio/*,.mp3,.wav,.m4a,.ogg,.webm"</span> <span class="code-attr">style</span>=<span class="code-string">"display:none;"</span>&gt;
+&lt;/<span class="code-tag">div</span>&gt;
+
+&lt;<span class="code-tag">select</span> <span class="code-attr">id</span>=<span class="code-string">"supportPriority"</span> <span class="code-attr">style</span>=<span class="code-string">"margin-top:1rem; padding:0.5rem; width:100%;"</span>&gt;
+  &lt;<span class="code-tag">option</span> <span class="code-attr">value</span>=<span class="code-string">""</span>&gt;-- 音声解析により自動選択されます --&lt;/<span class="code-tag">option</span>&gt;
+  &lt;<span class="code-tag">option</span> <span class="code-attr">value</span>=<span class="code-string">"P1"</span> <span class="code-attr">data-description</span>=<span class="code-string">"サービス全停止やデータ破壊の恐れがある致命的インシデント"</span>&gt;P1 - 緊急（即時対応）&lt;/<span class="code-tag">option</span>&gt;
+  &lt;<span class="code-tag">option</span> <span class="code-attr">value</span>=<span class="code-string">"P2"</span> <span class="code-attr">data-description</span>=<span class="code-string">"主要機能が制限され広範囲に影響がある障害"</span>&gt;P2 - 高（当日中対応）&lt;/<span class="code-tag">option</span>&gt;
+  &lt;<span class="code-tag">option</span> <span class="code-attr">value</span>=<span class="code-string">"P3"</span> <span class="code-attr">data-description</span>=<span class="code-string">"軽微な表示崩れや回避策がある通常レベルの不具合"</span>&gt;P3 - 中（通常対応）&lt;/<span class="code-tag">option</span>&gt;
+  &lt;<span class="code-tag">option</span> <span class="code-attr">value</span>=<span class="code-string">"P4"</span> <span class="code-attr">data-description</span>=<span class="code-string">"機能追加の要望や操作方法に関する質問"</span>&gt;P4 - 低（次回リリース検討）&lt;/<span class="code-tag">option</span>&gt;
+  &lt;<span class="code-tag">option</span> <span class="code-attr">value</span>=<span class="code-string">"OTHER"</span> <span class="code-attr">data-description</span>=<span class="code-string">"一般的な問い合わせ・その他"</span>&gt;その他&lt;/<span class="code-tag">option</span>&gt;
+&lt;/<span class="code-tag">select</span>&gt;
+
+&lt;<span class="code-tag">div</span> <span class="code-attr">id</span>=<span class="code-string">"audioResult"</span>&gt;&lt;/<span class="code-tag">div</span>&gt;
+
+<span class="code-comment">&lt;!-- 2. JavaScript ロジック --&gt;</span>
+&lt;<span class="code-tag">script</span> <span class="code-attr">type</span>=<span class="code-string">"module"</span>&gt;
+  <span class="code-keyword">import</span> { NanoJudgement } <span class="code-keyword">from</span> <span class="code-string">'./nano-judgement.js'</span>;
+  <span class="code-keyword">const</span> judgement = <span class="code-keyword">new</span> NanoJudgement();
+
+  <span class="code-keyword">const</span> dropZone = document.getElementById(<span class="code-string">'audioDropZone'</span>);
+  <span class="code-keyword">const</span> fileInput = document.getElementById(<span class="code-string">'audioFileInput'</span>);
+  <span class="code-keyword">const</span> selectEl = document.getElementById(<span class="code-string">'supportPriority'</span>);
+  <span class="code-keyword">const</span> resultDiv = document.getElementById(<span class="code-string">'audioResult'</span>);
+
+  dropZone.addEventListener(<span class="code-string">'click'</span>, () => fileInput.click());
+  dropZone.addEventListener(<span class="code-string">'dragover'</span>, (e) => { e.preventDefault(); dropZone.style.background = <span class="code-string">'rgba(232,121,249,0.1)'</span>; });
+  dropZone.addEventListener(<span class="code-string">'dragleave'</span>, () => { dropZone.style.background = <span class="code-string">'transparent'</span>; });
+  dropZone.addEventListener(<span class="code-string">'drop'</span>, (e) => {
+    e.preventDefault();
+    dropZone.style.background = <span class="code-string">'transparent'</span>;
+    <span class="code-keyword">if</span> (e.dataTransfer.files?.length) handleAudioFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener(<span class="code-string">'change'</span>, () => {
+    <span class="code-keyword">if</span> (fileInput.files?.length) handleAudioFile(fileInput.files[0]);
+  });
+
+  <span class="code-keyword">async</span> <span class="code-keyword">function</span> handleAudioFile(file) {
+    resultDiv.innerHTML = <span class="code-string">'⏳ Gemini Nano が音声ファイル（'</span> + file.name + <span class="code-string">'）を直接解析中...'</span>;
+    <span class="code-keyword">try</span> {
+      <span class="code-comment">// judge() の第2引数に音声 File オブジェクトを直接渡す！</span>
+      <span class="code-keyword">const</span> result = <span class="code-keyword">await</span> judgement.judge(selectEl, file, {
+        target: resultDiv,
+        includeReason: <span class="code-keyword">true</span>   <span class="code-comment">// 判断理由も出力</span>
+      });
+      console.log(<span class="code-string">'自動選択された優先度:'</span>, selectEl.value);
+      console.log(<span class="code-string">'確信度:'</span>, result.topChoice.confidence);
+    } <span class="code-keyword">catch</span> (err) {
+      resultDiv.innerHTML = <span class="code-string">'❌ エラー: '</span> + err.message;
+    }
+  }
+&lt;/<span class="code-tag">script</span>&gt;</code></pre>
+      </div>
+
+      <!-- 例3: HTML宣言的マークアップ（ノーコード版: 音声 ＆ 画像ファイル） -->
+      <div class="step-card" id="guide-image-html" style="border-left: 3px solid var(--accent-purple); margin-bottom: 1.4rem;">
+        <div class="step-header">
+          <span class="step-badge" style="background: var(--accent-purple); color: #090d16;">例3</span>
+          <span class="step-title">🪄 HTML宣言的ノーコードマークアップ（音声ファイル選択 ＆ 画像ファイル選択）</span>
+        </div>
+        <p class="step-desc">
+          JavaScript コードを1行も書かずに、HTML属性を付与するだけでファイル選択（音声または画像）をセレクトボックスと自動連動させることができます。
+        </p>
+        <pre class="code-box"><code><span class="code-comment">&lt;!-- 1. 音声ファイル（通話録音 .mp3 / .wav / .m4a）選択で即座にAI優先度判定 --&gt;</span>
+&lt;<span class="code-tag">input</span> <span class="code-attr">type</span>=<span class="code-string">"file"</span> <span class="code-attr">accept</span>=<span class="code-string">"audio/*,.mp3,.wav,.m4a"</span>
+       <span class="code-attr">data-nano-judgement</span>
+       <span class="code-attr">data-judge-select</span>=<span class="code-string">"#supportPriority"</span>
+       <span class="code-attr">data-judge-target</span>=<span class="code-string">"#audio-result"</span>&gt;
+
+<span class="code-comment">&lt;!-- 2. 画像ファイル選択で即座にAI仕訳 ＆ セレクトボックス自動選択 --&gt;</span>
+&lt;<span class="code-tag">input</span> <span class="code-attr">type</span>=<span class="code-string">"file"</span> <span class="code-attr">accept</span>=<span class="code-string">"image/*"</span>
+       <span class="code-attr">data-nano-judgement</span>
+       <span class="code-attr">data-judge-select</span>=<span class="code-string">"#expenseCategory"</span>
+       <span class="code-attr">data-judge-target</span>=<span class="code-string">"#image-result"</span>&gt;
+
+<span class="code-comment">&lt;!-- 3. 領収書画像（クリックや差し替えで自動判定） --&gt;</span>
+&lt;<span class="code-tag">img</span> <span class="code-attr">src</span>=<span class="code-string">"sample-receipt.png"</span>
+     <span class="code-attr">data-nano-judgement</span>
+     <span class="code-attr">data-judge-select</span>=<span class="code-string">"#expenseCategory"</span>
+     <span class="code-attr">data-judge-target</span>=<span class="code-string">"#image-result"</span>&gt;</code></pre>
+      </div>
+
+      <!-- 例4: JavaScript API による音声ファイル直接投入 -->
+      <div class="step-card" id="guide-speech-file" style="border-left: 3px solid var(--accent-orange); margin-bottom: 1.4rem;">
+        <div class="step-header">
+          <span class="step-badge" style="background: var(--accent-orange); color: #090d16;">例4</span>
+          <span class="step-title">💻 JavaScript API による音声ファイル直接投入 ＆ 問い合わせ自動仕訳</span>
+        </div>
+        <p class="step-desc">
+          JavaScript の <code>File</code> オブジェクトや <code>Blob</code> オブジェクトを <code>judgement.judge()</code> に直接渡すだけで、問い合わせ種別や感情・対応要否を直接判定させることができます。
+        </p>
+        <pre class="code-box"><code><span class="code-keyword">import</span> { NanoJudgement } <span class="code-keyword">from</span> <span class="code-string">'./nano-judgement.js'</span>;
+<span class="code-keyword">const</span> judgement = <span class="code-keyword">new</span> NanoJudgement();
+
+<span class="code-keyword">const</span> audioInput = document.querySelector(<span class="code-string">'#audioFileInput'</span>);
+
+audioInput.addEventListener(<span class="code-string">'change'</span>, <span class="code-keyword">async</span> () => {
+  <span class="code-keyword">const</span> audioFile = audioInput.files[0];
+  <span class="code-keyword">if</span> (!audioFile) <span class="code-keyword">return</span>;
+
+  <span class="code-keyword">const</span> categories = [
+    { id: <span class="code-string">'billing'</span>, name: <span class="code-string">'請求・決済に関するクレーム'</span>, description: <span class="code-string">'過大請求、二重引き落とし、返金要求'</span> },
+    { id: <span class="code-string">'technical'</span>, name: <span class="code-string">'技術的トラブル・障害'</span>, description: <span class="code-string">'ログインできない、アプリがクラッシュする'</span> },
+    { id: <span class="code-string">'inquiry'</span>, name: <span class="code-string">'一般的なサービス質問'</span>, description: <span class="code-string">'料金プラン、営業時間、契約変更の手順'</span> },
+    { id: <span class="code-string">'other'</span>, name: <span class="code-string">'その他・該当なし'</span>, description: <span class="code-string">'間違い電話や上記に該当しない要件'</span> }
+  ];
+
+  <span class="code-comment">// 音声ファイルを直接 judge() に投入</span>
+  <span class="code-keyword">const</span> result = <span class="code-keyword">await</span> judgement.judge(categories, audioFile, {
+    includeReason: <span class="code-keyword">true</span>
+  });
+
+  console.log(<span class="code-string">'音声ファイル名:'</span>, audioFile.name);
+  console.log(<span class="code-string">'音声仕訳結果:'</span>, result.topChoice.name);
+  console.log(<span class="code-string">'根拠・理由:'</span>, result.summaryReason);
+});</code></pre>
+      </div>
+
+      <!-- 例5: Webカメラ・スマホ撮影レシートの即時キャプチャ判定 -->
+      <div class="step-card" id="guide-image-camera" style="border-left: 3px solid var(--accent-green); margin-bottom: 1.4rem;">
+        <div class="step-header">
+          <span class="step-badge" style="background: var(--accent-green); color: #090d16;">例5</span>
+          <span class="step-title">📹 Webカメラ・スマホ撮影レシートの即時キャプチャ判定</span>
+        </div>
+        <p class="step-desc">
+          ブラウザのカメラ（<code>navigator.mediaDevices.getUserMedia</code>）でレシートや障害画面を写し、「撮影」ボタンを押した瞬間に <code>canvas.toBlob()</code> で抽出したバイナリをオンデバイスで判定します。
+        </p>
+        <pre class="code-box"><code><span class="code-comment">// 1. カメラストリームの開始</span>
+<span class="code-keyword">const</span> video = document.querySelector(<span class="code-string">'#cameraVideo'</span>);
+<span class="code-keyword">const</span> stream = <span class="code-keyword">await</span> navigator.mediaDevices.getUserMedia({
+  video: { facingMode: <span class="code-string">'environment'</span>, width: 1280, height: 720 }
+});
+video.srcObject = stream;
+
+<span class="code-comment">// 2. シャッターを押して Canvas 経由で Blob 取得 ＆ 即時判定</span>
+document.querySelector(<span class="code-string">'#captureBtn'</span>).addEventListener(<span class="code-string">'click'</span>, () => {
+  <span class="code-keyword">const</span> canvas = document.createElement(<span class="code-string">'canvas'</span>);
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  <span class="code-keyword">const</span> ctx = canvas.getContext(<span class="code-string">'2d'</span>);
+  ctx.drawImage(video, 0, 0);
+
+  <span class="code-comment">// Blob 形式で直接画像を取り出し、judge() に渡す</span>
+  canvas.toBlob(<span class="code-keyword">async</span> (imageBlob) => {
+    <span class="code-keyword">const</span> result = <span class="code-keyword">await</span> judgement.judge(<span class="code-string">'#expenseSelect'</span>, imageBlob);
+    console.log(<span class="code-string">'撮影レシートの判定結果:'</span>, result.topChoice.name);
+    console.log(<span class="code-string">'確信度:'</span>, result.topChoice.confidence);
+  }, <span class="code-string">'image/jpeg'</span>, 0.9);
+});</code></pre>
+      </div>
+
+      <!-- 例6: 根拠表示制御パラメータ ＆ 例7: ライフサイクルイベント -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.2rem;">
+        <div class="step-card" style="margin-bottom: 0;">
+          <div class="step-header">
+            <span class="step-badge">例6</span>
+            <span class="step-title">🎯 根拠（理由）表示の制御</span>
+          </div>
+          <p class="step-desc" style="font-size: 0.85rem;">
+            デフォルトは速度優先のため<strong>値のみ高速返却</strong>。根拠が欲しい場合のみパラメータを指定します。
+          </p>
+          <pre class="code-box" style="font-size: 0.8rem;"><code><span class="code-comment">// 【デフォルト】値のみ高速返却</span>
+<span class="code-keyword">const</span> fast = <span class="code-keyword">await</span> judgement.judge(choices, file);
+console.log(fast.topChoice.name); <span class="code-comment">// 値のみ</span>
+console.log(fast.summaryReason);  <span class="code-comment">// undefined</span>
+
+<span class="code-comment">// 【根拠付き】includeReason: true</span>
+<span class="code-keyword">const</span> detail = <span class="code-keyword">await</span> judgement.judge(choices, file, {
+  <span class="code-keyword">includeReason</span>: <span class="code-keyword">true</span>
+});
+console.log(detail.summaryReason); <span class="code-comment">// 翻訳済み根拠</span></code></pre>
+        </div>
+
+        <div class="step-card" style="margin-bottom: 0;">
+          <div class="step-header">
+            <span class="step-badge">例7</span>
+            <span class="step-title">🔔 ライフサイクルイベント連携</span>
+          </div>
+          <p class="step-desc" style="font-size: 0.85rem;">
+            音声ファイルや画像ファイルの解析開始時・完了時に発火するカスタムイベントでUIインジケータを連携できます。
+          </p>
+          <pre class="code-box" style="font-size: 0.8rem;"><code><span class="code-keyword">const</span> fileInput = document.querySelector(<span class="code-string">'input[data-nano-judgement]'</span>);
+
+<span class="code-comment">// 解析・判定開始時</span>
+fileInput.addEventListener(<span class="code-string">'nano-judgement-started'</span>, (e) => {
+  console.log(<span class="code-string">'解析開始:'</span>, e.detail.file?.name);
+});
+
+<span class="code-comment">// 判定完了時</span>
+fileInput.addEventListener(<span class="code-string">'nano-judgement-complete'</span>, (e) => {
+  console.log(<span class="code-string">'判定結果:'</span>, e.detail.result.topChoice.name);
+});</code></pre>
+        </div>
+      </div>
+    </div>
+
     <!-- 実装方法ガイド (Implementation Guide) -->
     <div class="card" id="implementation-guide">
       <div class="card-title">
@@ -1020,7 +1363,7 @@
         <button class="guide-tab-btn active" data-tab="tab-html" role="tab">🎯 HTML属性で実装 (推奨)</button>
         <button class="guide-tab-btn" data-tab="tab-output-dom" role="tab">🎨 出力データと画面反映の仕組み</button>
         <button class="guide-tab-btn" data-tab="tab-js" role="tab">💻 JavaScript APIで実装</button>
-        <button class="guide-tab-btn" data-tab="tab-image-ocr" role="tab">📷 画像 ＆ 🎙️ 音声入力の実装</button>
+        <button class="guide-tab-btn" data-tab="tab-image-ocr" role="tab">📷 画像 ＆ 🎵 音声ファイルの実装</button>
         <button class="guide-tab-btn" data-tab="tab-events" role="tab">🔔 イベント連携</button>
         <button class="guide-tab-btn" data-tab="tab-cache-reset" role="tab">⚡ キャッシュ＆即時停止仕様</button>
       </div>
@@ -1307,17 +1650,27 @@ submitBtn.addEventListener(<span class="code-string">'click'</span>, <span class
         </div>
       </div>
 
-      <!-- タブ: 画像 ＆ 音声入力の実装 -->
+      <!-- タブ: 画像 ＆ 音声ファイルの実装 -->
       <div id="tab-image-ocr" class="guide-tab-pane" role="tabpanel">
+        <!-- 独立セクションへのジャンプ案内 -->
+        <div style="background: rgba(168, 85, 247, 0.12); border: 1px solid rgba(168, 85, 247, 0.35); border-radius: 8px; padding: 0.8rem 1.1rem; margin-bottom: 1.4rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.6rem;">
+          <div style="font-size: 0.88rem; color: #f3e8ff;">
+            📷🎵 <strong>画像・音声ファイルの完全実装ガイド（例1〜例7）</strong> は独立カードでもご覧いただけます。
+          </div>
+          <a href="#image-speech-guide" class="btn" style="text-decoration: none; padding: 0.35rem 0.85rem; font-size: 0.82rem; font-weight: 700; border-radius: 6px; background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%); color: #ffffff;">
+            独立セクションで見る →
+          </a>
+        </div>
+
         <!-- 1. ファイルそのものを直接渡す実装方法 -->
         <div class="step-card">
           <div class="step-header">
             <span class="step-badge">1</span>
-            <span class="step-title">🤖 📷 ファイルそのもの（画像/音声/テキスト）を直接渡して判定する実装方法</span>
+            <span class="step-title">🤖 📷🎵 ファイルそのもの（画像/音声/テキスト）を直接渡して判定する実装方法</span>
           </div>
           <p class="step-desc">
-            <code>judgement.judge()</code> の第2引数（Context）には、テキスト文字列だけでなく <code>File</code> や <code>Blob</code>、<code>HTMLImageElement</code> オブジェクトを<strong>そのまま直接渡せます</strong>。<br>
-            Chrome のマルチモーダル Prompt API（<code>expectedInputs: [{ type: "image" }]</code> / <code>chrome://flags/#prompt-api-for-gemini-nano-multimodal-input</code>）が有効な環境では、<strong>画像・音声の Blob / File そのものを Gemini Nano に直接入力</strong>して推論が行われます。テキストファイル（<code>.txt</code>, <code>.json</code>, <code>.csv</code>）の場合は内容が自動ロードされ、マルチモーダル非対応環境では自動でオンデバイス OCR / SVG 解析フォールバックが機能します。
+            <code>judgement.judge()</code> の第2引数（Context）には、テキスト文字列だけでなく <code>File</code> や <code>Blob</code> オブジェクトを<strong>そのまま直接渡せます</strong>。<br>
+            Chrome のマルチモーダル Prompt API 有効環境では、<strong>画像・音声の Blob / File そのものを Gemini Nano に直接入力</strong>して推論が行われます。テキストファイル（<code>.txt</code>, <code>.json</code>, <code>.csv</code>）の場合は内容が自動ロードされ、非対応環境でも安全にフォールバックします。
           </p>
           <pre class="code-box"><code><span class="code-keyword">import</span> { NanoJudgement } <span class="code-keyword">from</span> <span class="code-string">'./nano-judgement.js'</span>;
 <span class="code-keyword">const</span> judgement = <span class="code-keyword">new</span> NanoJudgement();
@@ -1325,75 +1678,67 @@ submitBtn.addEventListener(<span class="code-string">'click'</span>, <span class
 <span class="code-comment">// A. 画像ファイル（File オブジェクト）そのものを直接渡す</span>
 <span class="code-keyword">const</span> fileInput = document.querySelector(<span class="code-string">'#myFileInput'</span>);
 <span class="code-keyword">const</span> imageFile = fileInput.files[0]; <span class="code-comment">// 例: 領収書.png, 障害画面.jpg</span>
-
-<span class="code-comment">// Gemini Nano のマルチモーダルセッションにファイルそのものが直接渡されます！</span>
 <span class="code-keyword">const</span> result = <span class="code-keyword">await</span> judgement.judge(choices, imageFile);
+console.log(<span class="code-string">"画像判定結果:"</span>, result.topChoice.name);
 
-console.log(<span class="code-string">"判定結果:"</span>, result.topChoice.name);
-console.log(<span class="code-string">"マルチモーダル直接判定:"</span>, result.isDirectMultimodal); <span class="code-comment">// true（マルチモーダル実行時）</span>
+<span class="code-comment">// B. 音声ファイル（File オブジェクト: .mp3, .wav, .m4a）そのものを直接渡す</span>
+<span class="code-keyword">const</span> audioFileInput = document.querySelector(<span class="code-string">'#myAudioInput'</span>);
+<span class="code-keyword">const</span> audioFile = audioFileInput.files[0]; <span class="code-comment">// 例: call_recording.wav, voicemail.mp3</span>
+<span class="code-keyword">const</span> audioResult = <span class="code-keyword">await</span> judgement.judge(<span class="code-string">'#supportPriority'</span>, audioFile);
+console.log(<span class="code-string">"音声仕訳結果:"</span>, audioResult.topChoice.name);
 
-<span class="code-comment">// B. テキストファイル（.txt, .json, .csv）そのものを直接渡す</span>
-<span class="code-keyword">const</span> textFile = logFileInput.files[0]; <span class="code-comment">// 例: server_error.log, invoice.json</span>
-<span class="code-keyword">const</span> logResult = <span class="code-keyword">await</span> judgement.judge(<span class="code-string">'#priority'</span>, textFile);
-
-<span class="code-comment">// C. 画像要素（HTMLImageElement）または Canvas を直接渡す</span>
-<span class="code-keyword">const</span> imgEl = document.querySelector(<span class="code-string">'#previewImg'</span>);
-<span class="code-keyword">const</span> imgResult = <span class="code-keyword">await</span> judgement.judge(<span class="code-string">'#category'</span>, imgEl);</code></pre>
+<span class="code-comment">// C. テキストファイル（.txt, .json, .csv）そのものを直接渡す</span>
+<span class="code-keyword">const</span> textFile = logFileInput.files[0]; <span class="code-comment">// 例: server_error.log</span>
+<span class="code-keyword">const</span> logResult = <span class="code-keyword">await</span> judgement.judge(<span class="code-string">'#priority'</span>, textFile);</code></pre>
         </div>
 
-        <!-- 2. 音声入力の実装方法 -->
+        <!-- 2. 音声ファイルの直接アップロード判定の実装方法 -->
         <div class="step-card">
           <div class="step-header">
             <span class="step-badge">2</span>
-            <span class="step-title">🎙️ 音声入力（マイク音声認識: Web Speech API）の実装方法</span>
+            <span class="step-title">🎵 音声ファイル（通話録音・留守電）直接判定の実装方法</span>
           </div>
           <p class="step-desc">
-            Chrome に標準搭載された <strong>Web Speech API</strong>（<code>webkitSpeechRecognition</code>）とシームレスに連携。マイクから話した音声をオンデバイスで即座に文字起こしし、そのまま Prompt API の判定パイプラインへ流し込んでセレクトボックス自動選択やAI判定を行えます。
+            マイクでの録音作業を行わなくても、<strong>既存の音声ファイル（.mp3, .wav, .m4a）をユーザーが選択またはドロップするだけ</strong>で、オンデバイス判定が即座に実行されます。
           </p>
-          <pre class="code-box"><code><span class="code-comment">// マイクボタンのクリックからワンストップで音声認識＆AI判定を実行</span>
-document.querySelector(<span class="code-string">'#micBtn'</span>).addEventListener(<span class="code-string">'click'</span>, <span class="code-keyword">async</span> () => {
-  <span class="code-keyword">try</span> {
-    <span class="code-comment">// judgeFromSpeech: 音声認識からAI判定・セレクトボックス連動まで一括実行</span>
-    <span class="code-keyword">const</span> result = <span class="code-keyword">await</span> judgement.judgeFromSpeech(<span class="code-string">'#supportPriority'</span>, {
-      speechLang: <span class="code-string">'ja-JP'</span>,     <span class="code-comment">// 音声認識言語（デフォルト: 'ja-JP'）</span>
-      speechTimeoutMs: 10000,  <span class="code-comment">// 発話待機タイムアウト（ミリ秒）</span>
-    });
+          <pre class="code-box"><code><span class="code-keyword">const</span> audioInput = document.querySelector(<span class="code-string">'#audioInput'</span>);
 
-    console.log(<span class="code-string">"話した内容 (テキスト):"</span>, result.speechTranscript);
-    console.log(<span class="code-string">"AI判定結果:"</span>, result.topChoice.name);
-    console.log(<span class="code-string">"確信度スコア:"</span>, result.topChoice.confidence);
-  } <span class="code-keyword">catch</span> (err) {
-    console.error(<span class="code-string">"音声認識または判定エラー:"</span>, err);
-  }
-});
+audioInput.addEventListener(<span class="code-string">'change'</span>, <span class="code-keyword">async</span> () => {
+  <span class="code-keyword">const</span> audioFile = audioInput.files[0];
+  <span class="code-keyword">if</span> (!audioFile) <span class="code-keyword">return</span>;
 
-<span class="code-comment">// ※ 音声認識テキストのみを取得したい場合</span>
-<span class="code-keyword">const</span> transcript = <span class="code-keyword">await</span> judgement.recognizeSpeech({ lang: <span class="code-string">'ja-JP'</span> });
-console.log(<span class="code-string">"認識テキスト:"</span>, transcript);</code></pre>
+  <span class="code-comment">// judge: 音声ファイルを直接渡してAI優先度判定 ＆ セレクトボックス自動連動</span>
+  <span class="code-keyword">const</span> result = <span class="code-keyword">await</span> judgement.judge(<span class="code-string">'#supportPriority'</span>, audioFile, {
+    includeReason: <span class="code-keyword">true</span> <span class="code-comment">// 理由も生成</span>
+  });
+
+  console.log(<span class="code-string">"ファイル名:"</span>, audioFile.name);
+  console.log(<span class="code-string">"AI判定結果:"</span>, result.topChoice.name);
+  console.log(<span class="code-string">"確信度スコア:"</span>, result.topChoice.confidence);
+  console.log(<span class="code-string">"判断理由:"</span>, result.summaryReason);
+});</code></pre>
         </div>
 
-        <!-- 3. HTML宣言的マークアップでの実装方法 -->
+        <!-- 3. HTML宣言的ノーコードマークアップでの実装方法 -->
         <div class="step-card">
           <div class="step-header">
             <span class="step-badge">3</span>
-            <span class="step-title">🪄 HTML宣言的マークアップ（ファイル・画像・マイクボタン連動）</span>
+            <span class="step-title">🪄 HTML宣言的ノーコードマークアップ（音声ファイル・画像ファイル連動）</span>
           </div>
           <p class="step-desc">
-            JavaScript コードを1行も書かずに、HTML属性を付与するだけでファイル選択・画像要素・音声マイクボタンをセレクトボックスと自動連動させることができます。
+            JavaScript コードを1行も書かずに、HTML属性を付与するだけでファイル選択（音声または画像）をセレクトボックスと自動連動させることができます。
           </p>
-          <pre class="code-box"><code><span class="code-comment">&lt;!-- 1. 画像ファイル選択で即座にAI仕訳＆セレクトボックス自動選択 --&gt;</span>
+          <pre class="code-box"><code><span class="code-comment">&lt;!-- 1. 音声ファイル（通話録音 .wav/.mp3）選択で即座にAI優先度判定 ＆ 連動 --&gt;</span>
+&lt;<span class="code-keyword">input</span> <span class="code-string">type</span>=<span class="code-string">"file"</span> <span class="code-string">accept</span>=<span class="code-string">"audio/*,.mp3,.wav,.m4a"</span>
+       <span class="code-string">data-nano-judgement</span>
+       <span class="code-string">data-judge-select</span>=<span class="code-string">"#supportPriority"</span>
+       <span class="code-string">data-judge-target</span>=<span class="code-string">"#audio-result"</span>&gt;
+
+<span class="code-comment">&lt;!-- 2. 画像ファイル選択で即座にAI仕訳＆セレクトボックス自動選択 --&gt;</span>
 &lt;<span class="code-keyword">input</span> <span class="code-string">type</span>=<span class="code-string">"file"</span> <span class="code-string">accept</span>=<span class="code-string">"image/*"</span>
        <span class="code-string">data-nano-judgement</span>
        <span class="code-string">data-judge-select</span>=<span class="code-string">"#expenseCategory"</span>
        <span class="code-string">data-judge-target</span>=<span class="code-string">"#result-card"</span>&gt;
-
-<span class="code-comment">&lt;!-- 2. 音声マイクボタン: クリックでマイク起動 ＆ 話した内容で即座に自動判定 --&gt;</span>
-&lt;<span class="code-keyword">button</span> <span class="code-string">type</span>=<span class="code-string">"button"</span>
-        <span class="code-string">data-nano-judgement-speech</span>
-        <span class="code-string">data-judge-select</span>=<span class="code-string">"#supportPriority"</span>
-        <span class="code-string">data-judge-target</span>=<span class="code-string">"#auto-result-3"</span>&gt;
-  🎙️ 音声で話して判定
-&lt;/<span class="code-keyword">button</span>&gt;
 
 <span class="code-comment">&lt;!-- 3. 領収書画像（クリックや差し替えで自動判定） --&gt;</span>
 &lt;<span class="code-keyword">img</span> <span class="code-string">src</span>=<span class="code-string">"sample-receipt.png"</span>
@@ -2482,18 +2827,42 @@ document.addEventListener(<span class="code-string">'nano-judgement-cancelled'</
     });
 
     // 実装ガイドのタブ切り替え
+    function switchGuideTab(targetId) {
+      document.querySelectorAll('.guide-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.guide-tab-pane').forEach(p => p.classList.remove('active'));
+      const activeBtn = document.querySelector(`.guide-tab-btn[data-tab="${targetId}"]`);
+      if (activeBtn) activeBtn.classList.add('active');
+      const targetPane = document.getElementById(targetId);
+      if (targetPane) targetPane.classList.add('active');
+    }
+
     document.querySelectorAll('.guide-tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const targetId = btn.getAttribute('data-tab');
-        document.querySelectorAll('.guide-tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.guide-tab-pane').forEach(p => p.classList.remove('active'));
-        btn.classList.add('active');
-        const targetPane = document.getElementById(targetId);
-        if (targetPane) {
-          targetPane.classList.add('active');
-        }
+        switchGuideTab(targetId);
       });
     });
+
+    // URLハッシュに応じたタブやセクションへの自動ナビゲーション
+    function handleHashNavigation() {
+      const hash = window.location.hash;
+      if (!hash) return;
+      if (hash === '#tab-image-ocr' || hash.includes('image-ocr')) {
+        switchGuideTab('tab-image-ocr');
+        const pane = document.getElementById('tab-image-ocr');
+        if (pane) pane.scrollIntoView({ behavior: 'smooth' });
+      } else if (hash === '#tab-output-dom') {
+        switchGuideTab('tab-output-dom');
+        const pane = document.getElementById('tab-output-dom');
+        if (pane) pane.scrollIntoView({ behavior: 'smooth' });
+      } else if (hash === '#image-speech-guide' || hash.startsWith('#guide-')) {
+        const el = document.querySelector(hash);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    window.addEventListener('hashchange', handleHashNavigation);
+    setTimeout(handleHashNavigation, 250);
 
     // =========================================================================
     // 【HTML側の責務】nano-judgement カスタムイベントを購読して画面（DOM）に描画
@@ -2674,6 +3043,88 @@ document.addEventListener(<span class="code-string">'nano-judgement-cancelled'</
     });
 
     // =========================================================================
+    // 【案件3】音声ファイル（通話録音・留守電）直接アップロード判定デモの制御ロジック
+    // =========================================================================
+    const sampleAudioPlayer = document.querySelector('#sampleAudioPlayer');
+    const audioUploadInput = document.querySelector('#audioUploadInput');
+    const audioDropZone = document.querySelector('#audioDropZone');
+    const audioPreviewContainer = document.querySelector('#audioPreviewContainer');
+    const currentAudioLabel = document.querySelector('#currentAudioLabel');
+    const currentAudioMeta = document.querySelector('#currentAudioMeta');
+    const case3ResultContainer = document.querySelector('#auto-result-3');
+    const supportPrioritySelect = document.querySelector('#supportPriority');
+
+    async function runAudioJudgement(audioFile) {
+      if (!case3ResultContainer || !supportPrioritySelect || !audioFile) return;
+
+      renderLoadingSpinner(case3ResultContainer);
+      if (audioPreviewContainer) audioPreviewContainer.style.display = 'grid';
+      if (currentAudioLabel) currentAudioLabel.textContent = `📁 ${audioFile.name}`;
+      if (currentAudioMeta) {
+        currentAudioMeta.textContent = `サイズ: ${(audioFile.size / 1024).toFixed(1)} KB | 形式: ${audioFile.type || 'audio'}`;
+      }
+      if (sampleAudioPlayer) {
+        sampleAudioPlayer.src = URL.createObjectURL(audioFile);
+      }
+
+      try {
+        const result = await judgement.judge(supportPrioritySelect, audioFile, {
+          includeReason: true,
+        });
+
+        if (result.topChoice && supportPrioritySelect.value !== result.topChoice.id) {
+          supportPrioritySelect.value = result.topChoice.id;
+          supportPrioritySelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        renderResultCard(case3ResultContainer, result);
+      } catch (err) {
+        console.error('音声ファイル判定エラー:', err);
+        case3ResultContainer.innerHTML = `
+          <div style="font-size:0.85rem; color:#f87171; padding:0.8rem; background:rgba(239,68,68,0.1); border-radius:8px; border:1px solid rgba(239,68,68,0.3); margin-top:0.6rem;">
+            ⚠️ 音声判定中にエラーが発生しました: ${err.message}
+          </div>
+        `;
+      }
+    }
+
+    // 音声ドラッグ＆ドロップ ＆ ファイル選択
+    if (audioDropZone) {
+      audioDropZone.addEventListener('click', (e) => {
+        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'LABEL' && e.target.tagName !== 'A') {
+          if (audioUploadInput) audioUploadInput.click();
+        }
+      });
+      audioDropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        audioDropZone.style.borderColor = 'var(--accent-purple)';
+        audioDropZone.style.background = 'rgba(168, 85, 247, 0.12)';
+      });
+      audioDropZone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        audioDropZone.style.borderColor = 'rgba(168, 85, 247, 0.4)';
+        audioDropZone.style.background = 'rgba(168, 85, 247, 0.04)';
+      });
+      audioDropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        audioDropZone.style.borderColor = 'rgba(168, 85, 247, 0.4)';
+        audioDropZone.style.background = 'rgba(168, 85, 247, 0.04)';
+        const files = e.dataTransfer.files;
+        if (files && files.length > 0) {
+          runAudioJudgement(files[0]);
+        }
+      });
+    }
+
+    if (audioUploadInput) {
+      audioUploadInput.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        runAudioJudgement(file);
+      });
+    }
+
+    // =========================================================================
     // 【案件4】画像データ（領収書・スクリーンショット）自動判定デモの制御ロジック
     // =========================================================================
     const samplePreviewImg = document.querySelector('#samplePreviewImg');
@@ -2778,7 +3229,7 @@ document.addEventListener(<span class="code-string">'nano-judgement-cancelled'</
       });
     }
 
-    // 初期表示時にデフォルト画像（sample-receipt.png）で判定を自動実行 (デフォルト: 根拠なし・値のみ高速返却)
+    // 初期表示時にデフォルト画像で自動判定
     setTimeout(() => {
       runImageJudgement('sample-receipt.png', '【架空】クラウドサーバー領収書 (PNG)');
     }, 400);

@@ -1054,6 +1054,10 @@ ${exampleRankings}
         isFileInput = true;
         fileModality = 'image';
         fileName = context.split('/').pop().split('?')[0] || 'image';
+      } else if (typeof context === 'string' && (/\.(mp3|wav|m4a|ogg|aac|flac|webm)(\?.*)?$/i.test(context) || context.startsWith('data:audio/'))) {
+        isFileInput = true;
+        fileModality = 'audio';
+        fileName = context.split('/').pop().split('?')[0] || 'audio';
       }
 
       const isImageInput = fileModality === 'image';
@@ -1182,6 +1186,9 @@ ${exampleRankings}
           if (fileModality === 'image' && (!extractedImageText || typeof resolvedContext !== 'string')) {
             extractedImageText = await this.extractTextFromImage(fileSource || context);
             resolvedContext = extractedImageText || `[画像ファイル: ${fileName}]`;
+            promptText = this.buildPrompt(choicePairs.translatedChoices, resolvedContext, includeReason, detectedLang);
+          } else if (fileModality === 'audio' && typeof resolvedContext !== 'string') {
+            resolvedContext = `[音声ファイル: ${fileName}]`;
             promptText = this.buildPrompt(choicePairs.translatedChoices, resolvedContext, includeReason, detectedLang);
           }
 
