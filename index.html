@@ -865,12 +865,12 @@
         </div>
       </div>
 
-      <!-- 枠3 (音声ファイルそのもの・通話録音からの自動判定 ＆ セレクトボックス連動) -->
-      <div class="auto-slot" id="case3-audio-slot">
+      <!-- 枠3 (selectbox連携 ＆ 自動選択 - テキスト入力) -->
+      <div class="auto-slot" id="case3-text-select-slot">
         <div class="auto-slot-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem;">
-          <span class="auto-slot-title">案件 3: 音声ファイル（通話録音・留守電）直接判定 <span class="badge" style="background:rgba(232,121,249,0.15); color:#e879f9; font-size:0.7rem;">🎵 音声ファイル直接入力 (.wav / .mp3 / .m4a)</span></span>
+          <span class="auto-slot-title">案件 3: セレクトボックス連携 ＆ 自動選択 <span class="badge" style="background:rgba(74,222,128,0.15); color:var(--accent-green); font-size:0.7rem;">🎯 selectbox 自動連動 (テキスト入力)</span></span>
           <div style="display:flex; align-items:center; gap:0.6rem;">
-            <a href="#image-speech-guide" class="back-to-top-link" style="font-size:0.75rem; color:var(--accent-purple); font-weight:600;">🎵 音声ファイル判定の実装例</a>
+            <a href="#implementation-guide" class="back-to-top-link" style="font-size:0.75rem; color:var(--accent-green); font-weight:600;">📖 実装方法を見る</a>
             <span style="font-size:0.75rem; color:var(--text-muted);">属性: <code>data-judge-select="#supportPriority"</code></span>
             <button type="button" class="btn-clear-cache" style="background:rgba(239,68,68,0.12); color:#f87171; border:1px solid rgba(239,68,68,0.3); font-size:0.72rem; padding:0.22rem 0.55rem; border-radius:6px; cursor:pointer; font-weight:600; transition:all 0.2s;" title="全体のキャッシュを削除">🗑️ キャッシュ削除</button>
           </div>
@@ -879,6 +879,41 @@
         <div style="display: flex; gap: 0.8rem; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap;">
           <label for="supportPriority" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0;">連動セレクトボックス (障害・問い合わせ優先度):</label>
           <select id="supportPriority" style="padding: 0.45rem 0.8rem; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border); color: var(--text-main); border-radius: 8px; font-family: inherit; font-size: 0.9rem; flex: 1; min-width: 260px;">
+            <option value="" disabled>優先度を選択してください</option>
+            <option value="P1" data-description="サービス全停止やデータ破壊の恐れがある致命的インシデント">P1 - 緊急（即時対応）</option>
+            <option value="P2" data-description="主要機能が一部制限され、広範囲のユーザーに影響がある障害">P2 - 高（当日中対応）</option>
+            <option value="P3" data-description="軽微な表示崩れや回避策が存在する通常レベルの不具合">P3 - 中（通常対応）</option>
+            <option value="P4" data-description="機能追加の要望や操作方法に関する質問">P4 - 低（次回リリース検討）</option>
+            <option value="OTHER" data-description="上記のいずれの優先度基準にも該当しない、または一般的な問い合わせ・その他">その他（未分類・その他）</option>
+          </select>
+        </div>
+
+        <textarea 
+          data-nano-judgement 
+          data-judge-select="#supportPriority"
+          data-judge-target="#auto-result-3"
+          rows="2"
+          placeholder="問い合わせ内容を入力してください..."
+        >本番データベースへの接続が突如遮断され、決済処理が全てエラーになっています。顧客からの問い合わせが殺到しています。</textarea>
+        <div id="auto-result-3" class="result-target-area">
+          <div style="font-size:0.85rem; color:var(--text-muted); font-style:italic;">判定中、または結果がここに表示されます...</div>
+        </div>
+      </div>
+
+      <!-- 枠4 (音声ファイルそのもの・通話録音からの自動判定 ＆ セレクトボックス連動) -->
+      <div class="auto-slot" id="case4-audio-slot">
+        <div class="auto-slot-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem;">
+          <span class="auto-slot-title">案件 4: 音声ファイル（通話録音・留守電）直接判定 <span class="badge" style="background:rgba(232,121,249,0.15); color:#e879f9; font-size:0.7rem;">🎵 音声ファイル直接入力 (.wav / .mp3 / .m4a)</span></span>
+          <div style="display:flex; align-items:center; gap:0.6rem;">
+            <a href="#image-speech-guide" class="back-to-top-link" style="font-size:0.75rem; color:var(--accent-purple); font-weight:600;">🎵 音声ファイル判定の実装例</a>
+            <span style="font-size:0.75rem; color:var(--text-muted);">属性: <code>data-judge-select="#audioSupportPriority"</code></span>
+            <button type="button" class="btn-clear-cache" style="background:rgba(239,68,68,0.12); color:#f87171; border:1px solid rgba(239,68,68,0.3); font-size:0.72rem; padding:0.22rem 0.55rem; border-radius:6px; cursor:pointer; font-weight:600; transition:all 0.2s;" title="全体のキャッシュを削除">🗑️ キャッシュ削除</button>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.8rem; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap;">
+          <label for="audioSupportPriority" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0;">連動セレクトボックス (音声受付・対応優先度):</label>
+          <select id="audioSupportPriority" style="padding: 0.45rem 0.8rem; background: rgba(0,0,0,0.35); border: 1px solid var(--card-border); color: var(--text-main); border-radius: 8px; font-family: inherit; font-size: 0.9rem; flex: 1; min-width: 260px;">
             <option value="" disabled>優先度を選択してください</option>
             <option value="P1" data-description="サービス全停止やデータ破壊の恐れがある致命的インシデント">P1 - 緊急（即時対応）</option>
             <option value="P2" data-description="主要機能が一部制限され、広範囲のユーザーに影響がある障害">P2 - 高（当日中対応）</option>
@@ -917,15 +952,15 @@
           </div>
         </div>
 
-        <div id="auto-result-3" class="result-target-area">
+        <div id="auto-result-4" class="result-target-area">
           <div style="font-size:0.85rem; color:var(--text-muted); font-style:italic;">音声ファイルをアップロードすると自動判定が開始され、セレクトボックスと連動します...</div>
         </div>
       </div>
 
-      <!-- 枠4 (ファイルそのもの・画像データからの自動判定 ＆ セレクトボックス連動) -->
-      <div class="auto-slot" id="case4-image-slot">
+      <!-- 枠5 (ファイルそのもの・画像データからの自動判定 ＆ セレクトボックス連動) -->
+      <div class="auto-slot" id="case5-image-slot">
         <div class="auto-slot-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem;">
-          <span class="auto-slot-title">案件 4: ファイルそのもの（画像・テキスト）直接判定 <span class="badge" style="background:rgba(168,85,247,0.15); color:#c084fc; font-size:0.7rem;">🤖 Gemini Nano マルチモーダル直接入力</span></span>
+          <span class="auto-slot-title">案件 5: ファイルそのもの（画像・テキスト）直接判定 <span class="badge" style="background:rgba(168,85,247,0.15); color:#c084fc; font-size:0.7rem;">🤖 Gemini Nano マルチモーダル直接入力</span></span>
           <div style="display:flex; align-items:center; gap:0.6rem;">
             <a href="#image-speech-guide" class="back-to-top-link" style="font-size:0.75rem; color:var(--accent-purple); font-weight:700;">📷 画像判定の実装例を見る</a>
             <span style="font-size:0.75rem; color:var(--text-muted);">属性: <code>data-judge-select="#expenseCategory"</code></span>
@@ -990,7 +1025,7 @@
           </div>
         </div>
 
-        <div id="auto-result-4" class="result-target-area">
+        <div id="auto-result-5" class="result-target-area">
           <div style="font-size:0.85rem; color:var(--text-muted); font-style:italic;">判定中、または結果がここに表示されます...</div>
         </div>
       </div>
@@ -3049,7 +3084,7 @@ document.addEventListener(<span class="code-string">'nano-judgement-cancelled'</
     });
 
     // =========================================================================
-    // 【案件3】音声ファイル（通話録音・留守電）直接アップロード判定デモの制御ロジック
+    // 【案件4】音声ファイル（通話録音・留守電）直接アップロード判定デモの制御ロジック
     // =========================================================================
     const sampleAudioPlayer = document.querySelector('#sampleAudioPlayer');
     const audioUploadInput = document.querySelector('#audioUploadInput');
@@ -3057,13 +3092,13 @@ document.addEventListener(<span class="code-string">'nano-judgement-cancelled'</
     const audioPreviewContainer = document.querySelector('#audioPreviewContainer');
     const currentAudioLabel = document.querySelector('#currentAudioLabel');
     const currentAudioMeta = document.querySelector('#currentAudioMeta');
-    const case3ResultContainer = document.querySelector('#auto-result-3');
-    const supportPrioritySelect = document.querySelector('#supportPriority');
+    const case4ResultContainer = document.querySelector('#auto-result-4');
+    const audioSupportPrioritySelect = document.querySelector('#audioSupportPriority');
 
     async function runAudioJudgement(audioFile) {
-      if (!case3ResultContainer || !supportPrioritySelect || !audioFile) return;
+      if (!case4ResultContainer || !audioSupportPrioritySelect || !audioFile) return;
 
-      renderLoadingSpinner(case3ResultContainer);
+      renderLoadingSpinner(case4ResultContainer);
       if (audioPreviewContainer) audioPreviewContainer.style.display = 'grid';
       if (currentAudioLabel) currentAudioLabel.textContent = `📁 ${audioFile.name}`;
       if (currentAudioMeta) {
@@ -3074,19 +3109,19 @@ document.addEventListener(<span class="code-string">'nano-judgement-cancelled'</
       }
 
       try {
-        const result = await judgement.judge(supportPrioritySelect, audioFile, {
+        const result = await judgement.judge(audioSupportPrioritySelect, audioFile, {
           includeReason: true,
         });
 
-        if (result.topChoice && supportPrioritySelect.value !== result.topChoice.id) {
-          supportPrioritySelect.value = result.topChoice.id;
-          supportPrioritySelect.dispatchEvent(new Event('change', { bubbles: true }));
+        if (result.topChoice && audioSupportPrioritySelect.value !== result.topChoice.id) {
+          audioSupportPrioritySelect.value = result.topChoice.id;
+          audioSupportPrioritySelect.dispatchEvent(new Event('change', { bubbles: true }));
         }
 
-        renderResultCard(case3ResultContainer, result);
+        renderResultCard(case4ResultContainer, result);
       } catch (err) {
         console.error('音声ファイル判定エラー:', err);
-        case3ResultContainer.innerHTML = `
+        case4ResultContainer.innerHTML = `
           <div style="font-size:0.85rem; color:#f87171; padding:0.8rem; background:rgba(239,68,68,0.1); border-radius:8px; border:1px solid rgba(239,68,68,0.3); margin-top:0.6rem;">
             ⚠️ 音声判定中にエラーが発生しました: ${err.message}
           </div>
@@ -3131,20 +3166,20 @@ document.addEventListener(<span class="code-string">'nano-judgement-cancelled'</
     }
 
     // =========================================================================
-    // 【案件4】画像データ（領収書・スクリーンショット）自動判定デモの制御ロジック
+    // 【案件5】画像データ（領収書・スクリーンショット）自動判定デモの制御ロジック
     // =========================================================================
     const samplePreviewImg = document.querySelector('#samplePreviewImg');
     const imageUploadInput = document.querySelector('#imageUploadInput');
     const imageExtractedTextDisplay = document.querySelector('#imageExtractedTextDisplay');
     const ocrStatusBadge = document.querySelector('#ocrStatusBadge');
-    const case4ResultContainer = document.querySelector('#auto-result-4');
+    const case5ResultContainer = document.querySelector('#auto-result-5');
     const expenseCategorySelect = document.querySelector('#expenseCategory');
     const imagePresetButtons = document.querySelectorAll('.btn-image-preset');
 
     async function runImageJudgement(imageSource, displayName) {
-      if (!samplePreviewImg || !case4ResultContainer || !expenseCategorySelect) return;
+      if (!samplePreviewImg || !case5ResultContainer || !expenseCategorySelect) return;
 
-      renderLoadingSpinner(case4ResultContainer);
+      renderLoadingSpinner(case5ResultContainer);
       if (imageExtractedTextDisplay) {
         imageExtractedTextDisplay.textContent = '画像からテキストを抽出中...';
       }
@@ -3180,10 +3215,10 @@ document.addEventListener(<span class="code-string">'nano-judgement-cancelled'</
         }
 
         // 結果カードを描画（includeReasonがfalseの場合は根拠なしで値のみ表示）
-        renderResultCard(case4ResultContainer, result);
+        renderResultCard(case5ResultContainer, result);
       } catch (err) {
         console.error('画像判定エラー:', err);
-        case4ResultContainer.innerHTML = `
+        case5ResultContainer.innerHTML = `
           <div style="font-size:0.85rem; color:#f87171; padding:0.8rem; background:rgba(239,68,68,0.1); border-radius:8px; border:1px solid rgba(239,68,68,0.3); margin-top:0.6rem;">
             ⚠️ 画像判定中にエラーが発生しました: ${err.message}
           </div>
