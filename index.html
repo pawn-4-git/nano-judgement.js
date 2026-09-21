@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nano Judgement - Chrome Prompt API 判定ライブラリ</title>
   <meta name="description" content="Chrome組み込みのGemini Nano (Prompt API) を使って、複数の選択肢の中から状況に最も適した選択肢を判定する軽量JavaScriptライブラリ。">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1605V0ZKLK"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1605V0ZKLK');
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -681,10 +691,16 @@
         </a>
       </div>
 
-      <!-- 実装方法・セクションへのクイックナビゲーション -->
+      <!-- 実装方法・セクションへのクイックナビゲーション（実際の表示順） -->
       <nav class="quick-nav" aria-label="クイックナビゲーション">
         <a href="#download-section" class="nav-btn nav-btn-highlight">
           <span>📥</span> JSダウンロード
+        </a>
+        <a href="#demo-live" class="nav-btn">
+          <span>⚡</span> 複数枠自動判定デモ
+        </a>
+        <a href="#demo-interactive" class="nav-btn">
+          <span>🎛️</span> インタラクティブ判定
         </a>
         <a href="#image-speech-guide" class="nav-btn nav-btn-highlight" style="background: rgba(168, 85, 247, 0.22); border-color: rgba(168, 85, 247, 0.55); color: #c084fc; font-weight: 700;">
           <span>📷🎵</span> 画像・音声ファイルの実装例
@@ -694,12 +710,6 @@
         </a>
         <a href="#implementation-guide" class="nav-btn" onclick="document.querySelector('[data-tab=\'tab-output-dom\']')?.click()">
           <span>🎨</span> 出力データと画面反映
-        </a>
-        <a href="#demo-live" class="nav-btn">
-          <span>⚡</span> 複数枠自動判定デモ
-        </a>
-        <a href="#demo-interactive" class="nav-btn">
-          <span>🎛️</span> インタラクティブ判定
         </a>
         <a href="#attributes-reference" class="nav-btn">
           <span>⚙️</span> 属性・オプション一覧
